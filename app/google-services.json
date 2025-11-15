@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "870406376253",
+    "project_id": "st186-character-maker2",
+    "storage_bucket": "st186-character-maker2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870406376253:android:d4523f5a207e822abd1354",
+        "android_client_info": {
+          "package_name": "com.charactor.avatar.maker.pfp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAriygF-fVPLcZBoJGdEoyoZjhUCU6K3j0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

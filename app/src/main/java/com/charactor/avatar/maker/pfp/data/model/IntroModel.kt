@@ -1,0 +1,3 @@
+package com.charactor.avatar.maker.pfp.data.model
+
+data class IntroModel(val image: Int, val content: Int)

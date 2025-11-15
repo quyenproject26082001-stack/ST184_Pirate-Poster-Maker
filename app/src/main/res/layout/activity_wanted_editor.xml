@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_bg_app">
+
+    <!-- Action Bar -->
+    <FrameLayout
+        android:id="@+id/layoutActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/actionBar"
+            layout="@layout/layout_actionbar" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="20dp">
+
+            <!-- Poster Preview -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvPoster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:padding="24dp">
+
+                    <!-- Template Background -->
+                    <ImageView
+                        android:id="@+id/imgTemplate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/template" />
+
+                    <!-- Shadow Layer (below avatar) -->
+                    <ImageView
+                        android:id="@+id/imgAvatarShadow"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="80dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        android:alpha="0.6"
+                        android:src="@drawable/avatar" />
+
+                    <!-- Avatar Image -->
+                    <ImageView
+                        android:id="@+id/imgAvatar"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="80dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/avatar" />
+
+                    <!-- Name Text -->
+                    <TextView
+                        android:id="@+id/tvName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="250dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="NAME HERE"
+                        android:textColor="@android:color/black"
+                        android:textSize="24sp" />
+
+                    <!-- Bounty Text -->
+                    <TextView
+                        android:id="@+id/tvBounty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="320dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="$2,000,000"
+                        android:textColor="@android:color/black"
+                        android:textSize="28sp" />
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Import Photo Button -->
+            <FrameLayout
+                android:id="@+id/btnImportPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/img_btn_bottom">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="Import Photo"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </FrameLayout>
+
+            <!-- Remove Background Button -->
+            <FrameLayout
+                android:id="@+id/btnRemoveBackground"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                android:background="@drawable/img_btn_bottom">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="Remove Background"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </FrameLayout>
+
+            <!-- Reset Button -->
+            <FrameLayout
+                android:id="@+id/btnReset"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/img_btn_bottom">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="Reset"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </FrameLayout>
+
+            <!-- Name Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="#FFF8E7"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Name Header -->
+                    <LinearLayout
+                        android:id="@+id/layoutNameHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="Name"
+                            android:textColor="#B8860B"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:id="@+id/imgNameArrow"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_back"
+                            android:rotation="270"
+                            app:tint="#B8860B" />
+                    </LinearLayout>
+
+                    <!-- Name Content -->
+                    <LinearLayout
+                        android:id="@+id/layoutNameContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Input Name -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Input"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/edtName"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_16_stroke_white"
+                            android:fontFamily="@font/roboto_regular"
+                            android:hint="Enter name"
+                            android:paddingHorizontal="12dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp" />
+
+                        <!-- Font Selection -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Fonts"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <Spinner
+                            android:id="@+id/spinnerNameFont"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_16_stroke_white" />
+
+                        <!-- Spacing Slider -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Spacing"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarNameSpacing"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Bounty Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FFF8E7"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Bounty Header -->
+                    <LinearLayout
+                        android:id="@+id/layoutBountyHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="Bounty"
+                            android:textColor="#B8860B"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:id="@+id/imgBountyArrow"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_back"
+                            android:rotation="270"
+                            app:tint="#B8860B" />
+                    </LinearLayout>
+
+                    <!-- Bounty Content -->
+                    <LinearLayout
+                        android:id="@+id/layoutBountyContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Input Bounty -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Input"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/edtBounty"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_16_stroke_white"
+                            android:fontFamily="@font/roboto_regular"
+                            android:hint="Enter bounty"
+                            android:paddingHorizontal="12dp"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp" />
+
+                        <!-- Size Slider -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Size"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarBountySize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="50" />
+
+                        <!-- Weight Slider -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Weight"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarBountyWeight"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="50" />
+
+                        <!-- Spacing Slider -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Spacing"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarBountySpacing"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0" />
+
+                        <!-- Position X Slider -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Position X"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarBountyPositionX"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="50" />
+
+                        <!-- Position Y Slider -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Position Y"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarBountyPositionY"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="50" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Photo Filter Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FFF8E7"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Photo Filter Header -->
+                    <LinearLayout
+                        android:id="@+id/layoutPhotoFilterHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="Photo Filter"
+                            android:textColor="#B8860B"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:id="@+id/imgPhotoFilterArrow"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_back"
+                            android:rotation="270"
+                            app:tint="#B8860B" />
+                    </LinearLayout>
+
+                    <!-- Photo Filter Content -->
+                    <LinearLayout
+                        android:id="@+id/layoutPhotoFilterContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Shadow -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Shadow"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterShadow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0" />
+
+                        <!-- Blur -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Blur"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterBlur"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0" />
+
+                        <!-- Brightness -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Brightness"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterBrightness"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="200"
+                            android:progress="100" />
+
+                        <!-- Contrast -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Contrast"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterContrast"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="200"
+                            android:progress="100" />
+
+                        <!-- Grayscale -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Grayscale"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterGrayscale"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0" />
+
+                        <!-- Hue Rotate -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Hue Rotate"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterHueRotate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="360"
+                            android:progress="0" />
+
+                        <!-- Saturate -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Saturate"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterSaturate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="200"
+                            android:progress="100" />
+
+                        <!-- Sepia -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Sepia"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarFilterSepia"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Poster Shadow Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FFF8E7"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Poster Shadow Header -->
+                    <LinearLayout
+                        android:id="@+id/layoutPosterShadowHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="Poster Shadow"
+                            android:textColor="#B8860B"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:id="@+id/imgPosterShadowArrow"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_back"
+                            android:rotation="270"
+                            app:tint="#B8860B" />
+                    </LinearLayout>
+
+                    <!-- Poster Shadow Content -->
+                    <LinearLayout
+                        android:id="@+id/layoutPosterShadowContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Shadow -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Shadow"
+                            android:textColor="#B8860B"
+                            android:textSize="16sp" />
+
+                        <SeekBar
+                            android:id="@+id/seekBarPosterShadow"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:max="100"
+                            android:progress="0" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
