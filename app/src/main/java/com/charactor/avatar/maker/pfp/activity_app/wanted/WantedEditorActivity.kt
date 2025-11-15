@@ -1,11 +1,9 @@
 package com.charactor.avatar.maker.pfp.activity_app.wanted
 
-import android.graphics.Bitmap
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.RenderEffect
 import android.graphics.Shader
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.text.Editable
@@ -18,11 +16,13 @@ import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.*
 import com.charactor.avatar.maker.pfp.core.helper.BackgroundRemovalHelper
 import com.charactor.avatar.maker.pfp.core.helper.BitmapHelper
+import com.charactor.avatar.maker.pfp.core.helper.ShadowTransformation
 import com.charactor.avatar.maker.pfp.databinding.ActivityWantedEditorBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -371,66 +371,82 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
     /**
      * Load image into both avatar and shadow ImageViews
-     * Using shared Glide request options for cache efficiency
+     * Shadow uses ShadowTransformation to follow alpha channel (contour shadow like icon)
      */
     private fun loadImageToAvatars(uri: Uri) {
+        // Load into main avatar with centerCrop
         Glide.with(this)
             .load(uri)
             .centerCrop()
             .into(binding.imgAvatar)
 
+        // Load into shadow layer with ShadowTransformation
+        // This creates shadow that follows the alpha channel/contour of the image like icon shadow
+        val shadowRadius = viewModel.filterShadow.value / 100f * 15f
+        val shadowAlpha = 0.8f
+
         Glide.with(this)
             .load(uri)
-            .centerCrop()
+            .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
             .into(binding.imgAvatarShadow)
 
         // Re-enable shadow seekbar when loading new image
-        // (it might have been disabled after remove background)
         binding.seekBarFilterShadow.isEnabled = true
     }
 
     /**
      * Apply shadow effect to imgAvatarShadow layer
-     * Phase 1 MVP: Basic shadow with alpha, offset, and scale
+     * Reloads shadow with transformation that follows alpha channel (contour shadow like icon)
      */
     private fun applyShadowEffect(shadowValue: Float) {
         if (shadowValue <= 0) {
             binding.imgAvatarShadow.visibility = android.view.View.GONE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                binding.imgAvatarShadow.setRenderEffect(null)
+            }
             return
         }
 
         binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
 
-        // 1. Alpha - shadow opacity (0.0 to 0.7)
-        val shadowAlpha = (shadowValue / 100f * 0.7f).coerceIn(0f, 0.8f)
-        binding.imgAvatarShadow.alpha = shadowAlpha
+        // Reload shadow with new transformation parameters
+        val currentUri = viewModel.selectedImageUri.value
+        if (currentUri != null) {
+            val shadowRadius = shadowValue / 100f * 15f // 0-15px blur in transformation
+            val shadowAlpha = shadowValue / 100f * 0.9f
 
-        // 2. Offset - shadow displacement
-        val offsetX = shadowValue / 100f * 10f  // 0-10dp horizontal offset
-        val offsetY = shadowValue / 100f * 12f  // 0-12dp vertical offset (shadows fall down more)
+            Glide.with(this)
+                .load(currentUri)
+                .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                .into(binding.imgAvatarShadow)
+        }
+
+        // 1. Alpha - overall shadow visibility
+        val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
+        binding.imgAvatarShadow.alpha = viewAlpha
+
+        // 2. Offset - shadow displacement (small for natural look)
+        val offsetX = shadowValue / 100f * 5f   // 0-5dp
+        val offsetY = shadowValue / 100f * 7f   // 0-7dp
         binding.imgAvatarShadow.translationX = offsetX
         binding.imgAvatarShadow.translationY = offsetY
 
-        // 3. Scale - shadow slightly larger than object for realism
-        val scale = 1f + (shadowValue / 100f * 0.08f)  // 1.0 to 1.08
+        // 3. Scale - very minimal to maintain shape accuracy
+        val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0 to 1.03
         binding.imgAvatarShadow.scaleX = scale
         binding.imgAvatarShadow.scaleY = scale
 
-        // 4. Darken the shadow using ColorFilter
-        val darkenAlpha = (shadowValue / 100f * 150).toInt().coerceIn(0, 200)
-        val darkenFilter = android.graphics.PorterDuffColorFilter(
-            android.graphics.Color.argb(darkenAlpha, 0, 0, 0),
-            android.graphics.PorterDuff.Mode.SRC_ATOP
-        )
-        binding.imgAvatarShadow.colorFilter = darkenFilter
-
-        // 5. Blur effect for shadow softness (API 31+ only)
+        // 4. Additional blur via RenderEffect (API 31+) for extra softness
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val blurRadius = shadowValue / 100f * 20f  // 0-20px blur
-            val blurEffect = RenderEffect.createBlurEffect(
-                blurRadius, blurRadius, Shader.TileMode.CLAMP
-            )
-            binding.imgAvatarShadow.setRenderEffect(blurEffect)
+            val additionalBlur = shadowValue / 100f * 10f // 0-10px additional blur
+            if (additionalBlur > 0) {
+                val blurEffect = RenderEffect.createBlurEffect(
+                    additionalBlur, additionalBlur, Shader.TileMode.CLAMP
+                )
+                binding.imgAvatarShadow.setRenderEffect(blurEffect)
+            } else {
+                binding.imgAvatarShadow.setRenderEffect(null)
+            }
         }
     }
 
@@ -486,7 +502,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
             // Hue Rotation
             if (hueRotate != 0f) {
-                val hueMatrix = ColorMatrix()
                 val angle = hueRotate * Math.PI.toFloat() / 180f
                 val cosA = kotlin.math.cos(angle.toDouble()).toFloat()
                 val sinA = kotlin.math.sin(angle.toDouble()).toFloat()
@@ -582,20 +597,20 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                         .centerCrop()
                         .into(binding.imgAvatar)
 
-                    // Load into shadow layer too
+                    // Load into shadow layer with ShadowTransformation
+                    // Shadow will follow the contour of the person (no background)
+                    val shadowRadius = 15f
+                    val shadowAlpha = 0.8f
                     Glide.with(this@WantedEditorActivity)
                         .load(resultBitmap)
-                        .centerCrop()
+                        .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
                         .into(binding.imgAvatarShadow)
 
-                    // Disable shadow for transparent background
-                    // Shadow layer would show through transparent areas
-                    binding.seekBarFilterShadow.progress = 0
-                    binding.seekBarFilterShadow.isEnabled = false
-                    binding.imgAvatarShadow.visibility = android.view.View.GONE
-                    viewModel.setFilterShadow(0f)
+                    // Keep shadow enabled - it will follow the contour of the person!
+                    binding.seekBarFilterShadow.isEnabled = true
+                    binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
 
-                    showToast("Background removed! Shadow disabled for transparent images.")
+                    showToast("Background removed! Shadow follows the person contour.")
                 } else {
                     showToast("Failed to remove background. Please try with a person photo.")
                 }
