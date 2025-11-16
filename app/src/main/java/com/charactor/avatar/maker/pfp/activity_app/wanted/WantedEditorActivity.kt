@@ -360,9 +360,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     private fun setupPosterShadowSeekBar() {
         binding.seekBarPosterShadow.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val elevation = progress.toFloat()
-                binding.cvPoster.cardElevation = elevation
-                viewModel.setPosterShadow(elevation)
+                // Control template shadow instead of CardView elevation
+                applyTemplateShadow(progress.toFloat())
+                viewModel.setPosterShadow(progress.toFloat())
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
@@ -630,6 +630,61 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
     private fun showToast(message: String) {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
+    }
+
+    /**
+     * Apply shadow effect to template background
+     * Controlled by Poster Shadow seekbar
+     * FIXED: Increased blur, added RenderEffect for smoother shadow
+     */
+    private fun applyTemplateShadow(shadowValue: Float) {
+        if (shadowValue <= 0) {
+            binding.imgTemplateShadow.visibility = android.view.View.GONE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                binding.imgTemplateShadow.setRenderEffect(null)
+            }
+            return
+        }
+
+        binding.imgTemplateShadow.visibility = android.view.View.VISIBLE
+
+        // Reload template shadow with new parameters
+        // INCREASED: More blur for smoother shadow like PhotoFilter
+        val shadowRadius = shadowValue / 100f * 35f  // 0-35px blur (was 25)
+        val shadowAlpha = shadowValue / 100f * 0.9f  // 0-0.9 alpha (was 0.8)
+
+        Glide.with(this)
+            .load(R.drawable.template)
+            .transform(ShadowTransformation(shadowRadius, shadowAlpha))
+            .into(binding.imgTemplateShadow)
+
+        // View properties
+        val viewAlpha = (shadowValue / 100f * 0.8f).coerceIn(0f, 1f)
+        binding.imgTemplateShadow.alpha = viewAlpha
+
+        // Offset for depth effect - slightly increased
+        val offsetX = shadowValue / 100f * 12f  // 0-12dp (was 10)
+        val offsetY = shadowValue / 100f * 15f  // 0-15dp (was 12)
+        binding.imgTemplateShadow.translationX = offsetX
+        binding.imgTemplateShadow.translationY = offsetY
+
+        // Slight scale
+        val scale = 1f + (shadowValue / 100f * 0.05f)  // 1.0-1.05 (was 1.03)
+        binding.imgTemplateShadow.scaleX = scale
+        binding.imgTemplateShadow.scaleY = scale
+
+        // ADDED: Additional blur with RenderEffect (API 31+) for extra smoothness
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val additionalBlur = shadowValue / 100f * 15f  // 0-15px additional blur
+            if (additionalBlur > 0) {
+                val blurEffect = RenderEffect.createBlurEffect(
+                    additionalBlur, additionalBlur, Shader.TileMode.CLAMP
+                )
+                binding.imgTemplateShadow.setRenderEffect(blurEffect)
+            } else {
+                binding.imgTemplateShadow.setRenderEffect(null)
+            }
+        }
     }
 }
 

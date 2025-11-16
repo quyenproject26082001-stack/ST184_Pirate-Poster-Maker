@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/img_bg_app">
+    android:background="@drawable/img_bg_edit">
 
     <!-- Action Bar -->
     <FrameLayout
@@ -33,96 +33,104 @@
             android:paddingBottom="20dp">
 
             <!-- Poster Preview -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvPoster"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutPoster"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/bg_poster_rounded"
+                android:elevation="4dp"
                 android:clipChildren="false"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
+                android:clipToPadding="false"
+                android:padding="24dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipChildren="false"
+                <!-- Template Shadow Layer (behind template) -->
+                <ImageView
+                    android:id="@+id/imgTemplateShadow"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    android:alpha="0.4"
+                    android:layerType="hardware"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintDimensionRatio="H,3:4" />
+
+                <!-- Template Background -->
+                <ImageView
+                    android:id="@+id/imgTemplate"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/template"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintDimensionRatio="H,3:4" />
+
+                <!-- Shadow Layer (below avatar) - Centered with avatar for uniform blur -->
+                <ImageView
+                    android:id="@+id/imgAvatarShadow"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="30dp"
+                    android:padding="50dp"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    android:alpha="0.6"
+                    android:layerType="hardware"
                     android:clipToPadding="false"
-                    android:padding="24dp">
+                    android:src="@drawable/avatar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-                    <!-- Template Background -->
-                    <ImageView
-                        android:id="@+id/imgTemplate"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/template"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintDimensionRatio="H,3:4" />
+                <!-- Avatar Image -->
+                <ImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="80dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avater_img"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-                    <!-- Shadow Layer (below avatar) - Centered with avatar for uniform blur -->
-                    <ImageView
-                        android:id="@+id/imgAvatarShadow"
-                        android:layout_width="250dp"
-                        android:layout_height="250dp"
-                        android:layout_marginTop="30dp"
-                        android:padding="50dp"
-                        android:scaleType="fitXY"
-                        android:visibility="visible"
-                        android:alpha="0.6"
-                        android:layerType="hardware"
-                        android:clipToPadding="false"
-                        android:src="@drawable/avatar"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                <!-- Name Text -->
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="250dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="NAME HERE"
+                    android:textColor="@android:color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-                    <!-- Avatar Image -->
-                    <ImageView
-                        android:id="@+id/imgAvatar"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_marginTop="80dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/avater_img"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                <!-- Bounty Text -->
+                <TextView
+                    android:id="@+id/tvBounty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="320dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="$2,000,000"
+                    android:textColor="@android:color/black"
+                    android:textSize="28sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <!-- Name Text -->
-                    <TextView
-                        android:id="@+id/tvName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="250dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="NAME HERE"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-
-                    <!-- Bounty Text -->
-                    <TextView
-                        android:id="@+id/tvBounty"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="320dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="$2,000,000"
-                        android:textColor="@android:color/black"
-                        android:textSize="28sp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Import Photo Button -->
+            <!-- Action Buttons -->            <!-- Import Photo Button -->
             <FrameLayout
                 android:id="@+id/btnImportPhoto"
                 android:layout_width="match_parent"
@@ -146,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="12dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:background="@drawable/img_btn_bottom">
 
                 <TextView
