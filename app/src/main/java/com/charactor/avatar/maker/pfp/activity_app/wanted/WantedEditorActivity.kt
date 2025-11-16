@@ -635,7 +635,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     /**
      * Apply shadow effect to template background
      * Controlled by Poster Shadow seekbar
-     * FIXED: Increased blur, added RenderEffect for smoother shadow
+     * WORKS EXACTLY LIKE Photo Filter Shadow:
+     * - Photo Filter: Load user image → ShadowTransformation → imgAvatarShadow
+     * - Poster Shadow: Load template drawable → ShadowTransformation → imgTemplateShadow
+     * Both create contour shadow following the object shape!
      */
     private fun applyTemplateShadow(shadowValue: Float) {
         if (shadowValue <= 0) {
@@ -648,34 +651,35 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         binding.imgTemplateShadow.visibility = android.view.View.VISIBLE
 
-        // Reload template shadow with new parameters
-        // INCREASED: More blur for smoother shadow like PhotoFilter
-        val shadowRadius = shadowValue / 100f * 35f  // 0-35px blur (was 25)
-        val shadowAlpha = shadowValue / 100f * 0.9f  // 0-0.9 alpha (was 0.8)
+        // EXACTLY LIKE Photo Filter: Reload with new transformation parameters
+        val shadowRadius = shadowValue / 100f * 15f  // 0-15px blur (SAME as Photo Filter)
+        val shadowAlpha = shadowValue / 100f * 0.9f   // Dynamic alpha
 
+        // Load template drawable with ShadowTransformation
+        // This creates shadow following the template's alpha channel/contour
         Glide.with(this)
             .load(R.drawable.template)
             .transform(ShadowTransformation(shadowRadius, shadowAlpha))
             .into(binding.imgTemplateShadow)
 
-        // View properties
-        val viewAlpha = (shadowValue / 100f * 0.8f).coerceIn(0f, 1f)
+        // 1. Alpha - overall shadow visibility (MATCHED with Photo Filter)
+        val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
         binding.imgTemplateShadow.alpha = viewAlpha
 
-        // Offset for depth effect - slightly increased
-        val offsetX = shadowValue / 100f * 12f  // 0-12dp (was 10)
-        val offsetY = shadowValue / 100f * 15f  // 0-15dp (was 12)
+        // 2. Offset - shadow displacement (MATCHED with Photo Filter)
+        val offsetX = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
+        val offsetY = shadowValue / 100f * 7f   // 0-7dp (SAME as Photo Filter)
         binding.imgTemplateShadow.translationX = offsetX
         binding.imgTemplateShadow.translationY = offsetY
 
-        // Slight scale
-        val scale = 1f + (shadowValue / 100f * 0.05f)  // 1.0-1.05 (was 1.03)
+        // 3. Scale - very minimal to maintain shape accuracy (MATCHED)
+        val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0-1.03 (SAME as Photo Filter)
         binding.imgTemplateShadow.scaleX = scale
         binding.imgTemplateShadow.scaleY = scale
 
-        // ADDED: Additional blur with RenderEffect (API 31+) for extra smoothness
+        // 4. Additional blur via RenderEffect (API 31+) for extra softness (MATCHED)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val additionalBlur = shadowValue / 100f * 15f  // 0-15px additional blur
+            val additionalBlur = shadowValue / 100f * 10f  // 0-10px additional blur (SAME as Photo Filter)
             if (additionalBlur > 0) {
                 val blurEffect = RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, Shader.TileMode.CLAMP
