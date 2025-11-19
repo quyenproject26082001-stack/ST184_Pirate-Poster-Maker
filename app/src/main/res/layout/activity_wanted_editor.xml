@@ -172,6 +172,8 @@
                             android:background="@drawable/bg_16_stroke_white"
                             android:fontFamily="@font/roboto_regular"
                             android:hint="Enter name"
+                            android:maxLength="15"
+                            android:maxLines="2"
                             android:paddingHorizontal="12dp"
                             android:textColor="@android:color/black"
                             android:textSize="16sp"

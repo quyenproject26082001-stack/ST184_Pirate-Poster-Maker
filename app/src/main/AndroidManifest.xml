@@ -63,6 +63,10 @@
             android:name=".activity_app.template.TemplateListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.posterwanted.PosterWantedTemplateActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION"

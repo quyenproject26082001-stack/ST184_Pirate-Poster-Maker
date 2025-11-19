@@ -3,6 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPosterContent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -13,6 +14,7 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/template"
+        tools:src="@drawable/template_4_preview"
         app:layout_constraintDimensionRatio="H,3:4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +60,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.36" />
+        app:layout_constraintVertical_bias="0.4" />
 
     <!-- Name: namePositionY=0.58, nameColor=#3D3D3D, nameSize=26sp -->
     <TextView
@@ -74,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.58" />
+        app:layout_constraintVertical_bias="0.65" />
 
     <!-- Bounty: bountyPositionY=0.92, suffix=" CASH", bountySize=20sp -->
     <TextView
@@ -83,13 +85,13 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
         android:text="100,000 CASH"
-        android:textColor="#3D3D3D"
+        android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.92" />
+        app:layout_constraintVertical_bias="0.915" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

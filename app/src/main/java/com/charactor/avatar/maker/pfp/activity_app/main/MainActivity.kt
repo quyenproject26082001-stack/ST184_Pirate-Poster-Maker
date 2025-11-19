@@ -15,6 +15,7 @@ import com.charactor.avatar.maker.pfp.core.utils.key.ValueKey
 import com.charactor.avatar.maker.pfp.core.utils.state.RateState
 import com.charactor.avatar.maker.pfp.databinding.ActivityHomeBinding
 import com.charactor.avatar.maker.pfp.activity_app.SettingsActivity
+import com.charactor.avatar.maker.pfp.activity_app.posterwanted.PosterWantedTemplateActivity
 import com.charactor.avatar.maker.pfp.core.extensions.gone
 
 import com.charactor.avatar.maker.pfp.core.extensions.setOnSingleClick
@@ -41,6 +42,9 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             actionBar.btnActionBarRight.setOnSingleClick { startIntentRightToLeft(SettingsActivity::class.java) }
             btnCreate.setOnSingleClick {
                 startIntentRightToLeft(com.charactor.avatar.maker.pfp.activity_app.makescreen.MakeScreenActivity::class.java)
+            }
+            BtnPosterWantedTemplate.setOnSingleClick {
+                startIntentRightToLeft(PosterWantedTemplateActivity::class.java)
             }
         }
     }

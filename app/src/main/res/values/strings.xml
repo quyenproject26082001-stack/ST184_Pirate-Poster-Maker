@@ -76,6 +76,7 @@
     <string name="wanted_poster_maker">Poster Maker</string>
     <string name="import_">Import</string>
     <string name="templates">Templates</string>
+    <string name="poster_templates">Poster Templates</string>
     <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
     <string name="posterwantedmaker">Poster Wanted\nMaker</string>
     <string name="bounty">Bounty</string>

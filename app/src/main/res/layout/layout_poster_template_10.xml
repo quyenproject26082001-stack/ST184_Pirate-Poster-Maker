@@ -3,6 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPosterContent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -13,6 +14,7 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/template"
+        tools:src="@drawable/template_10_preview"
         app:layout_constraintDimensionRatio="H,3:4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,15 +52,15 @@
         android:id="@+id/imgAvatar"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:src="@drawable/avatar"
-        app:layout_constraintWidth_percent="0.70"
-        app:layout_constraintHeight_percent="0.56"
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintHeight_percent="0.4"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.40" />
+        app:layout_constraintVertical_bias="0.60" />
 
     <!-- Name - HIDDEN -->
     <TextView
@@ -91,6 +93,6 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.90" />
+        app:layout_constraintVertical_bias="0.97" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
