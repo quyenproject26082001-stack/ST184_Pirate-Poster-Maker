@@ -69,24 +69,26 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
                     RateState.LESS3 -> {
                         lifecycleScope.launch(Dispatchers.Main) {
                             delay(1000)
-                            exitProcess(0)
+                            finishAffinity()
                         }
                     }
-
-                    RateState.GREATER3 -> {}
+                    RateState.GREATER3 -> {
+                        finishAffinity()
+                    }
                     RateState.CANCEL -> {
                         lifecycleScope.launch {
                             sharePreference.setCountBack(sharePreference.getCountBack() + 1)
                             withContext(Dispatchers.Main) {
                                 delay(1000)
-                                exitProcess(0)
+                                finishAffinity()
                             }
                         }
                     }
                 }
             }
         } else {
-            exitProcess(0)
+            sharePreference.setCountBack(sharePreference.getCountBack() + 1)
+            finishAffinity()
         }
     }
 

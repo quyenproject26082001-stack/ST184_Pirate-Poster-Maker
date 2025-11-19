@@ -25,25 +25,15 @@
             layout="@layout/layout_actionbar" />
     </FrameLayout>
 
-    <!-- imgPermission -->
-    <ImageView
-        android:id="@+id/imgPermission"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="8dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/img_permission"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutActionBar" />
+
 
     <!-- txtPermission -->
     <LinearLayout
         android:id="@+id/txtPermission"
-        android:layout_width="360dp"
+        android:layout_width="0dp"
         android:layout_height="140dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="0dp"
+        android:layout_marginTop="-70dp"
         android:gravity="center"
         android:orientation="vertical"
         android:background="@drawable/img_text_per"
@@ -58,6 +48,18 @@
             android:gravity="center"
             android:textSize="14sp" />
     </LinearLayout>
+
+    <!-- imgPermission -->
+    <ImageView
+        android:id="@+id/imgPermission"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/img_permission"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutActionBar" />
 
     <!-- scvButton -->
     <ScrollView
@@ -90,7 +92,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="start"
                     android:text="@string/storage"
-                    android:textColor="@color/white"
+                    android:textColor="#C4561B"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -120,7 +122,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="start"
                     android:text="@string/notification"
-                    android:textColor="@color/white"
+                    android:textColor="#C4561B"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -144,14 +146,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginBottom="228dp"
         android:fontFamily="@font/kurale_regular"
         android:gravity="center"
         android:text="@string/continue_per"
         android:textSize="16sp"
         android:layout_marginEnd="16dp"
         android:textColor="#C4561B"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="48dp"
+        app:layout_constraintTop_toBottomOf="@id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
       />
 </androidx.constraintlayout.widget.ConstraintLayout>

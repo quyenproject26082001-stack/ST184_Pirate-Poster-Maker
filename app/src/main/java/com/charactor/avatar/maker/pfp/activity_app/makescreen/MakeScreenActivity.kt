@@ -4,9 +4,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -30,6 +31,14 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
     // Use shared ViewModel for data binding with WantedEditorActivity
     private val viewModel = PosterEditorSharedViewModel.getInstance()
+
+    // Dynamic poster views (inflated from template layouts)
+    private var imgTemplate: ImageView? = null
+    private var imgTemplateShadow: ImageView? = null
+    private var imgAvatar: ImageView? = null
+    private var imgAvatarShadow: ImageView? = null
+    private var tvName: TextView? = null
+    private var tvBounty: TextView? = null
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -65,14 +74,59 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     }
 
     override fun initView() {
-        // Load template background from assets
-        loadTemplateBackground()
-
-        // Load default avatar image from assets
-        loadDefaultAvatar()
+        // Load template layout and background from assets
+        inflateTemplateLayout(viewModel.selectedTemplate.value)
 
         // Initialize with default template and preview
         updatePreviewWithCurrentState()
+    }
+
+    /**
+     * Get layout resource ID for template
+     */
+    private fun getTemplateLayoutResId(templateId: Int): Int {
+        return when (templateId) {
+            1 -> R.layout.layout_poster_template_1
+            2 -> R.layout.layout_poster_template_2
+            3 -> R.layout.layout_poster_template_3
+            4 -> R.layout.layout_poster_template_4
+            5 -> R.layout.layout_poster_template_5
+            6 -> R.layout.layout_poster_template_6
+            7 -> R.layout.layout_poster_template_7
+            8 -> R.layout.layout_poster_template_8
+            9 -> R.layout.layout_poster_template_9
+            10 -> R.layout.layout_poster_template_10
+            11 -> R.layout.layout_poster_template_11
+            12 -> R.layout.layout_poster_template_12
+            13 -> R.layout.layout_poster_template_13
+            14 -> R.layout.layout_poster_template_14
+            15 -> R.layout.layout_poster_template_15
+            16 -> R.layout.layout_poster_template_16
+            else -> R.layout.layout_poster_template_1
+        }
+    }
+
+    /**
+     * Inflate template layout and bind views
+     */
+    private fun inflateTemplateLayout(templateId: Int) {
+        // Remove old layout
+        binding.containerPoster.removeAllViews()
+
+        // Inflate new layout
+        val layoutResId = getTemplateLayoutResId(templateId)
+        val posterView = layoutInflater.inflate(layoutResId, binding.containerPoster, true)
+
+        // Bind views
+        imgTemplate = posterView.findViewById(R.id.imgTemplate)
+        imgTemplateShadow = posterView.findViewById(R.id.imgTemplateShadow)
+        imgAvatar = posterView.findViewById(R.id.imgAvatar)
+        imgAvatarShadow = posterView.findViewById(R.id.imgAvatarShadow)
+        tvName = posterView.findViewById(R.id.tvName)
+        tvBounty = posterView.findViewById(R.id.tvBounty)
+
+        // Load template background
+        loadTemplateBackground()
     }
 
     override fun viewListener() {
@@ -116,14 +170,14 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         // Observe name text
         lifecycleScope.launch {
             viewModel.nameText.collect { text ->
-                binding.tvName.text = text
+                tvName?.text = text
             }
         }
 
         // Observe bounty text
         lifecycleScope.launch {
             viewModel.bountyText.collect { text ->
-                binding.tvBounty.text = text
+                tvBounty?.text = text
             }
         }
 
@@ -203,32 +257,12 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         android.util.Log.d("MakeScreen", "Loading template: $templateId, isEditing: $isEditing, path: $templatePath")
 
-        Glide.with(this)
-            .load(templatePath)
-            .error(R.drawable.template)
-            .listener(object : com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable> {
-                override fun onLoadFailed(
-                    e: com.bumptech.glide.load.engine.GlideException?,
-                    model: Any?,
-                    target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    android.util.Log.e("MakeScreen", "FAILED to load template: $templatePath", e)
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: android.graphics.drawable.Drawable,
-                    model: Any,
-                    target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>?,
-                    dataSource: com.bumptech.glide.load.DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    android.util.Log.d("MakeScreen", "SUCCESS loaded template: $templatePath")
-                    return false
-                }
-            })
-            .into(binding.imgTemplate)
+        imgTemplate?.let { imageView ->
+            Glide.with(this)
+                .load(templatePath)
+                .error(R.drawable.template)
+                .into(imageView)
+        }
     }
 
     /**
@@ -238,10 +272,12 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         val templateId = viewModel.selectedTemplate.value
         val avatarPath = AssetHelper.getTemplateAvatarPath(templateId)
 
-        Glide.with(this)
-            .load(avatarPath)
-            .centerCrop()
-            .into(binding.imgAvatar)
+        imgAvatar?.let { imageView ->
+            Glide.with(this)
+                .load(avatarPath)
+                .centerCrop()
+                .into(imageView)
+        }
     }
 
     /**
@@ -249,19 +285,23 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      */
     private fun loadImageToPreview(uri: Uri) {
         // Load into main avatar
-        Glide.with(this)
-            .load(uri)
-            .centerCrop()
-            .into(binding.imgAvatar)
+        imgAvatar?.let { imageView ->
+            Glide.with(this)
+                .load(uri)
+                .centerCrop()
+                .into(imageView)
+        }
 
         // Load into shadow layer with ShadowTransformation (contour shadow)
         val shadowRadius = viewModel.filterShadow.value / 100f * 15f
         val shadowAlpha = 0.8f
 
-        Glide.with(this)
-            .load(uri)
-            .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-            .into(binding.imgAvatarShadow)
+        imgAvatarShadow?.let { imageView ->
+            Glide.with(this)
+                .load(uri)
+                .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                .into(imageView)
+        }
     }
 
     /**
@@ -269,31 +309,29 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * Called after receiving edited data from WantedEditorActivity
      */
     private fun updatePreviewWithCurrentState() {
-        // Update template background
-        loadTemplateBackground()
-
-        // Apply dynamic positions based on template config
-        applyTemplatePositions()
+        // Reload template layout if template changed
+        val currentTemplateId = viewModel.selectedTemplate.value
+        inflateTemplateLayout(currentTemplateId)
 
         val isEditing = viewModel.isEditingStarted.value
+        val config = viewModel.getConfig()
 
         // Show/hide editable elements based on editing state
         if (isEditing) {
-            val config = viewModel.getConfig()
-
-            // Show name only if template has name field
-            binding.tvName.visibility = if (config.hasName) android.view.View.VISIBLE else android.view.View.GONE
-            binding.tvBounty.visibility = android.view.View.VISIBLE
-            binding.imgAvatar.visibility = android.view.View.VISIBLE
-            binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
-
-            // Update name (only if visible)
+            // Show name only if template has name field (XML already sets visibility)
+            // Just update text values
             if (config.hasName) {
-                binding.tvName.text = viewModel.nameText.value
+                tvName?.visibility = View.VISIBLE
+                tvName?.text = viewModel.nameText.value
+            } else {
+                tvName?.visibility = View.GONE
             }
 
-            // Update bounty
-            binding.tvBounty.text = viewModel.bountyText.value
+            tvBounty?.visibility = View.VISIBLE
+            tvBounty?.text = viewModel.bountyText.value
+
+            imgAvatar?.visibility = View.VISIBLE
+            imgAvatarShadow?.visibility = View.VISIBLE
 
             // Update image if exists, otherwise show default avatar
             viewModel.selectedImageUri.value?.let { uri ->
@@ -305,11 +343,11 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             applyPhotoShadow(viewModel.filterShadow.value)
         } else {
             // Hide all editable elements - show only avatar.png preview
-            binding.tvName.visibility = android.view.View.GONE
-            binding.tvBounty.visibility = android.view.View.GONE
-            binding.imgAvatar.visibility = android.view.View.GONE
-            binding.imgAvatarShadow.visibility = android.view.View.GONE
-            binding.imgTemplateShadow.visibility = android.view.View.GONE
+            tvName?.visibility = View.GONE
+            tvBounty?.visibility = View.GONE
+            imgAvatar?.visibility = View.GONE
+            imgAvatarShadow?.visibility = View.GONE
+            imgTemplateShadow?.visibility = View.GONE
         }
     }
 
@@ -318,15 +356,17 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * EXACTLY LIKE WantedEditorActivity.applyTemplateShadow()
      */
     private fun applyPosterShadow(shadowValue: Float) {
+        val shadowView = imgTemplateShadow ?: return
+
         if (shadowValue <= 0) {
-            binding.imgTemplateShadow.visibility = android.view.View.GONE
+            shadowView.visibility = View.GONE
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                binding.imgTemplateShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
             return
         }
 
-        binding.imgTemplateShadow.visibility = android.view.View.VISIBLE
+        shadowView.visibility = View.VISIBLE
 
         // Reload with new transformation parameters
         val shadowRadius = shadowValue / 100f * 15f
@@ -338,20 +378,20 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         Glide.with(this)
             .load(templatePath)
             .transform(ShadowTransformation(shadowRadius, shadowAlpha))
-            .into(binding.imgTemplateShadow)
+            .into(shadowView)
 
         // View properties
         val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
-        binding.imgTemplateShadow.alpha = viewAlpha
+        shadowView.alpha = viewAlpha
 
         val offsetX = shadowValue / 100f * 5f
         val offsetY = shadowValue / 100f * 7f
-        binding.imgTemplateShadow.translationX = offsetX
-        binding.imgTemplateShadow.translationY = offsetY
+        shadowView.translationX = offsetX
+        shadowView.translationY = offsetY
 
         val scale = 1f + (shadowValue / 100f * 0.03f)
-        binding.imgTemplateShadow.scaleX = scale
-        binding.imgTemplateShadow.scaleY = scale
+        shadowView.scaleX = scale
+        shadowView.scaleY = scale
 
         // Additional blur (API 31+)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
@@ -360,9 +400,9 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 val blurEffect = android.graphics.RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, android.graphics.Shader.TileMode.CLAMP
                 )
-                binding.imgTemplateShadow.setRenderEffect(blurEffect)
+                shadowView.setRenderEffect(blurEffect)
             } else {
-                binding.imgTemplateShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
         }
     }
@@ -372,15 +412,17 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * EXACTLY LIKE WantedEditorActivity.applyShadowEffect()
      */
     private fun applyPhotoShadow(shadowValue: Float) {
+        val shadowView = imgAvatarShadow ?: return
+
         if (shadowValue <= 0) {
-            binding.imgAvatarShadow.visibility = android.view.View.GONE
+            shadowView.visibility = View.GONE
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                binding.imgAvatarShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
             return
         }
 
-        binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
+        shadowView.visibility = View.VISIBLE
 
         // Reload shadow with new transformation
         val currentUri = viewModel.selectedImageUri.value
@@ -391,21 +433,21 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             Glide.with(this)
                 .load(currentUri)
                 .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-                .into(binding.imgAvatarShadow)
+                .into(shadowView)
         }
 
         // View properties
         val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
-        binding.imgAvatarShadow.alpha = viewAlpha
+        shadowView.alpha = viewAlpha
 
         val offsetX = shadowValue / 100f * 5f
         val offsetY = shadowValue / 100f * 7f
-        binding.imgAvatarShadow.translationX = offsetX
-        binding.imgAvatarShadow.translationY = offsetY
+        shadowView.translationX = offsetX
+        shadowView.translationY = offsetY
 
         val scale = 1f + (shadowValue / 100f * 0.03f)
-        binding.imgAvatarShadow.scaleX = scale
-        binding.imgAvatarShadow.scaleY = scale
+        shadowView.scaleX = scale
+        shadowView.scaleY = scale
 
         // Additional blur (API 31+)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
@@ -414,89 +456,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 val blurEffect = android.graphics.RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, android.graphics.Shader.TileMode.CLAMP
                 )
-                binding.imgAvatarShadow.setRenderEffect(blurEffect)
+                shadowView.setRenderEffect(blurEffect)
             } else {
-                binding.imgAvatarShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
-        }
-    }
-
-    /**
-     * Apply template positions dynamically based on config
-     * Called when template changes or when updating preview
-     */
-    private fun applyTemplatePositions() {
-        val config = viewModel.getConfig()
-        val constraintLayout = binding.layoutPosterContent
-
-        // Wait for layout to be measured
-        constraintLayout.post {
-            val parentWidth = constraintLayout.width
-            val parentHeight = constraintLayout.height
-
-            if (parentWidth == 0 || parentHeight == 0) return@post
-
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(constraintLayout)
-
-            // Apply photo/avatar position
-            val photoWidth = ((config.photoRight - config.photoLeft) * parentWidth).toInt()
-            val photoHeight = ((config.photoBottom - config.photoTop) * parentHeight).toInt()
-            val photoMarginTop = (config.photoTop * parentHeight).toInt()
-            val photoMarginStart = (config.photoLeft * parentWidth).toInt()
-
-            // Clear old constraints for imgAvatar
-            constraintSet.clear(R.id.imgAvatar, ConstraintSet.TOP)
-            constraintSet.clear(R.id.imgAvatar, ConstraintSet.START)
-            constraintSet.clear(R.id.imgAvatar, ConstraintSet.END)
-
-            // Apply new constraints
-            constraintSet.constrainWidth(R.id.imgAvatar, photoWidth)
-            constraintSet.constrainHeight(R.id.imgAvatar, photoHeight)
-            constraintSet.connect(R.id.imgAvatar, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, photoMarginTop)
-            constraintSet.connect(R.id.imgAvatar, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, photoMarginStart)
-
-            // Same for avatar shadow
-            constraintSet.clear(R.id.imgAvatarShadow, ConstraintSet.TOP)
-            constraintSet.clear(R.id.imgAvatarShadow, ConstraintSet.START)
-            constraintSet.clear(R.id.imgAvatarShadow, ConstraintSet.END)
-            constraintSet.constrainWidth(R.id.imgAvatarShadow, photoWidth)
-            constraintSet.constrainHeight(R.id.imgAvatarShadow, photoHeight)
-            constraintSet.connect(R.id.imgAvatarShadow, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, photoMarginTop)
-            constraintSet.connect(R.id.imgAvatarShadow, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, photoMarginStart)
-
-            // Apply name position (if has name)
-            if (config.hasName) {
-                val nameMarginTop = (config.namePositionY * parentHeight).toInt()
-                constraintSet.clear(R.id.tvName, ConstraintSet.TOP)
-                constraintSet.clear(R.id.tvName, ConstraintSet.BOTTOM)
-                constraintSet.connect(R.id.tvName, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, nameMarginTop)
-            }
-
-            // Apply bounty position
-            val bountyMarginTop = (config.bountyPositionY * parentHeight).toInt()
-            constraintSet.clear(R.id.tvBounty, ConstraintSet.TOP)
-            constraintSet.clear(R.id.tvBounty, ConstraintSet.BOTTOM)
-            constraintSet.connect(R.id.tvBounty, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, bountyMarginTop)
-
-            // Apply the constraints
-            constraintSet.applyTo(constraintLayout)
-
-            // Apply text colors from config
-            try {
-                if (config.hasName) {
-                    binding.tvName.setTextColor(Color.parseColor(config.nameColor))
-                }
-                binding.tvBounty.setTextColor(Color.parseColor(config.bountyColor))
-            } catch (e: Exception) {
-                // Fallback to default color if parsing fails
-                binding.tvName.setTextColor(Color.BLACK)
-                binding.tvBounty.setTextColor(Color.BLACK)
-            }
-
-            // Apply text sizes from config
-            binding.tvName.textSize = config.nameSize
-            binding.tvBounty.textSize = config.bountySize
         }
     }
 

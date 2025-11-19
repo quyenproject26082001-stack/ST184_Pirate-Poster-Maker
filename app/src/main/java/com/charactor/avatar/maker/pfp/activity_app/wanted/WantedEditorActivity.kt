@@ -10,8 +10,11 @@ import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
@@ -35,6 +38,14 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     // Use shared ViewModel for data binding with MakeScreenActivity
     private val viewModel = PosterEditorSharedViewModel.getInstance()
 
+    // Dynamic poster views (inflated from template layouts)
+    private var imgTemplate: ImageView? = null
+    private var imgTemplateShadow: ImageView? = null
+    private var imgAvatar: ImageView? = null
+    private var imgAvatarShadow: ImageView? = null
+    private var tvName: TextView? = null
+    private var tvBounty: TextView? = null
+
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             viewModel.setSelectedImageUri(it)
@@ -57,27 +68,27 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     override fun initView() {
-        // Load template background from assets
-        loadTemplateBackground()
+        // Inflate template layout dynamically
+        inflateTemplateLayout(viewModel.selectedTemplate.value)
 
         // Check if this is first time entering Editor (no edits yet)
         val isFirstTime = !viewModel.isEditingStarted.value
 
         if (isFirstTime) {
             // First time: Hide all editable elements, show only item.png template
-            binding.tvName.visibility = android.view.View.GONE
-            binding.tvBounty.visibility = android.view.View.GONE
-            binding.imgAvatar.visibility = android.view.View.GONE
-            binding.imgAvatarShadow.visibility = android.view.View.GONE
-            binding.imgTemplateShadow.visibility = android.view.View.GONE
+            tvName?.visibility = View.GONE
+            tvBounty?.visibility = View.GONE
+            imgAvatar?.visibility = View.GONE
+            imgAvatarShadow?.visibility = View.GONE
+            imgTemplateShadow?.visibility = View.GONE
         } else {
             // Already editing: Show elements with current values
             val config = viewModel.getConfig()
 
             // Show name only if template has name field
-            binding.tvName.visibility = if (config.hasName) android.view.View.VISIBLE else android.view.View.GONE
-            binding.tvBounty.visibility = android.view.View.VISIBLE
-            binding.imgAvatar.visibility = android.view.View.VISIBLE
+            tvName?.visibility = if (config.hasName) View.VISIBLE else View.GONE
+            tvBounty?.visibility = View.VISIBLE
+            imgAvatar?.visibility = View.VISIBLE
 
             // Load current image if exists
             viewModel.selectedImageUri.value?.let { uri ->
@@ -91,6 +102,54 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // Apply text colors from template config
         applyTemplateColors()
+    }
+
+    /**
+     * Get layout resource ID for template
+     */
+    private fun getTemplateLayoutResId(templateId: Int): Int {
+        return when (templateId) {
+            1 -> R.layout.layout_poster_template_1
+            2 -> R.layout.layout_poster_template_2
+            3 -> R.layout.layout_poster_template_3
+            4 -> R.layout.layout_poster_template_4
+            5 -> R.layout.layout_poster_template_5
+            6 -> R.layout.layout_poster_template_6
+            7 -> R.layout.layout_poster_template_7
+            8 -> R.layout.layout_poster_template_8
+            9 -> R.layout.layout_poster_template_9
+            10 -> R.layout.layout_poster_template_10
+            11 -> R.layout.layout_poster_template_11
+            12 -> R.layout.layout_poster_template_12
+            13 -> R.layout.layout_poster_template_13
+            14 -> R.layout.layout_poster_template_14
+            15 -> R.layout.layout_poster_template_15
+            16 -> R.layout.layout_poster_template_16
+            else -> R.layout.layout_poster_template_1
+        }
+    }
+
+    /**
+     * Inflate template layout and bind views
+     */
+    private fun inflateTemplateLayout(templateId: Int) {
+        // Remove old layout
+        binding.containerPoster.removeAllViews()
+
+        // Inflate new layout
+        val layoutResId = getTemplateLayoutResId(templateId)
+        val posterView = layoutInflater.inflate(layoutResId, binding.containerPoster, true)
+
+        // Bind views
+        imgTemplate = posterView.findViewById(R.id.imgTemplate)
+        imgTemplateShadow = posterView.findViewById(R.id.imgTemplateShadow)
+        imgAvatar = posterView.findViewById(R.id.imgAvatar)
+        imgAvatarShadow = posterView.findViewById(R.id.imgAvatarShadow)
+        tvName = posterView.findViewById(R.id.tvName)
+        tvBounty = posterView.findViewById(R.id.tvBounty)
+
+        // Load template background
+        loadTemplateBackground()
     }
 
     override fun viewListener() {
@@ -139,7 +198,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             viewModel.selectedImageUri.collect { uri ->
                 uri?.let {
                     // Show imgAvatar when user imports an image
-                    binding.imgAvatar.visibility = android.view.View.VISIBLE
+                    imgAvatar?.visibility = View.VISIBLE
                     loadImageToAvatars(it)
                 }
             }
@@ -225,19 +284,19 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         try {
             // Apply name color
             if (config.hasName) {
-                binding.tvName.setTextColor(Color.parseColor(config.nameColor))
+                tvName?.setTextColor(Color.parseColor(config.nameColor))
             }
 
             // Apply bounty color
-            binding.tvBounty.setTextColor(Color.parseColor(config.bountyColor))
+            tvBounty?.setTextColor(Color.parseColor(config.bountyColor))
 
             // Apply text sizes
-            binding.tvName.textSize = config.nameSize
-            binding.tvBounty.textSize = config.bountySize
+            tvName?.textSize = config.nameSize
+            tvBounty?.textSize = config.bountySize
         } catch (e: Exception) {
             // Fallback to default colors if parsing fails
-            binding.tvName.setTextColor(Color.BLACK)
-            binding.tvBounty.setTextColor(Color.BLACK)
+            tvName?.setTextColor(Color.BLACK)
+            tvBounty?.setTextColor(Color.BLACK)
         }
     }
 
@@ -254,14 +313,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             edtName.setText("NAME HERE")
             edtBounty.setText("$2,000,000")
 
-            // Reset TextViews (will be updated by EditText listeners)
-            tvName.text = "NAME HERE"
-            tvBounty.text = "$2,000,000"
-
             // Reset Name section
             spinnerNameFont.setSelection(0) // First font
             seekBarNameSpacing.progress = 0
-            tvName.letterSpacing = 0f
 
             // Reset Bounty section
             seekBarBountySize.progress = 25 // Default 24f maps to ~25% progress
@@ -269,10 +323,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             seekBarBountySpacing.progress = 0
             seekBarBountyPositionX.progress = 50 // Center (0f offset)
             seekBarBountyPositionY.progress = 50 // Center (0f offset)
-            tvBounty.textSize = 24f
-            tvBounty.letterSpacing = 0f
-            tvBounty.translationX = 0f
-            tvBounty.translationY = 0f
 
             // Reset Photo Filter section
             seekBarFilterShadow.progress = 0
@@ -286,17 +336,26 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
             // Reset Poster Shadow section
             seekBarPosterShadow.progress = 0
-
-            // Apply filter reset
-            imgAvatar.colorFilter = null
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                imgAvatar.setRenderEffect(null)
-            }
-
-            // Reset shadow effects
-            applyShadowEffect(0f)
-            applyTemplateShadow(0f)
         }
+
+        // Reset TextViews (will be updated by EditText listeners)
+        tvName?.text = "NAME HERE"
+        tvBounty?.text = "$2,000,000"
+        tvName?.letterSpacing = 0f
+        tvBounty?.textSize = 24f
+        tvBounty?.letterSpacing = 0f
+        tvBounty?.translationX = 0f
+        tvBounty?.translationY = 0f
+
+        // Apply filter reset
+        imgAvatar?.colorFilter = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            imgAvatar?.setRenderEffect(null)
+        }
+
+        // Reset shadow effects
+        applyShadowEffect(0f)
+        applyTemplateShadow(0f)
 
         showToast("Reset to default values")
     }
@@ -308,9 +367,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         val templateId = viewModel.selectedTemplate.value
         val templatePath = AssetHelper.getTemplateItemPath(templateId)
 
-        Glide.with(this)
-            .load(templatePath)
-            .into(binding.imgTemplate)
+        imgTemplate?.let { imageView ->
+            Glide.with(this)
+                .load(templatePath)
+                .into(imageView)
+        }
     }
 
     private fun setupFontSpinners() {
@@ -324,7 +385,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
                 val fontRes = fontList[position].second
                 val typeface = ResourcesCompat.getFont(this@WantedEditorActivity, fontRes)
-                binding.tvName.typeface = typeface
+                tvName?.typeface = typeface
                 viewModel.setNameFont(fontList[position].first)
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
@@ -339,9 +400,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 // Show tvName when user starts typing (only if template has name field)
                 val config = viewModel.getConfig()
                 if (text.isNotEmpty() && config.hasName) {
-                    binding.tvName.visibility = android.view.View.VISIBLE
+                    tvName?.visibility = View.VISIBLE
                 }
-                binding.tvName.text = text
+                tvName?.text = text
                 viewModel.setNameText(text)
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -353,9 +414,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 val text = s?.toString() ?: ""
                 // Show tvBounty when user starts typing
                 if (text.isNotEmpty()) {
-                    binding.tvBounty.visibility = android.view.View.VISIBLE
+                    tvBounty?.visibility = View.VISIBLE
                 }
-                binding.tvBounty.text = text
+                tvBounty?.text = text
                 viewModel.setBountyText(text)
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -367,7 +428,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.seekBarNameSpacing.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val spacing = progress / 10f
-                binding.tvName.letterSpacing = spacing
+                tvName?.letterSpacing = spacing
                 viewModel.setNameSpacing(spacing)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -378,7 +439,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.seekBarBountySize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val size = 12f + (progress / 100f) * 48f // 12sp to 60sp
-                binding.tvBounty.textSize = size
+                tvBounty?.textSize = size
                 viewModel.setBountySize(size)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -400,7 +461,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.seekBarBountySpacing.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val spacing = progress / 10f
-                binding.tvBounty.letterSpacing = spacing
+                tvBounty?.letterSpacing = spacing
                 viewModel.setBountySpacing(spacing)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -411,7 +472,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.seekBarBountyPositionX.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val offsetX = (progress - 50) * 2f // -100 to 100
-                binding.tvBounty.translationX = offsetX
+                tvBounty?.translationX = offsetX
                 viewModel.setBountyPositionX(offsetX)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -422,7 +483,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.seekBarBountyPositionY.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val offsetY = (progress - 50) * 2f // -100 to 100
-                binding.tvBounty.translationY = offsetY
+                tvBounty?.translationY = offsetY
                 viewModel.setBountyPositionY(offsetY)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -539,20 +600,24 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      */
     private fun loadImageToAvatars(uri: Uri) {
         // Load into main avatar with centerCrop
-        Glide.with(this)
-            .load(uri)
-            .centerCrop()
-            .into(binding.imgAvatar)
+        imgAvatar?.let { imageView ->
+            Glide.with(this)
+                .load(uri)
+                .centerCrop()
+                .into(imageView)
+        }
 
         // Load into shadow layer with ShadowTransformation
         // This creates shadow that follows the alpha channel/contour of the image like icon shadow
         val shadowRadius = viewModel.filterShadow.value / 100f * 15f
         val shadowAlpha = 0.8f
 
-        Glide.with(this)
-            .load(uri)
-            .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-            .into(binding.imgAvatarShadow)
+        imgAvatarShadow?.let { imageView ->
+            Glide.with(this)
+                .load(uri)
+                .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                .into(imageView)
+        }
 
         // Re-enable shadow seekbar when loading new image
         binding.seekBarFilterShadow.isEnabled = true
@@ -563,15 +628,17 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Reloads shadow with transformation that follows alpha channel (contour shadow like icon)
      */
     private fun applyShadowEffect(shadowValue: Float) {
+        val shadowView = imgAvatarShadow ?: return
+
         if (shadowValue <= 0) {
-            binding.imgAvatarShadow.visibility = android.view.View.GONE
+            shadowView.visibility = View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                binding.imgAvatarShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
             return
         }
 
-        binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
+        shadowView.visibility = View.VISIBLE
 
         // Reload shadow with new transformation parameters
         val currentUri = viewModel.selectedImageUri.value
@@ -582,23 +649,23 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             Glide.with(this)
                 .load(currentUri)
                 .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-                .into(binding.imgAvatarShadow)
+                .into(shadowView)
         }
 
         // 1. Alpha - overall shadow visibility
         val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
-        binding.imgAvatarShadow.alpha = viewAlpha
+        shadowView.alpha = viewAlpha
 
         // 2. Offset - shadow displacement (small for natural look)
         val offsetX = shadowValue / 100f * 5f   // 0-5dp
         val offsetY = shadowValue / 100f * 7f   // 0-7dp
-        binding.imgAvatarShadow.translationX = offsetX
-        binding.imgAvatarShadow.translationY = offsetY
+        shadowView.translationX = offsetX
+        shadowView.translationY = offsetY
 
         // 3. Scale - very minimal to maintain shape accuracy
         val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0 to 1.03
-        binding.imgAvatarShadow.scaleX = scale
-        binding.imgAvatarShadow.scaleY = scale
+        shadowView.scaleX = scale
+        shadowView.scaleY = scale
 
         // 4. Additional blur via RenderEffect (API 31+) for extra softness
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -607,9 +674,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 val blurEffect = RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, Shader.TileMode.CLAMP
                 )
-                binding.imgAvatarShadow.setRenderEffect(blurEffect)
+                shadowView.setRenderEffect(blurEffect)
             } else {
-                binding.imgAvatarShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
         }
     }
@@ -693,7 +760,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             }
 
             // Apply ColorMatrix filter
-            binding.imgAvatar.colorFilter = ColorMatrixColorFilter(colorMatrix)
+            imgAvatar?.colorFilter = ColorMatrixColorFilter(colorMatrix)
 
             // Note: Shadow is now handled by applyShadowEffect() using shadow layer approach
             // Old elevation-based shadow code removed as it didn't work properly with ImageView
@@ -705,9 +772,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     val blurEffect = RenderEffect.createBlurEffect(
                         blurRadius, blurRadius, Shader.TileMode.CLAMP
                     )
-                    binding.imgAvatar.setRenderEffect(blurEffect)
+                    imgAvatar?.setRenderEffect(blurEffect)
                 } else {
-                    binding.imgAvatar.setRenderEffect(null)
+                    imgAvatar?.setRenderEffect(null)
                 }
             }
         }
@@ -756,23 +823,27 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
                 if (resultBitmap != null) {
                     // Display result in avatar
-                    Glide.with(this@WantedEditorActivity)
-                        .load(resultBitmap)
-                        .centerCrop()
-                        .into(binding.imgAvatar)
+                    imgAvatar?.let { imageView ->
+                        Glide.with(this@WantedEditorActivity)
+                            .load(resultBitmap)
+                            .centerCrop()
+                            .into(imageView)
+                    }
 
                     // Load into shadow layer with ShadowTransformation
                     // Shadow will follow the contour of the person (no background)
                     val shadowRadius = 15f
                     val shadowAlpha = 0.8f
-                    Glide.with(this@WantedEditorActivity)
-                        .load(resultBitmap)
-                        .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-                        .into(binding.imgAvatarShadow)
+                    imgAvatarShadow?.let { imageView ->
+                        Glide.with(this@WantedEditorActivity)
+                            .load(resultBitmap)
+                            .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                            .into(imageView)
+                    }
 
                     // Keep shadow enabled - it will follow the contour of the person!
                     binding.seekBarFilterShadow.isEnabled = true
-                    binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
+                    imgAvatarShadow?.visibility = View.VISIBLE
 
                     showToast("Background removed! Shadow follows the person contour.")
                 } else {
@@ -805,15 +876,17 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Both create contour shadow following the object shape!
      */
     private fun applyTemplateShadow(shadowValue: Float) {
+        val shadowView = imgTemplateShadow ?: return
+
         if (shadowValue <= 0) {
-            binding.imgTemplateShadow.visibility = android.view.View.GONE
+            shadowView.visibility = View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                binding.imgTemplateShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
             return
         }
 
-        binding.imgTemplateShadow.visibility = android.view.View.VISIBLE
+        shadowView.visibility = View.VISIBLE
 
         // EXACTLY LIKE Photo Filter: Reload with new transformation parameters
         val shadowRadius = shadowValue / 100f * 15f  // 0-15px blur (SAME as Photo Filter)
@@ -827,22 +900,22 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         Glide.with(this)
             .load(templatePath)
             .transform(ShadowTransformation(shadowRadius, shadowAlpha))
-            .into(binding.imgTemplateShadow)
+            .into(shadowView)
 
         // 1. Alpha - overall shadow visibility (MATCHED with Photo Filter)
         val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
-        binding.imgTemplateShadow.alpha = viewAlpha
+        shadowView.alpha = viewAlpha
 
         // 2. Offset - shadow displacement (MATCHED with Photo Filter)
         val offsetX = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
         val offsetY = shadowValue / 100f * 7f   // 0-7dp (SAME as Photo Filter)
-        binding.imgTemplateShadow.translationX = offsetX
-        binding.imgTemplateShadow.translationY = offsetY
+        shadowView.translationX = offsetX
+        shadowView.translationY = offsetY
 
         // 3. Scale - very minimal to maintain shape accuracy (MATCHED)
         val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0-1.03 (SAME as Photo Filter)
-        binding.imgTemplateShadow.scaleX = scale
-        binding.imgTemplateShadow.scaleY = scale
+        shadowView.scaleX = scale
+        shadowView.scaleY = scale
 
         // 4. Additional blur via RenderEffect (API 31+) for extra softness (MATCHED)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -851,9 +924,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 val blurEffect = RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, Shader.TileMode.CLAMP
                 )
-                binding.imgTemplateShadow.setRenderEffect(blurEffect)
+                shadowView.setRenderEffect(blurEffect)
             } else {
-                binding.imgTemplateShadow.setRenderEffect(null)
+                shadowView.setRenderEffect(null)
             }
         }
     }

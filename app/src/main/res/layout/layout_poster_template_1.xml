@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Template 1: Classic Western - hasName=true -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutPosterContent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Template Background -->
+    <ImageView
+        android:id="@+id/imgTemplate"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/template"
+        app:layout_constraintDimensionRatio="H,3:4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Template Shadow Layer -->
+    <ImageView
+        android:id="@+id/imgTemplateShadow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:layout_constraintDimensionRatio="H,3:4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Avatar Shadow Layer -->
+    <ImageView
+        android:id="@+id/imgAvatarShadow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintWidth_percent="0.76"
+        app:layout_constraintHeight_percent="0.34"
+        app:layout_constraintTop_toTopOf="@id/imgTemplate"
+        app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.45" />
+
+    <!-- Avatar Image: photoLeft=0.12, photoTop=0.28, photoRight=0.88, photoBottom=0.62 -->
+    <ImageView
+        android:id="@+id/imgAvatar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/avatar"
+        app:layout_constraintWidth_percent="0.76"
+        app:layout_constraintHeight_percent="0.34"
+        app:layout_constraintTop_toTopOf="@id/imgTemplate"
+        app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.45" />
+
+    <!-- Name Text: namePositionY=0.68, nameColor=#3D3D3D, nameSize=28sp -->
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_bold"
+        android:text="NAME HERE"
+        android:textColor="#3D3D3D"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/imgTemplate"
+        app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.68" />
+
+    <!-- Bounty Text: bountyPositionY=0.92, bountyColor=#3D3D3D, bountySize=32sp -->
+    <TextView
+        android:id="@+id/tvBounty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_bold"
+        android:text="$2,000,000"
+        android:textColor="#3D3D3D"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/imgTemplate"
+        app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.92" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
