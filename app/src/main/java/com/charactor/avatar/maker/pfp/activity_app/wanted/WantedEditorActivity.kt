@@ -1,5 +1,6 @@
 package com.charactor.avatar.maker.pfp.activity_app.wanted
 
+import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.RenderEffect
@@ -71,7 +72,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             binding.imgTemplateShadow.visibility = android.view.View.GONE
         } else {
             // Already editing: Show elements with current values
-            binding.tvName.visibility = android.view.View.VISIBLE
+            val config = viewModel.getConfig()
+
+            // Show name only if template has name field
+            binding.tvName.visibility = if (config.hasName) android.view.View.VISIBLE else android.view.View.GONE
             binding.tvBounty.visibility = android.view.View.VISIBLE
             binding.imgAvatar.visibility = android.view.View.VISIBLE
 
@@ -84,6 +88,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         setupFontSpinners()
         setupSeekBars()
         setupEditTexts()
+
+        // Apply text colors from template config
+        applyTemplateColors()
     }
 
     override fun viewListener() {
@@ -209,6 +216,32 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     /**
+     * Apply text colors from template config
+     * Each template has specific colors for name and bounty text
+     */
+    private fun applyTemplateColors() {
+        val config = viewModel.getConfig()
+
+        try {
+            // Apply name color
+            if (config.hasName) {
+                binding.tvName.setTextColor(Color.parseColor(config.nameColor))
+            }
+
+            // Apply bounty color
+            binding.tvBounty.setTextColor(Color.parseColor(config.bountyColor))
+
+            // Apply text sizes
+            binding.tvName.textSize = config.nameSize
+            binding.tvBounty.textSize = config.bountySize
+        } catch (e: Exception) {
+            // Fallback to default colors if parsing fails
+            binding.tvName.setTextColor(Color.BLACK)
+            binding.tvBounty.setTextColor(Color.BLACK)
+        }
+    }
+
+    /**
      * Handle reset button - Reset all values to default
      */
     private fun handleReset() {
@@ -303,8 +336,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val text = s?.toString() ?: ""
-                // Show tvName when user starts typing
-                if (text.isNotEmpty()) {
+                // Show tvName when user starts typing (only if template has name field)
+                val config = viewModel.getConfig()
+                if (text.isNotEmpty() && config.hasName) {
                     binding.tvName.visibility = android.view.View.VISIBLE
                 }
                 binding.tvName.text = text

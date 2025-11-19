@@ -101,7 +101,7 @@ object TemplateConfigProvider {
             bountyColor = "#8B0000",
             bountySize = 24f,
             photoLeft = 0.15f,
-            photoTop = 0.25f,
+            photoTop = 0.18f,  // Adjusted from 0.25f
             photoRight = 0.85f,
             photoBottom = 0.78f
         ),
@@ -112,7 +112,7 @@ object TemplateConfigProvider {
             hasName = true,
             nameDefaultText = "NAME HERE",
             namePositionX = 0.5f,
-            namePositionY = 0.52f,
+            namePositionY = 0.58f,  // Adjusted from 0.52f
             nameColor = "#3D3D3D",
             nameSize = 26f,
             hasBounty = true,
@@ -126,7 +126,7 @@ object TemplateConfigProvider {
             photoLeft = 0.20f,
             photoTop = 0.22f,
             photoRight = 0.80f,
-            photoBottom = 0.48f
+            photoBottom = 0.55f  // Adjusted from 0.48f
         ),
 
         // Template 5: Simple with NAME HERE
@@ -135,7 +135,7 @@ object TemplateConfigProvider {
             hasName = true,
             nameDefaultText = "NAME HERE",
             namePositionX = 0.5f,
-            namePositionY = 0.62f,
+            namePositionY = 0.66f,  // Adjusted from 0.62f
             nameColor = "#3D3D3D",
             nameSize = 22f,
             hasBounty = true,
@@ -147,9 +147,9 @@ object TemplateConfigProvider {
             bountyColor = "#3D3D3D",
             bountySize = 20f,
             photoLeft = 0.18f,
-            photoTop = 0.18f,
+            photoTop = 0.15f,  // Adjusted from 0.18f
             photoRight = 0.82f,
-            photoBottom = 0.58f
+            photoBottom = 0.62f  // Adjusted from 0.58f
         ),
 
         // Template 6: One Piece / Marine style
@@ -158,7 +158,7 @@ object TemplateConfigProvider {
             hasName = true,
             nameDefaultText = "NAME HERE",
             namePositionX = 0.5f,
-            namePositionY = 0.72f,
+            namePositionY = 0.76f,  // Adjusted from 0.72f
             nameColor = "#000000",
             nameSize = 24f,
             hasBounty = true,
@@ -166,11 +166,11 @@ object TemplateConfigProvider {
             bountyPrefix = "₿",
             bountySuffix = "-",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.82f,
+            bountyPositionY = 0.84f,  // Adjusted from 0.82f
             bountyColor = "#000000",
             bountySize = 20f,
             photoLeft = 0.15f,
-            photoTop = 0.20f,
+            photoTop = 0.18f,  // Adjusted from 0.20f
             photoRight = 0.85f,
             photoBottom = 0.68f
         ),
@@ -181,7 +181,7 @@ object TemplateConfigProvider {
             hasName = true,
             nameDefaultText = "NAME HERE",
             namePositionX = 0.5f,
-            namePositionY = 0.60f,
+            namePositionY = 0.68f,  // Adjusted from 0.60f
             nameColor = "#5D4E37",
             nameSize = 26f,
             hasBounty = true,
@@ -189,13 +189,13 @@ object TemplateConfigProvider {
             bountyPrefix = "$",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.66f,
+            bountyPositionY = 0.75f,  // Adjusted from 0.66f
             bountyColor = "#5D4E37",
             bountySize = 28f,
             photoLeft = 0.18f,
             photoTop = 0.28f,
             photoRight = 0.82f,
-            photoBottom = 0.56f
+            photoBottom = 0.62f  // Adjusted from 0.56f
         ),
 
         // Template 8: Clean design, no name
@@ -207,13 +207,13 @@ object TemplateConfigProvider {
             bountyPrefix = "$",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.88f,
+            bountyPositionY = 0.90f,  // Adjusted from 0.88f
             bountyColor = "#3D3D3D",
             bountySize = 32f,
             photoLeft = 0.12f,
-            photoTop = 0.30f,
+            photoTop = 0.25f,  // Adjusted from 0.30f
             photoRight = 0.88f,
-            photoBottom = 0.75f
+            photoBottom = 0.72f  // Adjusted from 0.75f
         ),
 
         // Template 9: Parchment red text, no name
@@ -225,11 +225,11 @@ object TemplateConfigProvider {
             bountyPrefix = "$ ",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.90f,
+            bountyPositionY = 0.92f,  // Adjusted from 0.90f
             bountyColor = "#8B4513",
             bountySize = 28f,
             photoLeft = 0.15f,
-            photoTop = 0.28f,
+            photoTop = 0.22f,  // Adjusted from 0.28f
             photoRight = 0.85f,
             photoBottom = 0.78f
         ),
@@ -247,7 +247,7 @@ object TemplateConfigProvider {
             bountyColor = "#5D4037",
             bountySize = 28f,
             photoLeft = 0.15f,
-            photoTop = 0.28f,
+            photoTop = 0.22f,  // Adjusted from 0.28f
             photoRight = 0.85f,
             photoBottom = 0.78f
         ),
@@ -265,7 +265,7 @@ object TemplateConfigProvider {
             bountyColor = "#5D4037",
             bountySize = 32f,
             photoLeft = 0.18f,
-            photoTop = 0.32f,
+            photoTop = 0.28f,  // Adjusted from 0.32f
             photoRight = 0.82f,
             photoBottom = 0.75f
         ),
@@ -279,13 +279,13 @@ object TemplateConfigProvider {
             bountyPrefix = "$",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.82f,
+            bountyPositionY = 0.85f,  // Adjusted from 0.82f
             bountyColor = "#5D4037",
             bountySize = 24f,
             photoLeft = 0.20f,
-            photoTop = 0.30f,
+            photoTop = 0.25f,  // Adjusted from 0.30f
             photoRight = 0.80f,
-            photoBottom = 0.70f
+            photoBottom = 0.72f  // Adjusted from 0.70f
         ),
 
         // Template 13: Retro with double border, no name
@@ -297,11 +297,11 @@ object TemplateConfigProvider {
             bountyPrefix = "$$ ",
             bountySuffix = " $$",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.90f,
+            bountyPositionY = 0.92f,  // Adjusted from 0.90f
             bountyColor = "#8B4513",
             bountySize = 24f,
             photoLeft = 0.15f,
-            photoTop = 0.28f,
+            photoTop = 0.18f,  // Adjusted from 0.28f
             photoRight = 0.85f,
             photoBottom = 0.72f
         ),
@@ -312,7 +312,7 @@ object TemplateConfigProvider {
             hasName = true,
             nameDefaultText = "NAME HERE",
             namePositionX = 0.5f,
-            namePositionY = 0.62f,
+            namePositionY = 0.64f,  // Adjusted from 0.62f
             nameColor = "#3D3D3D",
             nameSize = 26f,
             hasBounty = true,
@@ -320,11 +320,11 @@ object TemplateConfigProvider {
             bountyPrefix = "$ ",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.88f,
+            bountyPositionY = 0.92f,  // Adjusted from 0.88f
             bountyColor = "#3D3D3D",
             bountySize = 24f,
             photoLeft = 0.15f,
-            photoTop = 0.22f,
+            photoTop = 0.18f,  // Adjusted from 0.22f
             photoRight = 0.85f,
             photoBottom = 0.58f
         ),
@@ -338,7 +338,7 @@ object TemplateConfigProvider {
             bountyPrefix = "$ ",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.78f,
+            bountyPositionY = 0.82f,  // Adjusted from 0.78f
             bountyColor = "#F5F5DC",
             bountySize = 32f,
             photoLeft = 0.12f,
@@ -356,11 +356,11 @@ object TemplateConfigProvider {
             bountyPrefix = "$ ",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.68f,
+            bountyPositionY = 0.72f,  // Adjusted from 0.68f
             bountyColor = "#3D2B1F",
             bountySize = 28f,
             photoLeft = 0.22f,
-            photoTop = 0.28f,
+            photoTop = 0.22f,  // Adjusted from 0.28f
             photoRight = 0.78f,
             photoBottom = 0.62f
         )

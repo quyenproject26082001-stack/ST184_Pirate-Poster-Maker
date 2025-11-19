@@ -1,9 +1,12 @@
 package com.charactor.avatar.maker.pfp.activity_app.makescreen
 
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -31,7 +34,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             viewModel.setSelectedImageUri(it)
-            loadImageToPreview(it)
+            // Mark editing started to switch from avatar.png to item.png
+            viewModel.markEditingStarted()
+            // Refresh entire preview with item.png and all elements visible
+            updatePreviewWithCurrentState()
         }
     }
 
@@ -266,18 +272,25 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         // Update template background
         loadTemplateBackground()
 
+        // Apply dynamic positions based on template config
+        applyTemplatePositions()
+
         val isEditing = viewModel.isEditingStarted.value
 
         // Show/hide editable elements based on editing state
         if (isEditing) {
-            // Show all editable elements
-            binding.tvName.visibility = android.view.View.VISIBLE
+            val config = viewModel.getConfig()
+
+            // Show name only if template has name field
+            binding.tvName.visibility = if (config.hasName) android.view.View.VISIBLE else android.view.View.GONE
             binding.tvBounty.visibility = android.view.View.VISIBLE
             binding.imgAvatar.visibility = android.view.View.VISIBLE
             binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
 
-            // Update name
-            binding.tvName.text = viewModel.nameText.value
+            // Update name (only if visible)
+            if (config.hasName) {
+                binding.tvName.text = viewModel.nameText.value
+            }
 
             // Update bounty
             binding.tvBounty.text = viewModel.bountyText.value
@@ -405,6 +418,85 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             } else {
                 binding.imgAvatarShadow.setRenderEffect(null)
             }
+        }
+    }
+
+    /**
+     * Apply template positions dynamically based on config
+     * Called when template changes or when updating preview
+     */
+    private fun applyTemplatePositions() {
+        val config = viewModel.getConfig()
+        val constraintLayout = binding.layoutPosterContent
+
+        // Wait for layout to be measured
+        constraintLayout.post {
+            val parentWidth = constraintLayout.width
+            val parentHeight = constraintLayout.height
+
+            if (parentWidth == 0 || parentHeight == 0) return@post
+
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+
+            // Apply photo/avatar position
+            val photoWidth = ((config.photoRight - config.photoLeft) * parentWidth).toInt()
+            val photoHeight = ((config.photoBottom - config.photoTop) * parentHeight).toInt()
+            val photoMarginTop = (config.photoTop * parentHeight).toInt()
+            val photoMarginStart = (config.photoLeft * parentWidth).toInt()
+
+            // Clear old constraints for imgAvatar
+            constraintSet.clear(R.id.imgAvatar, ConstraintSet.TOP)
+            constraintSet.clear(R.id.imgAvatar, ConstraintSet.START)
+            constraintSet.clear(R.id.imgAvatar, ConstraintSet.END)
+
+            // Apply new constraints
+            constraintSet.constrainWidth(R.id.imgAvatar, photoWidth)
+            constraintSet.constrainHeight(R.id.imgAvatar, photoHeight)
+            constraintSet.connect(R.id.imgAvatar, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, photoMarginTop)
+            constraintSet.connect(R.id.imgAvatar, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, photoMarginStart)
+
+            // Same for avatar shadow
+            constraintSet.clear(R.id.imgAvatarShadow, ConstraintSet.TOP)
+            constraintSet.clear(R.id.imgAvatarShadow, ConstraintSet.START)
+            constraintSet.clear(R.id.imgAvatarShadow, ConstraintSet.END)
+            constraintSet.constrainWidth(R.id.imgAvatarShadow, photoWidth)
+            constraintSet.constrainHeight(R.id.imgAvatarShadow, photoHeight)
+            constraintSet.connect(R.id.imgAvatarShadow, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, photoMarginTop)
+            constraintSet.connect(R.id.imgAvatarShadow, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, photoMarginStart)
+
+            // Apply name position (if has name)
+            if (config.hasName) {
+                val nameMarginTop = (config.namePositionY * parentHeight).toInt()
+                constraintSet.clear(R.id.tvName, ConstraintSet.TOP)
+                constraintSet.clear(R.id.tvName, ConstraintSet.BOTTOM)
+                constraintSet.connect(R.id.tvName, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, nameMarginTop)
+            }
+
+            // Apply bounty position
+            val bountyMarginTop = (config.bountyPositionY * parentHeight).toInt()
+            constraintSet.clear(R.id.tvBounty, ConstraintSet.TOP)
+            constraintSet.clear(R.id.tvBounty, ConstraintSet.BOTTOM)
+            constraintSet.connect(R.id.tvBounty, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, bountyMarginTop)
+
+            // Apply the constraints
+            constraintSet.applyTo(constraintLayout)
+
+            // Apply text colors from config
+            try {
+                if (config.hasName) {
+                    binding.tvName.setTextColor(Color.parseColor(config.nameColor))
+                }
+                binding.tvBounty.setTextColor(Color.parseColor(config.bountyColor))
+            } catch (e: Exception) {
+                // Fallback to default color if parsing fails
+                binding.tvName.setTextColor(Color.BLACK)
+                binding.tvBounty.setTextColor(Color.BLACK)
+            }
+
+            // Apply text sizes from config
+            binding.tvName.textSize = config.nameSize
+            binding.tvBounty.textSize = config.bountySize
         }
     }
 

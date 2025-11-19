@@ -82,8 +82,8 @@
         android:textSize="26sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/btnActionBarLeft"
-        app:layout_constraintEnd_toStartOf="@+id/btnActionBarRight"
-        app:layout_constraintStart_toEndOf="@+id/btnActionBarLeft"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnActionBarLeft" />
 
     <!--    btnActionBarNextToRight-->
@@ -118,9 +118,9 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/img_btn_custom_next"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/btnActionBarRight"
+        app:layout_constraintBottom_toBottomOf="@+id/btnActionBarLeft"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnActionBarRight">
+        app:layout_constraintTop_toTopOf="@+id/btnActionBarLeft">
 
         <TextView
             android:id="@+id/tvRightText"
