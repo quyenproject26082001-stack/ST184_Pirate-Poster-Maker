@@ -30,6 +30,10 @@ class PosterEditorSharedViewModel : ViewModel() {
     private val _hasChanges = MutableStateFlow(false)
     val hasChanges: StateFlow<Boolean> = _hasChanges.asStateFlow()
 
+    // Track if editing has started (switch from avatar.png to item.png)
+    private val _isEditingStarted = MutableStateFlow(false)
+    val isEditingStarted: StateFlow<Boolean> = _isEditingStarted.asStateFlow()
+
     // Section expansion states (UI state for WantedEditorActivity)
     private val _isNameSectionExpanded = MutableStateFlow(false)
     val isNameSectionExpanded: StateFlow<Boolean> = _isNameSectionExpanded.asStateFlow()
@@ -244,6 +248,14 @@ class PosterEditorSharedViewModel : ViewModel() {
         _hasChanges.value = true
     }
 
+    /**
+     * Mark that editing has started (user made first edit)
+     * This switches MakeScreen from avatar.png to item.png display
+     */
+    fun markEditingStarted() {
+        _isEditingStarted.value = true
+    }
+
     fun resetAll() {
         val config = _currentConfig.value
         // Reset to config defaults
@@ -277,6 +289,7 @@ class PosterEditorSharedViewModel : ViewModel() {
         _selectedTemplate.value = 1
         _currentConfig.value = TemplateConfigProvider.getConfig(1)
         _hasChanges.value = false
+        _isEditingStarted.value = false
         resetAll()
         _hasChanges.value = false
     }

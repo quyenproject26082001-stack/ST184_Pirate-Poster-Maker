@@ -59,10 +59,26 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Load template background from assets
         loadTemplateBackground()
 
-        // Data is already in shared ViewModel - no need to receive from Intent
-        // Load current image if exists
-        viewModel.selectedImageUri.value?.let { uri ->
-            loadImageToAvatars(uri)
+        // Check if this is first time entering Editor (no edits yet)
+        val isFirstTime = !viewModel.isEditingStarted.value
+
+        if (isFirstTime) {
+            // First time: Hide all editable elements, show only item.png template
+            binding.tvName.visibility = android.view.View.GONE
+            binding.tvBounty.visibility = android.view.View.GONE
+            binding.imgAvatar.visibility = android.view.View.GONE
+            binding.imgAvatarShadow.visibility = android.view.View.GONE
+            binding.imgTemplateShadow.visibility = android.view.View.GONE
+        } else {
+            // Already editing: Show elements with current values
+            binding.tvName.visibility = android.view.View.VISIBLE
+            binding.tvBounty.visibility = android.view.View.VISIBLE
+            binding.imgAvatar.visibility = android.view.View.VISIBLE
+
+            // Load current image if exists
+            viewModel.selectedImageUri.value?.let { uri ->
+                loadImageToAvatars(uri)
+            }
         }
 
         setupFontSpinners()
@@ -115,6 +131,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         lifecycleScope.launch {
             viewModel.selectedImageUri.collect { uri ->
                 uri?.let {
+                    // Show imgAvatar when user imports an image
+                    binding.imgAvatar.visibility = android.view.View.VISIBLE
                     loadImageToAvatars(it)
                 }
             }
@@ -179,6 +197,12 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private fun handleSave() {
+        // Mark editing as started if user made any changes
+        // This will switch MakeScreen from avatar.png to item.png display
+        if (viewModel.hasChanges.value) {
+            viewModel.markEditingStarted()
+        }
+
         // Data is already in shared ViewModel - MakeScreenActivity will automatically have access
         setResult(RESULT_OK)
         finish()
@@ -278,7 +302,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.edtName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val text = s?.toString() ?: "NAME HERE"
+                val text = s?.toString() ?: ""
+                // Show tvName when user starts typing
+                if (text.isNotEmpty()) {
+                    binding.tvName.visibility = android.view.View.VISIBLE
+                }
                 binding.tvName.text = text
                 viewModel.setNameText(text)
             }
@@ -288,7 +316,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.edtBounty.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val text = s?.toString() ?: "$2,000,000"
+                val text = s?.toString() ?: ""
+                // Show tvBounty when user starts typing
+                if (text.isNotEmpty()) {
+                    binding.tvBounty.visibility = android.view.View.VISIBLE
+                }
                 binding.tvBounty.text = text
                 viewModel.setBountyText(text)
             }

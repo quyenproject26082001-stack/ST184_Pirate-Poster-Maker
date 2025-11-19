@@ -182,12 +182,20 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
     /**
      * Load template background from assets
+     * Uses avatar.png when no edits, item.png after user edits
      */
     private fun loadTemplateBackground() {
         val templateId = viewModel.selectedTemplate.value
-        val templatePath = AssetHelper.getTemplateItemPath(templateId)
+        val isEditing = viewModel.isEditingStarted.value
 
-        android.util.Log.d("MakeScreen", "Loading template: $templateId, path: $templatePath")
+        // Use avatar.png for initial preview, item.png after editing
+        val templatePath = if (isEditing) {
+            AssetHelper.getTemplateItemPath(templateId)
+        } else {
+            AssetHelper.getTemplateAvatarPath(templateId)
+        }
+
+        android.util.Log.d("MakeScreen", "Loading template: $templateId, isEditing: $isEditing, path: $templatePath")
 
         Glide.with(this)
             .load(templatePath)
@@ -258,20 +266,38 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         // Update template background
         loadTemplateBackground()
 
-        // Update name
-        binding.tvName.text = viewModel.nameText.value
+        val isEditing = viewModel.isEditingStarted.value
 
-        // Update bounty
-        binding.tvBounty.text = viewModel.bountyText.value
+        // Show/hide editable elements based on editing state
+        if (isEditing) {
+            // Show all editable elements
+            binding.tvName.visibility = android.view.View.VISIBLE
+            binding.tvBounty.visibility = android.view.View.VISIBLE
+            binding.imgAvatar.visibility = android.view.View.VISIBLE
+            binding.imgAvatarShadow.visibility = android.view.View.VISIBLE
 
-        // Update image if exists, otherwise show default avatar
-        viewModel.selectedImageUri.value?.let { uri ->
-            loadImageToPreview(uri)
-        } ?: loadDefaultAvatar()
+            // Update name
+            binding.tvName.text = viewModel.nameText.value
 
-        // Update shadows
-        applyPosterShadow(viewModel.posterShadow.value)
-        applyPhotoShadow(viewModel.filterShadow.value)
+            // Update bounty
+            binding.tvBounty.text = viewModel.bountyText.value
+
+            // Update image if exists, otherwise show default avatar
+            viewModel.selectedImageUri.value?.let { uri ->
+                loadImageToPreview(uri)
+            } ?: loadDefaultAvatar()
+
+            // Update shadows
+            applyPosterShadow(viewModel.posterShadow.value)
+            applyPhotoShadow(viewModel.filterShadow.value)
+        } else {
+            // Hide all editable elements - show only avatar.png preview
+            binding.tvName.visibility = android.view.View.GONE
+            binding.tvBounty.visibility = android.view.View.GONE
+            binding.imgAvatar.visibility = android.view.View.GONE
+            binding.imgAvatarShadow.visibility = android.view.View.GONE
+            binding.imgTemplateShadow.visibility = android.view.View.GONE
+        }
     }
 
     /**

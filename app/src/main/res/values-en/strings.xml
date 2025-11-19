@@ -79,4 +79,7 @@
     <string name="templates">Templates</string>
     <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
     <string name="posterwantedmaker">Poster Wanted\nMaker</string>
+    <string name="bounty">Bounty</string>
+    <string name="photo_filter">Photo Filter</string>
+    <string name="poster_shadow">Poster Shadow</string>
 </resources>

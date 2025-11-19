@@ -143,6 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="16dp"
+                android:visibility="gone"
                 android:background="@drawable/img_btn_bottom">
 
                 <TextView
@@ -161,7 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="12dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:background="@drawable/img_btn_bottom">
 
                 <TextView
@@ -179,6 +180,7 @@
                 android:id="@+id/btnReset"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:visibility="gone"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/img_btn_bottom">
 
@@ -196,10 +198,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardBackgroundColor="#FFF8E7"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FFF4E6"
+           >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -219,18 +220,17 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:fontFamily="@font/roboto_bold"
+                            android:fontFamily="@font/kurale_regular"
                             android:text="Name"
-                            android:textColor="#B8860B"
+                            android:textColor="#C4561B"
                             android:textSize="20sp" />
 
                         <ImageView
                             android:id="@+id/imgNameArrow"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_back"
-                            android:rotation="270"
-                            app:tint="#B8860B" />
+                            android:src="@drawable/ic_down"
+                          />
                     </LinearLayout>
 
                     <!-- Name Content -->
@@ -305,10 +305,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#FFF8E7"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="#FFF4E6"
+            >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -328,18 +327,17 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:fontFamily="@font/roboto_bold"
-                            android:text="Bounty"
-                            android:textColor="#B8860B"
+                            android:fontFamily="@font/kurale_regular"
+                            android:text="@string/bounty"
+                            android:textColor="#C4561B"
                             android:textSize="20sp" />
 
                         <ImageView
                             android:id="@+id/imgBountyArrow"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_back"
-                            android:rotation="270"
-                            app:tint="#B8860B" />
+                            android:src="@drawable/ic_down"
+                        />
                     </LinearLayout>
 
                     <!-- Bounty Content -->
@@ -469,10 +467,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#FFF8E7"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="#FFF4E6"
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -492,18 +489,17 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:fontFamily="@font/roboto_bold"
-                            android:text="Photo Filter"
-                            android:textColor="#B8860B"
+                            android:fontFamily="@font/kurale_regular"
+                            android:text="@string/photo_filter"
+                            android:textColor="#C4561B"
                             android:textSize="20sp" />
 
                         <ImageView
                             android:id="@+id/imgPhotoFilterArrow"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_back"
-                            android:rotation="270"
-                            app:tint="#B8860B" />
+                            android:src="@drawable/ic_down"
+                            />
                     </LinearLayout>
 
                     <!-- Photo Filter Content -->
@@ -665,10 +661,8 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#FFF8E7"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="#FFF4E6">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -688,18 +682,17 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:fontFamily="@font/roboto_bold"
-                            android:text="Poster Shadow"
-                            android:textColor="#B8860B"
+                            android:fontFamily="@font/kurale_regular"
+                            android:text="@string/poster_shadow"
+                            android:textColor="#C4561B"
                             android:textSize="20sp" />
 
                         <ImageView
                             android:id="@+id/imgPosterShadowArrow"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_back"
-                            android:rotation="270"
-                            app:tint="#B8860B" />
+                            android:src="@drawable/ic_down"
+                            />
                     </LinearLayout>
 
                     <!-- Poster Shadow Content -->
