@@ -72,7 +72,7 @@ class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
             TemplateItem(id, "Template $id")
         }
 
-        adapter = TemplateAdapter(templates) { templateId ->
+        adapter = TemplateAdapter(templates, selectedTemplateId) { templateId ->
             selectedTemplateId = templateId
         }
 
@@ -84,7 +84,11 @@ class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvTemplates)
 
-        // Add scroll listener for zoom effect
+        // Scroll to current selected template
+        val initialPosition = selectedTemplateId - 1  // templateId starts at 1
+        binding.rvTemplates.scrollToPosition(initialPosition)
+
+        // Add scroll listener for zoom effect and auto-selection
         binding.rvTemplates.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -95,6 +99,8 @@ class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     scaleMiddleItem(recyclerView)
+                    // Auto-select centered item when scroll stops
+                    updateSelectedTemplateFromCenter(recyclerView, snapHelper)
                 }
             }
         })
@@ -102,6 +108,24 @@ class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
         // Initial scale
         binding.rvTemplates.post {
             scaleMiddleItem(binding.rvTemplates)
+        }
+    }
+
+    /**
+     * Update selectedTemplateId based on the centered/snapped item
+     */
+    private fun updateSelectedTemplateFromCenter(recyclerView: RecyclerView, snapHelper: LinearSnapHelper) {
+        val layoutManager = recyclerView.layoutManager ?: return
+        val snappedView = snapHelper.findSnapView(layoutManager) ?: return
+        val position = layoutManager.getPosition(snappedView)
+
+        // Template ID is position + 1 (since positions are 0-indexed)
+        val newTemplateId = position + 1
+
+        if (selectedTemplateId != newTemplateId) {
+            selectedTemplateId = newTemplateId
+            // Update adapter visual selection using efficient method
+            adapter.setSelectedPosition(position)
         }
     }
 

@@ -256,8 +256,33 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         val templateId = viewModel.selectedTemplate.value
         val templatePath = AssetHelper.getTemplateItemPath(templateId)
 
+        android.util.Log.d("MakeScreen", "Loading template: $templateId, path: $templatePath")
+
         Glide.with(this)
             .load(templatePath)
+            .error(R.drawable.template)
+            .listener(object : com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable> {
+                override fun onLoadFailed(
+                    e: com.bumptech.glide.load.engine.GlideException?,
+                    model: Any?,
+                    target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    android.util.Log.e("MakeScreen", "FAILED to load template: $templatePath", e)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: android.graphics.drawable.Drawable,
+                    model: Any,
+                    target: com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable>?,
+                    dataSource: com.bumptech.glide.load.DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    android.util.Log.d("MakeScreen", "SUCCESS loaded template: $templatePath")
+                    return false
+                }
+            })
             .into(binding.imgTemplate)
     }
 

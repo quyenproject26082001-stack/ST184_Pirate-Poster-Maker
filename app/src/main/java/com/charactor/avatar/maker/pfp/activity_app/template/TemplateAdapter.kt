@@ -9,10 +9,11 @@ import com.charactor.avatar.maker.pfp.databinding.ItemTemplateBinding
 
 class TemplateAdapter(
     private val templates: List<TemplateItem>,
+    private val initialSelectedId: Int = 1,
     private val onItemSelected: (Int) -> Unit
 ) : RecyclerView.Adapter<TemplateAdapter.TemplateViewHolder>() {
 
-    private var selectedPosition = 0
+    private var selectedPosition = templates.indexOfFirst { it.id == initialSelectedId }.coerceAtLeast(0)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TemplateViewHolder {
         val binding = ItemTemplateBinding.inflate(
@@ -32,6 +33,18 @@ class TemplateAdapter(
     fun getSelectedPosition(): Int = selectedPosition
 
     fun getSelectedTemplateId(): Int = templates[selectedPosition].id
+
+    /**
+     * Set selected position from outside (e.g., when scroll stops)
+     */
+    fun setSelectedPosition(position: Int) {
+        if (position in templates.indices && position != selectedPosition) {
+            val oldPosition = selectedPosition
+            selectedPosition = position
+            notifyItemChanged(oldPosition)
+            notifyItemChanged(selectedPosition)
+        }
+    }
 
     inner class TemplateViewHolder(
         private val binding: ItemTemplateBinding
