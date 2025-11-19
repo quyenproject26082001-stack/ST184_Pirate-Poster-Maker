@@ -7,9 +7,9 @@
     <string name="next">Next</string>
     <string name="language">Language</string>
 
-    <string name="title_1">Create Your Own Avatar However You Like</string>
-    <string name="title_2">Variety Of Unique Category</string>
-    <string name="title_3">Diverse Characters Style</string>
+    <string name="title_1">Become a real pirate</string>
+    <string name="title_2">Surreal pirate style</string>
+    <string name="title_3">Create a wanted poster with a huge bounty</string>
 
     <string name="permission">Permission</string>
     <string name="storage">Storage</string>
@@ -58,6 +58,7 @@
     <string name="please_check_your_internet">Please check your internet</string>
     <string name="please_select_an_image">Please select an image</string>
     <string name="error">Error</string>
+
     <string name="an_error_occurred">An error occurred, please try again later.</string>
     <string name="image_has_been_saved_successfully">Image has been saved successfully!</string>
     <string name="save">Save</string>
@@ -72,6 +73,10 @@
     <string name="are_you_sure_you_want_to_delete_the_image">Are you sure you want to delete the image?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">Haven’t saved it yet, do you want to exit?</string>
     <string name="change_your_whole_design_are_you_sure">Do you want to reset all?</string>
-    <string name="character_maker">Character Maker</string>
+    <string name="character_maker">Poster Wanted \nMaker</string>
     <string name="no_item_here">No Item Here</string>
+    <string name="import_">Import</string>
+    <string name="templates">Templates</string>
+    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
+    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
 </resources>

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_bg_app"/>
+        android:src="@drawable/img_bg_language"/>
 
     <!-- layoutActionBar -->
     <FrameLayout
@@ -68,11 +68,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:layout_weight="8"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/kurale_regular"
                     android:gravity="center_vertical"
                     android:text="@string/language"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textColor="#C4561B"
+                    android:textSize="16sp" />
 
                 <FrameLayout
                     android:layout_width="0dp"
@@ -93,7 +93,7 @@
                 android:id="@+id/btnRate"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_100_stroke_white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -118,11 +118,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:layout_weight="8"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/kurale_regular"
                     android:gravity="center_vertical"
                     android:text="@string/rate_us"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textColor="#C4561B"
+                    android:textSize="16sp" />
 
                 <FrameLayout
                     android:layout_width="0dp"
@@ -142,7 +142,7 @@
                 android:id="@+id/btnShare"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_100_stroke_white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -167,11 +167,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:layout_weight="8"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/kurale_regular"
                     android:gravity="center_vertical"
                     android:text="@string/share_app"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textColor="#C4561B"
+                    android:textSize="16sp" />
 
                 <FrameLayout
                     android:layout_width="0dp"
@@ -191,7 +191,7 @@
                 android:id="@+id/btnPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/bg_100_stroke_white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -216,10 +216,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
                     android:layout_weight="8"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/kurale_regular"
                     android:gravity="center_vertical"
                     android:text="@string/privacy_policy"
-                    android:textColor="@color/white"
+                    android:textColor="#C4561B"
                     android:textSize="14sp" />
 
                 <FrameLayout

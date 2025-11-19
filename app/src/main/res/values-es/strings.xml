@@ -74,4 +74,8 @@
     <string name="change_your_whole_design_are_you_sure">¿Deseas restablecer todo?</string>
     <string name="character_maker">Creador de personajes</string>
     <string name="no_item_here">No hay elementos aquí</string>
+    <string name="import_">Import</string>
+    <string name="templates">Templates</string>
+    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
+    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
 </resources>

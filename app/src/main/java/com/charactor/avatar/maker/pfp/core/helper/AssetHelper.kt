@@ -193,4 +193,22 @@ object AssetHelper {
             LayerModel(image = file, isMoreColors = true, listColor = colorList[index])
         }.toCollection(ArrayList())
     }
+
+    /**
+     * Get template item (background) asset path for Glide
+     * @param templateId: 1-16
+     * @return: "file:///android_asset/template/{templateId}/item.png"
+     */
+    fun getTemplateItemPath(templateId: Int): String {
+        return "file:///android_asset/template/$templateId/item.png"
+    }
+
+    /**
+     * Get template avatar (default avatar) asset path for Glide
+     * @param templateId: 1-16
+     * @return: "file:///android_asset/template/{templateId}/avatar.png"
+     */
+    fun getTemplateAvatarPath(templateId: Int): String {
+        return "file:///android_asset/template/$templateId/avatar.png"
+    }
 }

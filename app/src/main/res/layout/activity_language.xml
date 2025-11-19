@@ -5,13 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity_app.language.LanguageActivity">
+    tools:context=".activity_app.language.LanguageActivity"
+    >
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_bg_app" />
+        android:src="@drawable/img_bg_language" />
 
     <!-- layoutActionBar -->
     <FrameLayout

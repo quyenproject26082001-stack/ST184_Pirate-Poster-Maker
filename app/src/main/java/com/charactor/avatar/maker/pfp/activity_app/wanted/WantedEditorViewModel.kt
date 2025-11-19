@@ -2,15 +2,25 @@ package com.charactor.avatar.maker.pfp.activity_app.wanted
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.charactor.avatar.maker.pfp.data.model.TemplateConfig
+import com.charactor.avatar.maker.pfp.data.model.TemplateConfigProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class WantedEditorViewModel : ViewModel() {
 
+    // Current template configuration
+    private val _currentConfig = MutableStateFlow(TemplateConfigProvider.getConfig(1))
+    val currentConfig: StateFlow<TemplateConfig> = _currentConfig.asStateFlow()
+
     // Image URI
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri.asStateFlow()
+
+    // Selected template (1-16)
+    private val _selectedTemplate = MutableStateFlow(1)
+    val selectedTemplate: StateFlow<Int> = _selectedTemplate.asStateFlow()
 
     // Section expansion states
     private val _isNameSectionExpanded = MutableStateFlow(false)
@@ -90,6 +100,27 @@ class WantedEditorViewModel : ViewModel() {
     fun setSelectedImageUri(uri: Uri) {
         _selectedImageUri.value = uri
     }
+
+    fun setSelectedTemplate(template: Int) {
+        _selectedTemplate.value = template
+        _currentConfig.value = TemplateConfigProvider.getConfig(template)
+        // Initialize values from config
+        initFromConfig()
+    }
+
+    /**
+     * Initialize values from current template config
+     */
+    fun initFromConfig() {
+        val config = _currentConfig.value
+        _nameText.value = config.nameDefaultText
+        _bountyText.value = "${config.bountyPrefix}${config.bountyDefaultText}${config.bountySuffix}"
+    }
+
+    /**
+     * Get current template config
+     */
+    fun getConfig(): TemplateConfig = _currentConfig.value
 
     fun toggleNameSection() {
         _isNameSectionExpanded.value = !_isNameSectionExpanded.value
@@ -184,12 +215,14 @@ class WantedEditorViewModel : ViewModel() {
     }
 
     fun resetAll() {
-        _nameText.value = "NAME HERE"
+        val config = _currentConfig.value
+        // Reset to config defaults
+        _nameText.value = config.nameDefaultText
         _nameFont.value = "Old Town"
         _nameSpacing.value = 0f
-        _bountyText.value = "$2,000,000"
+        _bountyText.value = "${config.bountyPrefix}${config.bountyDefaultText}${config.bountySuffix}"
         _bountyFont.value = "Old Town"
-        _bountySize.value = 24f
+        _bountySize.value = config.bountySize
         _bountyWeight.value = 400f
         _bountySpacing.value = 0f
         _bountyPositionX.value = 0f

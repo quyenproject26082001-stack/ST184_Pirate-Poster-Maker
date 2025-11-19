@@ -5,7 +5,7 @@
         android:id="@+id/flOutSide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80545454">
+        >
         <!--        layoutMain-->
         <LinearLayout
             android:id="@+id/layoutMain"

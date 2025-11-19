@@ -74,4 +74,8 @@
     <string name="change_your_whole_design_are_you_sure">क्या आप सब कुछ रीसेट करना चाहते हैं?</string>
     <string name="character_maker">कैरेक्टर मेकर</string>
     <string name="no_item_here">यहाँ कोई आइटम नहीं है</string>
+    <string name="import_">Import</string>
+    <string name="templates">Templates</string>
+    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
+    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
 </resources>

@@ -20,6 +20,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.*
+import com.charactor.avatar.maker.pfp.core.helper.AssetHelper
 import com.charactor.avatar.maker.pfp.core.helper.BackgroundRemovalHelper
 import com.charactor.avatar.maker.pfp.core.helper.BitmapHelper
 import com.charactor.avatar.maker.pfp.core.helper.ShadowTransformation
@@ -54,6 +55,12 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     override fun initView() {
+        // Load template background from assets
+        loadTemplateBackground()
+
+        // Receive data from MakeScreen if coming from Edit
+        receiveDataFromIntent()
+
         setupFontSpinners()
         setupSeekBars()
         setupEditTexts()
@@ -65,6 +72,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             actionBar.apply {
                 btnActionBarLeft.setOnSingleClick { handleBackLeftToRight() }
                 btnActionBarRight.setOnSingleClick { handleSave() }
+                btnActionBarReset.setOnSingleClick { handleReset() }
             }
 
             // Import photo button
@@ -96,11 +104,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             layoutPosterShadowHeader.setOnSingleClick {
                 viewModel.togglePosterShadowSection()
             }
-
-            // Reset button
-            btnReset.setOnSingleClick {
-                viewModel.resetAll()
-            }
         }
     }
 
@@ -113,16 +116,33 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             }
         }
 
+        // Observe template config changes to show/hide sections
+        lifecycleScope.launch {
+            viewModel.currentConfig.collect { config ->
+                // Show/hide Name section based on template config
+                binding.layoutNameHeader.visibility = if (config.hasName) android.view.View.VISIBLE else android.view.View.GONE
+                binding.layoutNameContent.visibility = android.view.View.GONE
+
+                // Show/hide Bounty section based on template config
+                binding.layoutBountyHeader.visibility = if (config.hasBounty) android.view.View.VISIBLE else android.view.View.GONE
+                binding.layoutBountyContent.visibility = android.view.View.GONE
+            }
+        }
+
         lifecycleScope.launch {
             viewModel.isNameSectionExpanded.collect { isExpanded ->
-                binding.layoutNameContent.visibility = if (isExpanded) android.view.View.VISIBLE else android.view.View.GONE
+                // Only show content if section is expanded AND template has name
+                val config = viewModel.getConfig()
+                binding.layoutNameContent.visibility = if (isExpanded && config.hasName) android.view.View.VISIBLE else android.view.View.GONE
                 binding.imgNameArrow.rotation = if (isExpanded) 180f else 0f
             }
         }
 
         lifecycleScope.launch {
             viewModel.isBountySectionExpanded.collect { isExpanded ->
-                binding.layoutBountyContent.visibility = if (isExpanded) android.view.View.VISIBLE else android.view.View.GONE
+                // Only show content if section is expanded AND template has bounty
+                val config = viewModel.getConfig()
+                binding.layoutBountyContent.visibility = if (isExpanded && config.hasBounty) android.view.View.VISIBLE else android.view.View.GONE
                 binding.imgBountyArrow.rotation = if (isExpanded) 180f else 0f
             }
         }
@@ -147,15 +167,174 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             btnActionBarLeft.setImageResource(R.drawable.ic_back)
             btnActionBarLeft.visible()
             tvCenter.text = strings(R.string.wanted_poster_maker)
-            tvCenter.visible()
+            tvCenter.gone()
+            btnActionBarReset.visible()
             btnActionBarRight.setImageResource(R.drawable.ic_done)
             btnActionBarRight.visible()
         }
     }
 
     private fun handleSave() {
-        // TODO: Implement save functionality
-        showToast("Saving poster...")
+        // Pack all edited data and return to MakeScreen
+        val resultIntent = android.content.Intent().apply {
+            // Image URI
+            viewModel.selectedImageUri.value?.let { uri ->
+                putExtra("imageUri", uri.toString())
+            }
+
+            // Text data
+            putExtra("nameText", viewModel.nameText.value)
+            putExtra("bountyText", viewModel.bountyText.value)
+            putExtra("selectedTemplate", viewModel.selectedTemplate.value)
+
+            // Filter values
+            putExtra("filterBrightness", viewModel.filterBrightness.value)
+            putExtra("filterContrast", viewModel.filterContrast.value)
+            putExtra("filterSaturate", viewModel.filterSaturate.value)
+            putExtra("filterGrayscale", viewModel.filterGrayscale.value)
+            putExtra("filterHueRotate", viewModel.filterHueRotate.value)
+            putExtra("filterSepia", viewModel.filterSepia.value)
+            putExtra("filterBlur", viewModel.filterBlur.value)
+            putExtra("filterShadow", viewModel.filterShadow.value)
+            putExtra("posterShadow", viewModel.posterShadow.value)
+
+            // Name properties
+            putExtra("nameFont", viewModel.nameFont.value)
+            putExtra("nameSpacing", viewModel.nameSpacing.value)
+
+            // Bounty properties
+            putExtra("bountySize", viewModel.bountySize.value)
+            putExtra("bountyWeight", viewModel.bountyWeight.value)
+            putExtra("bountySpacing", viewModel.bountySpacing.value)
+            putExtra("bountyPositionX", viewModel.bountyPositionX.value)
+            putExtra("bountyPositionY", viewModel.bountyPositionY.value)
+        }
+
+        setResult(RESULT_OK, resultIntent)
+        finish()
+    }
+
+    /**
+     * Handle reset button - Reset all values to default
+     */
+    private fun handleReset() {
+        // Reset ViewModel data
+        viewModel.resetAll()
+
+        // Reset UI components to match default values
+        binding.apply {
+            // Reset EditTexts
+            edtName.setText("NAME HERE")
+            edtBounty.setText("$2,000,000")
+
+            // Reset TextViews (will be updated by EditText listeners)
+            tvName.text = "NAME HERE"
+            tvBounty.text = "$2,000,000"
+
+            // Reset Name section
+            spinnerNameFont.setSelection(0) // First font
+            seekBarNameSpacing.progress = 0
+            tvName.letterSpacing = 0f
+
+            // Reset Bounty section
+            seekBarBountySize.progress = 25 // Default 24f maps to ~25% progress
+            seekBarBountyWeight.progress = 0
+            seekBarBountySpacing.progress = 0
+            seekBarBountyPositionX.progress = 50 // Center (0f offset)
+            seekBarBountyPositionY.progress = 50 // Center (0f offset)
+            tvBounty.textSize = 24f
+            tvBounty.letterSpacing = 0f
+            tvBounty.translationX = 0f
+            tvBounty.translationY = 0f
+
+            // Reset Photo Filter section
+            seekBarFilterShadow.progress = 0
+            seekBarFilterBlur.progress = 0
+            seekBarFilterBrightness.progress = 100 // 1f = 100%
+            seekBarFilterContrast.progress = 100 // 1f = 100%
+            seekBarFilterGrayscale.progress = 0
+            seekBarFilterHueRotate.progress = 0
+            seekBarFilterSaturate.progress = 100 // 1f = 100%
+            seekBarFilterSepia.progress = 0
+
+            // Reset Poster Shadow section
+            seekBarPosterShadow.progress = 0
+
+            // Apply filter reset
+            imgAvatar.colorFilter = null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                imgAvatar.setRenderEffect(null)
+            }
+
+            // Reset shadow effects
+            applyShadowEffect(0f)
+            applyTemplateShadow(0f)
+        }
+
+        showToast("Reset to default values")
+    }
+
+    /**
+     * Load template background from assets
+     */
+    private fun loadTemplateBackground() {
+        val templateId = viewModel.selectedTemplate.value
+        val templatePath = AssetHelper.getTemplateItemPath(templateId)
+
+        Glide.with(this)
+            .load(templatePath)
+            .into(binding.imgTemplate)
+    }
+
+    /**
+     * Receive data from MakeScreen when coming from Edit button
+     */
+    private fun receiveDataFromIntent() {
+        intent?.let { intentData ->
+            // Image URI
+            intentData.getStringExtra("imageUri")?.let { uriString ->
+                val uri = Uri.parse(uriString)
+                viewModel.setSelectedImageUri(uri)
+                loadImageToAvatars(uri)
+            }
+
+            // Text data
+            intentData.getStringExtra("nameText")?.let { text ->
+                viewModel.setNameText(text)
+            }
+
+            intentData.getStringExtra("bountyText")?.let { text ->
+                viewModel.setBountyText(text)
+            }
+
+            // Template
+            val template = intentData.getIntExtra("selectedTemplate", 1)
+            viewModel.setSelectedTemplate(template)
+
+            // Filter values
+            viewModel.setFilterBrightness(intentData.getFloatExtra("filterBrightness", 1f))
+            viewModel.setFilterContrast(intentData.getFloatExtra("filterContrast", 1f))
+            viewModel.setFilterSaturate(intentData.getFloatExtra("filterSaturate", 1f))
+            viewModel.setFilterGrayscale(intentData.getFloatExtra("filterGrayscale", 0f))
+            viewModel.setFilterHueRotate(intentData.getFloatExtra("filterHueRotate", 0f))
+            viewModel.setFilterSepia(intentData.getFloatExtra("filterSepia", 0f))
+            viewModel.setFilterBlur(intentData.getFloatExtra("filterBlur", 0f))
+            viewModel.setFilterShadow(intentData.getFloatExtra("filterShadow", 0f))
+            viewModel.setPosterShadow(intentData.getFloatExtra("posterShadow", 0f))
+
+            // Name properties
+            intentData.getStringExtra("nameFont")?.let { font ->
+                viewModel.setNameFont(font)
+            }
+            viewModel.setNameSpacing(intentData.getFloatExtra("nameSpacing", 0.1f))
+
+            // Bounty properties
+            viewModel.setBountySize(intentData.getFloatExtra("bountySize", 28f))
+            viewModel.setBountyWeight(intentData.getFloatExtra("bountyWeight", 0f))
+            viewModel.setBountySpacing(intentData.getFloatExtra("bountySpacing", 0f))
+            viewModel.setBountyPositionX(intentData.getFloatExtra("bountyPositionX", 0f))
+            viewModel.setBountyPositionY(intentData.getFloatExtra("bountyPositionY", 0f))
+        }
     }
 
     private fun setupFontSpinners() {
@@ -655,10 +834,13 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         val shadowRadius = shadowValue / 100f * 15f  // 0-15px blur (SAME as Photo Filter)
         val shadowAlpha = shadowValue / 100f * 0.9f   // Dynamic alpha
 
-        // Load template drawable with ShadowTransformation
+        // Load template from assets with ShadowTransformation
         // This creates shadow following the template's alpha channel/contour
+        val templateId = viewModel.selectedTemplate.value
+        val templatePath = AssetHelper.getTemplateItemPath(templateId)
+
         Glide.with(this)
-            .load(R.drawable.template)
+            .load(templatePath)
             .transform(ShadowTransformation(shadowRadius, shadowAlpha))
             .into(binding.imgTemplateShadow)
 

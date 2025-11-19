@@ -34,6 +34,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         } else {
             Intent(this, IntroActivity::class.java)
         }
+
+        // Start rotation animation for loading icon
+        val rotateAnimation = android.view.animation.AnimationUtils.loadAnimation(this, com.charactor.avatar.maker.pfp.R.anim.rotate_loading)
+        binding.imvLoading.startAnimation(rotateAnimation)
+
         initNetworkMonitor()
         dataViewModel.ensureData(this)
     }

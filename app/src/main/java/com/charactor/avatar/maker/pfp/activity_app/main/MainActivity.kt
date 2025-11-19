@@ -15,6 +15,7 @@ import com.charactor.avatar.maker.pfp.core.utils.key.ValueKey
 import com.charactor.avatar.maker.pfp.core.utils.state.RateState
 import com.charactor.avatar.maker.pfp.databinding.ActivityHomeBinding
 import com.charactor.avatar.maker.pfp.activity_app.SettingsActivity
+import com.charactor.avatar.maker.pfp.core.extensions.gone
 
 import com.charactor.avatar.maker.pfp.core.extensions.setOnSingleClick
 import com.charactor.avatar.maker.pfp.core.extensions.strings
@@ -39,7 +40,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         binding.apply {
             actionBar.btnActionBarRight.setOnSingleClick { startIntentRightToLeft(SettingsActivity::class.java) }
             btnCreate.setOnSingleClick {
-                startIntentRightToLeft(com.charactor.avatar.maker.pfp.activity_app.wanted.WantedEditorActivity::class.java)
+                startIntentRightToLeft(com.charactor.avatar.maker.pfp.activity_app.makescreen.MakeScreenActivity::class.java)
             }
         }
     }
@@ -51,10 +52,10 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
     override fun initActionBar() {
         binding.actionBar.apply {
-            cvLogo.visible()
+            cvLogo.gone()
             tvCenter.text = strings(R.string.character_maker)
-            tvCenter.select()
-            tvCenter.visible()
+            tvCenter.gone()
+            tvCenter.gone()
             btnActionBarRight.setImageResource(R.drawable.ic_settings)
             btnActionBarRight.visible()
         }

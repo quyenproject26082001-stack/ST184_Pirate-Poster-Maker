@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_bg_app"/>
+        android:src="@drawable/img_bg_language"/>
 
     <!--    layoutActionBar-->
     <FrameLayout
@@ -24,14 +24,23 @@
             android:id="@+id/actionBar"
             layout="@layout/layout_actionbar" />
     </FrameLayout>
-
+    
+    <ImageView
+        android:id="@+id/titleHome"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:layout_constraintDimensionRatio="360:120"
+        android:src="@drawable/img_home_title"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
+        />
+    
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
+        app:layout_constraintTop_toBottomOf="@id/titleHome">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,19 +64,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:weightSum="328">
+                    android:weightSum="2">
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
 
                     <TextView
                         android:id="@+id/tv1"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="13dp"
-                        android:layout_weight="198"
-                        android:fontFamily="@font/toruksc_regular"
+                        android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
-                        android:text="@string/character_maker"
+                        android:text="@string/posterwantedmaker"
                         android:textColor="@color/white"
                         android:textSize="30sp" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -88,24 +104,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:weightSum="328">
+                    android:weightSum="2">
 
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="131" />
+                        android:layout_weight="1" />
 
                     <TextView
                         android:id="@+id/tv2"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="17dp"
-                        android:layout_weight="197"
-                        android:fontFamily="@font/toruksc_regular"
+                        android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
-                        android:text="@string/my_creation"
+                        android:text="@string/posterwantedtemplates"
+                        android:layout_weight="0"
                         android:textColor="@color/white"
                         android:textSize="30sp" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
                 </LinearLayout>
             </FrameLayout>
 
@@ -120,30 +139,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/img_home_2" />
+                    android:src="@drawable/img_home_3" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:weightSum="328">
+                    android:weightSum="2">
 
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="131" />
+                        android:layout_weight="1" />
 
                     <TextView
                         android:id="@+id/tv3"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="17dp"
-                        android:layout_weight="197"
-                        android:fontFamily="@font/toruksc_regular"
+                        android:layout_weight="0"
+                        android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
-                        android:text="Random"
+                        android:text="My Design"
                         android:textColor="@color/white"
                         android:textSize="30sp" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

@@ -74,4 +74,8 @@
     <string name="change_your_whole_design_are_you_sure">Apakah kamu ingin mengatur ulang semuanya?</string>
     <string name="character_maker">Pembuat Karakter</string>
     <string name="no_item_here">Tidak ada item di sini</string>
+    <string name="import_">Import</string>
+    <string name="templates">Templates</string>
+    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
+    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
 </resources>
