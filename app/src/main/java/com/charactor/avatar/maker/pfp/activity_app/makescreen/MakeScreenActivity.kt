@@ -4,8 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -16,6 +14,7 @@ import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.*
 import com.charactor.avatar.maker.pfp.core.helper.AssetHelper
 import com.charactor.avatar.maker.pfp.core.helper.ShadowTransformation
+import com.charactor.avatar.maker.pfp.core.viewmodel.PosterEditorSharedViewModel
 import com.charactor.avatar.maker.pfp.databinding.ActivityMakeScreenBinding
 import kotlinx.coroutines.launch
 
@@ -26,7 +25,8 @@ import kotlinx.coroutines.launch
  */
 class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
-    private val viewModel: MakeScreenViewModel by viewModels()
+    // Use shared ViewModel for data binding with WantedEditorActivity
+    private val viewModel = PosterEditorSharedViewModel.getInstance()
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -35,13 +35,11 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         }
     }
 
-    // Request code for Edit button (to receive edited data back)
+    // Request code for Edit button (data is shared via ViewModel)
     private val editActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
-            result.data?.let { data ->
-                // Extract data and update ViewModel
-                handleEditedData(data)
-            }
+            // Data is already updated in shared ViewModel, just refresh UI
+            updatePreviewWithCurrentState()
         }
     }
 
@@ -174,79 +172,12 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     }
 
     /**
-     * Navigate to WantedEditorActivity with current data
+     * Navigate to WantedEditorActivity
+     * Data is shared via PosterEditorSharedViewModel - no Intent extras needed
      */
     private fun navigateToEditor() {
-        val intent = Intent(this, WantedEditorActivity::class.java).apply {
-            // Pass current data to editor
-            viewModel.selectedImageUri.value?.let { uri ->
-                putExtra("imageUri", uri.toString())
-            }
-            putExtra("nameText", viewModel.nameText.value)
-            putExtra("bountyText", viewModel.bountyText.value)
-            putExtra("selectedTemplate", viewModel.selectedTemplate.value)
-
-            // Pass filter values
-            putExtra("filterBrightness", viewModel.filterBrightness.value)
-            putExtra("filterContrast", viewModel.filterContrast.value)
-            putExtra("filterSaturate", viewModel.filterSaturate.value)
-            putExtra("filterGrayscale", viewModel.filterGrayscale.value)
-            putExtra("filterHueRotate", viewModel.filterHueRotate.value)
-            putExtra("filterSepia", viewModel.filterSepia.value)
-            putExtra("filterBlur", viewModel.filterBlur.value)
-            putExtra("filterShadow", viewModel.filterShadow.value)
-            putExtra("posterShadow", viewModel.posterShadow.value)
-        }
+        val intent = Intent(this, WantedEditorActivity::class.java)
         editActivityLauncher.launch(intent)
-    }
-
-    /**
-     * Handle edited data returned from WantedEditorActivity
-     */
-    private fun handleEditedData(data: Intent) {
-        // Extract edited data and update ViewModel
-        data.getStringExtra("imageUri")?.let { uriString ->
-            viewModel.setSelectedImageUri(uriString.toUri())
-        }
-
-        data.getStringExtra("nameText")?.let { text ->
-            viewModel.setNameText(text)
-        }
-
-        data.getStringExtra("bountyText")?.let { text ->
-            viewModel.setBountyText(text)
-        }
-
-        // Update template
-        val template = data.getIntExtra("selectedTemplate", 1)
-        viewModel.setSelectedTemplate(template)
-
-        // Update filter values
-        viewModel.setFilterBrightness(data.getFloatExtra("filterBrightness", 1f))
-        viewModel.setFilterContrast(data.getFloatExtra("filterContrast", 1f))
-        viewModel.setFilterSaturate(data.getFloatExtra("filterSaturate", 1f))
-        viewModel.setFilterGrayscale(data.getFloatExtra("filterGrayscale", 0f))
-        viewModel.setFilterHueRotate(data.getFloatExtra("filterHueRotate", 0f))
-        viewModel.setFilterSepia(data.getFloatExtra("filterSepia", 0f))
-        viewModel.setFilterBlur(data.getFloatExtra("filterBlur", 0f))
-        viewModel.setFilterShadow(data.getFloatExtra("filterShadow", 0f))
-        viewModel.setPosterShadow(data.getFloatExtra("posterShadow", 0f))
-
-        // Update name properties
-        data.getStringExtra("nameFont")?.let { font ->
-            viewModel.setNameFont(font)
-        }
-        viewModel.setNameSpacing(data.getFloatExtra("nameSpacing", 0.1f))
-
-        // Update bounty properties
-        viewModel.setBountySize(data.getFloatExtra("bountySize", 28f))
-        viewModel.setBountyWeight(data.getFloatExtra("bountyWeight", 0f))
-        viewModel.setBountySpacing(data.getFloatExtra("bountySpacing", 0f))
-        viewModel.setBountyPositionX(data.getFloatExtra("bountyPositionX", 0f))
-        viewModel.setBountyPositionY(data.getFloatExtra("bountyPositionY", 0f))
-
-        // Update preview
-        updatePreviewWithCurrentState()
     }
 
     /**

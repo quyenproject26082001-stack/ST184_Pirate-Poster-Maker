@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -24,6 +23,7 @@ import com.charactor.avatar.maker.pfp.core.helper.AssetHelper
 import com.charactor.avatar.maker.pfp.core.helper.BackgroundRemovalHelper
 import com.charactor.avatar.maker.pfp.core.helper.BitmapHelper
 import com.charactor.avatar.maker.pfp.core.helper.ShadowTransformation
+import com.charactor.avatar.maker.pfp.core.viewmodel.PosterEditorSharedViewModel
 import com.charactor.avatar.maker.pfp.databinding.ActivityWantedEditorBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +31,8 @@ import kotlinx.coroutines.withContext
 
 class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
-    private val viewModel: WantedEditorViewModel by viewModels()
+    // Use shared ViewModel for data binding with MakeScreenActivity
+    private val viewModel = PosterEditorSharedViewModel.getInstance()
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -58,8 +59,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Load template background from assets
         loadTemplateBackground()
 
-        // Receive data from MakeScreen if coming from Edit
-        receiveDataFromIntent()
+        // Data is already in shared ViewModel - no need to receive from Intent
+        // Load current image if exists
+        viewModel.selectedImageUri.value?.let { uri ->
+            loadImageToAvatars(uri)
+        }
 
         setupFontSpinners()
         setupSeekBars()
@@ -175,42 +179,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private fun handleSave() {
-        // Pack all edited data and return to MakeScreen
-        val resultIntent = android.content.Intent().apply {
-            // Image URI
-            viewModel.selectedImageUri.value?.let { uri ->
-                putExtra("imageUri", uri.toString())
-            }
-
-            // Text data
-            putExtra("nameText", viewModel.nameText.value)
-            putExtra("bountyText", viewModel.bountyText.value)
-            putExtra("selectedTemplate", viewModel.selectedTemplate.value)
-
-            // Filter values
-            putExtra("filterBrightness", viewModel.filterBrightness.value)
-            putExtra("filterContrast", viewModel.filterContrast.value)
-            putExtra("filterSaturate", viewModel.filterSaturate.value)
-            putExtra("filterGrayscale", viewModel.filterGrayscale.value)
-            putExtra("filterHueRotate", viewModel.filterHueRotate.value)
-            putExtra("filterSepia", viewModel.filterSepia.value)
-            putExtra("filterBlur", viewModel.filterBlur.value)
-            putExtra("filterShadow", viewModel.filterShadow.value)
-            putExtra("posterShadow", viewModel.posterShadow.value)
-
-            // Name properties
-            putExtra("nameFont", viewModel.nameFont.value)
-            putExtra("nameSpacing", viewModel.nameSpacing.value)
-
-            // Bounty properties
-            putExtra("bountySize", viewModel.bountySize.value)
-            putExtra("bountyWeight", viewModel.bountyWeight.value)
-            putExtra("bountySpacing", viewModel.bountySpacing.value)
-            putExtra("bountyPositionX", viewModel.bountyPositionX.value)
-            putExtra("bountyPositionY", viewModel.bountyPositionY.value)
-        }
-
-        setResult(RESULT_OK, resultIntent)
+        // Data is already in shared ViewModel - MakeScreenActivity will automatically have access
+        setResult(RESULT_OK)
         finish()
     }
 
@@ -284,57 +254,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         Glide.with(this)
             .load(templatePath)
             .into(binding.imgTemplate)
-    }
-
-    /**
-     * Receive data from MakeScreen when coming from Edit button
-     */
-    private fun receiveDataFromIntent() {
-        intent?.let { intentData ->
-            // Image URI
-            intentData.getStringExtra("imageUri")?.let { uriString ->
-                val uri = Uri.parse(uriString)
-                viewModel.setSelectedImageUri(uri)
-                loadImageToAvatars(uri)
-            }
-
-            // Text data
-            intentData.getStringExtra("nameText")?.let { text ->
-                viewModel.setNameText(text)
-            }
-
-            intentData.getStringExtra("bountyText")?.let { text ->
-                viewModel.setBountyText(text)
-            }
-
-            // Template
-            val template = intentData.getIntExtra("selectedTemplate", 1)
-            viewModel.setSelectedTemplate(template)
-
-            // Filter values
-            viewModel.setFilterBrightness(intentData.getFloatExtra("filterBrightness", 1f))
-            viewModel.setFilterContrast(intentData.getFloatExtra("filterContrast", 1f))
-            viewModel.setFilterSaturate(intentData.getFloatExtra("filterSaturate", 1f))
-            viewModel.setFilterGrayscale(intentData.getFloatExtra("filterGrayscale", 0f))
-            viewModel.setFilterHueRotate(intentData.getFloatExtra("filterHueRotate", 0f))
-            viewModel.setFilterSepia(intentData.getFloatExtra("filterSepia", 0f))
-            viewModel.setFilterBlur(intentData.getFloatExtra("filterBlur", 0f))
-            viewModel.setFilterShadow(intentData.getFloatExtra("filterShadow", 0f))
-            viewModel.setPosterShadow(intentData.getFloatExtra("posterShadow", 0f))
-
-            // Name properties
-            intentData.getStringExtra("nameFont")?.let { font ->
-                viewModel.setNameFont(font)
-            }
-            viewModel.setNameSpacing(intentData.getFloatExtra("nameSpacing", 0.1f))
-
-            // Bounty properties
-            viewModel.setBountySize(intentData.getFloatExtra("bountySize", 28f))
-            viewModel.setBountyWeight(intentData.getFloatExtra("bountyWeight", 0f))
-            viewModel.setBountySpacing(intentData.getFloatExtra("bountySpacing", 0f))
-            viewModel.setBountyPositionX(intentData.getFloatExtra("bountyPositionX", 0f))
-            viewModel.setBountyPositionY(intentData.getFloatExtra("bountyPositionY", 0f))
-        }
     }
 
     private fun setupFontSpinners() {
