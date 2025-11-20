@@ -339,8 +339,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
 
         // Reset TextViews (will be updated by EditText listeners)
-        tvName?.text = "NAME HERE"
-        tvBounty?.text = "$2,000,000"
+        tvName?.text = strings(R.string.default_name)
+        tvBounty?.text = strings(R.string.default_bounty)
         tvName?.letterSpacing = 0f
         tvBounty?.textSize = 24f
         tvBounty?.letterSpacing = 0f
@@ -357,7 +357,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         applyShadowEffect(0f)
         applyTemplateShadow(0f)
 
-        showToast("Reset to default values")
+        showToast(R.string.reset_to_default_values)
     }
 
     /**
@@ -727,7 +727,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         val currentUri = viewModel.selectedImageUri.value
 
         if (currentUri == null) {
-            showToast("Please import a photo first")
+            showToast(R.string.please_import_a_photo_first)
             return
         }
 
@@ -745,7 +745,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 if (originalBitmap == null) {
                     dismissLoading()
                     setRemoveBackgroundButtonEnabled(true)
-                    showToast("Failed to load image")
+                    showToast(R.string.failed_to_load_image)
                     return@launch
                 }
 
@@ -785,16 +785,16 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     binding.seekBarFilterShadow.isEnabled = true
                     imgAvatarShadow?.visibility = View.VISIBLE
 
-                    showToast("Background removed! Shadow follows the person contour.")
+                    showToast(R.string.background_removed_success)
                 } else {
-                    showToast("Failed to remove background. Please try with a person photo.")
+                    showToast(R.string.failed_to_remove_background)
                 }
 
             } catch (e: Exception) {
                 dismissLoading()
                 setRemoveBackgroundButtonEnabled(true)
                 e.printStackTrace()
-                showToast("Error: ${e.message}")
+                showToast(getString(R.string.error_message, e.message ?: "Unknown"))
             }
         }
     }

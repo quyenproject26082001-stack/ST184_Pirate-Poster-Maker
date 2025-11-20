@@ -7,9 +7,9 @@
     <string name="next">Berikutnya</string>
     <string name="language">Bahasa</string>
 
-    <string name="title_1">Buat avatar Anda sendiri sesuka Anda</string>
-    <string name="title_2">Beragam kategori unik</string>
-    <string name="title_3">Gaya karakter yang beragam</string>
+    <string name="title_1">Menjadi bajak laut sejati</string>
+    <string name="title_2">Gaya bajak laut yang surealis</string>
+    <string name="title_3">Buat poster buronan dengan hadiah besar</string>
 
     <string name="permission">Izin</string>
     <string name="storage">Penyimpanan</string>
@@ -20,6 +20,7 @@
     <string name="allow">Izinkan</string>
     <string name="to_access">untuk mengakses foto di perangkat Anda</string>
     <string name="to_access_13">untuk mengakses notifikasi di perangkat Anda</string>
+    <string name="no_designs_yet">Anda tidak memiliki poster</string>
 
     <string name="rate_us">Beri kami rating</string>
     <string name="share_app">Bagikan aplikasi</string>
@@ -72,21 +73,21 @@
     <string name="are_you_sure_you_want_to_delete_the_image">Apakah kamu yakin ingin menghapus gambar ini?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">Belum disimpan, apakah kamu ingin keluar?</string>
     <string name="change_your_whole_design_are_you_sure">Apakah kamu ingin mengatur ulang semuanya?</string>
-    <string name="character_maker">Pembuat Karakter</string>
-    <string name="no_item_here">Tidak ada item di sini</string>
-    <string name="import_">Import</string>
-    <string name="templates">Templates</string>
-    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
-    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
-    <string name="bounty">Bounty</string>
-    <string name="photo_filter">Photo Filter</string>
-    <string name="poster_shadow">Poster Shadow</string>
+    <string name="character_maker">Poster Buronan \nPembuat</string>
+    <string name="no_item_here">Tidak Ada Item Di Sini</string>
+    <string name="import_">Impor</string>
+    <string name="templates">Template</string>
+    <string name="posterwantedtemplates">Template\nPoster Buronan</string>
+    <string name="posterwantedmaker">Pembuat\nPoster Buronan</string>
+    <string name="bounty">Hadiah</string>
+    <string name="photo_filter">Filter Foto</string>
+    <string name="poster_shadow">Bayangan Poster</string>
     <string name="sepia">Sepia</string>
-    <string name="saturate">Saturate</string>
-    <string name="hue_rotate">Hue Rotate</string>
-    <string name="grayscale">Grayscale</string>
-    <string name="contrast">Contrast</string>
-    <string name="brightness">Brightness</string>
+    <string name="saturate">Saturasi</string>
+    <string name="hue_rotate">Rotasi Warna</string>
+    <string name="grayscale">Skala Abu-abu</string>
+    <string name="contrast">Kontras</string>
+    <string name="brightness">Kecerahan</string>
     <string name="blur">Blur</string>
-    <string name="shadow">Shadow</string>
+    <string name="shadow">Bayangan</string>
 </resources>

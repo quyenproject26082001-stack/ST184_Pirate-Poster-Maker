@@ -7,9 +7,9 @@
     <string name="next">Próximo</string>
     <string name="language">Idioma</string>
 
-    <string name="title_1">Crie seu próprio avatar como quiser</string>
-    <string name="title_2">Variedade de categorias únicas</string>
-    <string name="title_3">Estilos de personagens diversos</string>
+    <string name="title_1">Torne-se um pirata de verdade</string>
+    <string name="title_2">Estilo pirata surreal</string>
+    <string name="title_3">Crie um cartaz de procurado com grande recompensa</string>
 
     <string name="permission">Permissão</string>
     <string name="storage">Armazenamento</string>
@@ -20,6 +20,7 @@
     <string name="allow">Permitir</string>
     <string name="to_access">para acessar fotos no seu dispositivo</string>
     <string name="to_access_13">para acessar notificações no seu dispositivo</string>
+    <string name="no_designs_yet">Você não tem nenhum cartaz</string>
 
     <string name="rate_us">Avalie-nos</string>
     <string name="share_app">Compartilhar aplicativo</string>
@@ -72,21 +73,21 @@
     <string name="are_you_sure_you_want_to_delete_the_image">Tem certeza de que deseja excluir a imagem?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">Ainda não salvou, deseja sair?</string>
     <string name="change_your_whole_design_are_you_sure">Deseja redefinir tudo?</string>
-    <string name="character_maker">Criador de Personagens</string>
-    <string name="no_item_here">Nenhum item aqui</string>
-    <string name="import_">Import</string>
-    <string name="templates">Templates</string>
-    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
-    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
-    <string name="bounty">Bounty</string>
-    <string name="photo_filter">Photo Filter</string>
-    <string name="poster_shadow">Poster Shadow</string>
-    <string name="sepia">Sepia</string>
-    <string name="saturate">Saturate</string>
-    <string name="hue_rotate">Hue Rotate</string>
-    <string name="grayscale">Grayscale</string>
-    <string name="contrast">Contrast</string>
-    <string name="brightness">Brightness</string>
-    <string name="blur">Blur</string>
-    <string name="shadow">Shadow</string>
+    <string name="character_maker">Cartaz Procurado \nCriador</string>
+    <string name="no_item_here">Nenhum Item Aqui</string>
+    <string name="import_">Importar</string>
+    <string name="templates">Modelos</string>
+    <string name="posterwantedtemplates">Modelos de\nCartazes Procurado</string>
+    <string name="posterwantedmaker">Criador de\nCartazes Procurado</string>
+    <string name="bounty">Recompensa</string>
+    <string name="photo_filter">Filtro de Foto</string>
+    <string name="poster_shadow">Sombra do Cartaz</string>
+    <string name="sepia">Sépia</string>
+    <string name="saturate">Saturação</string>
+    <string name="hue_rotate">Rotação de Matiz</string>
+    <string name="grayscale">Escala de Cinza</string>
+    <string name="contrast">Contraste</string>
+    <string name="brightness">Brilho</string>
+    <string name="blur">Desfoque</string>
+    <string name="shadow">Sombra</string>
 </resources>

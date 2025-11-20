@@ -7,9 +7,9 @@
     <string name="next">Weiter</string>
     <string name="language">Sprache</string>
 
-    <string name="title_1">Erstelle deinen eigenen Avatar, wie du möchtest</string>
-    <string name="title_2">Vielfalt an einzigartigen Kategorien</string>
-    <string name="title_3">Vielfältige Charakterstile</string>
+    <string name="title_1">Werde ein echter Pirat</string>
+    <string name="title_2">Surrealer Piratenstil</string>
+    <string name="title_3">Erstelle ein Steckbrief mit hohem Kopfgeld</string>
 
     <string name="permission">Berechtigung</string>
     <string name="storage">Speicher</string>
@@ -20,6 +20,7 @@
     <string name="allow">Zulassen</string>
     <string name="to_access">um auf Fotos auf Ihrem Gerät zuzugreifen</string>
     <string name="to_access_13">um auf Benachrichtigungen auf Ihrem Gerät zuzugreifen</string>
+    <string name="no_designs_yet">Du hast noch kein Plakat</string>
 
     <string name="rate_us">Bewerte uns</string>
     <string name="share_app">App teilen</string>
@@ -72,21 +73,21 @@
     <string name="are_you_sure_you_want_to_delete_the_image">Möchten Sie das Bild wirklich löschen?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">Noch nicht gespeichert, möchten Sie beenden?</string>
     <string name="change_your_whole_design_are_you_sure">Möchten Sie alles zurücksetzen?</string>
-    <string name="character_maker">Charakter-Maker</string>
-    <string name="no_item_here">Kein Element hier</string>
-    <string name="import_">Import</string>
-    <string name="templates">Templates</string>
-    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
-    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
-    <string name="bounty">Bounty</string>
-    <string name="photo_filter">Photo Filter</string>
-    <string name="poster_shadow">Poster Shadow</string>
+    <string name="character_maker">Steckbrief \nErsteller</string>
+    <string name="no_item_here">Kein Element Hier</string>
+    <string name="import_">Importieren</string>
+    <string name="templates">Vorlagen</string>
+    <string name="posterwantedtemplates">Steckbrief\nVorlagen</string>
+    <string name="posterwantedmaker">Steckbrief\nErsteller</string>
+    <string name="bounty">Kopfgeld</string>
+    <string name="photo_filter">Fotofilter</string>
+    <string name="poster_shadow">Plakat-Schatten</string>
     <string name="sepia">Sepia</string>
-    <string name="saturate">Saturate</string>
-    <string name="hue_rotate">Hue Rotate</string>
-    <string name="grayscale">Grayscale</string>
-    <string name="contrast">Contrast</string>
-    <string name="brightness">Brightness</string>
-    <string name="blur">Blur</string>
-    <string name="shadow">Shadow</string>
+    <string name="saturate">Sättigung</string>
+    <string name="hue_rotate">Farbton drehen</string>
+    <string name="grayscale">Graustufen</string>
+    <string name="contrast">Kontrast</string>
+    <string name="brightness">Helligkeit</string>
+    <string name="blur">Unschärfe</string>
+    <string name="shadow">Schatten</string>
 </resources>

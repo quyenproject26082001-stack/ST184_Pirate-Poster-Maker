@@ -7,9 +7,9 @@
     <string name="next">Suivant</string>
     <string name="language">Langue</string>
 
-    <string name="title_1">Crée ton propre avatar comme tu veux</string>
-    <string name="title_2">Une variété de catégories uniques</string>
-    <string name="title_3">Styles de personnages divers</string>
+    <string name="title_1">Deviens un vrai pirate</string>
+    <string name="title_2">Style pirate surréaliste</string>
+    <string name="title_3">Crée une affiche recherché avec une énorme prime</string>
 
     <string name="permission">Autorisation</string>
     <string name="storage">Stockage</string>
@@ -20,6 +20,7 @@
     <string name="allow">Autoriser</string>
     <string name="to_access">pour accéder aux photos sur ton appareil</string>
     <string name="to_access_13">pour accéder aux notifications sur ton appareil</string>
+    <string name="no_designs_yet">Tu n\'as aucune affiche</string>
 
     <string name="rate_us">Évalue-nous</string>
     <string name="share_app">Partager l\'application</string>
@@ -72,21 +73,21 @@
     <string name="are_you_sure_you_want_to_delete_the_image">Voulez-vous vraiment supprimer l\'image ?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">Pas encore enregistré, veux-tu quitter ?</string>
     <string name="change_your_whole_design_are_you_sure">Veux-tu tout réinitialiser ?</string>
-    <string name="character_maker">Créateur de personnages</string>
-    <string name="no_item_here">Aucun élément ici</string>
-    <string name="import_">Import</string>
-    <string name="templates">Templates</string>
-    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
-    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
-    <string name="bounty">Bounty</string>
-    <string name="photo_filter">Photo Filter</string>
-    <string name="poster_shadow">Poster Shadow</string>
-    <string name="sepia">Sepia</string>
-    <string name="saturate">Saturate</string>
-    <string name="hue_rotate">Hue Rotate</string>
-    <string name="grayscale">Grayscale</string>
-    <string name="contrast">Contrast</string>
-    <string name="brightness">Brightness</string>
-    <string name="blur">Blur</string>
-    <string name="shadow">Shadow</string>
+    <string name="character_maker">Affiche Recherché \nCréateur</string>
+    <string name="no_item_here">Aucun Élément Ici</string>
+    <string name="import_">Importer</string>
+    <string name="templates">Modèles</string>
+    <string name="posterwantedtemplates">Modèles d\'Affiches\nRecherché</string>
+    <string name="posterwantedmaker">Créateur d\'Affiches\nRecherché</string>
+    <string name="bounty">Prime</string>
+    <string name="photo_filter">Filtre Photo</string>
+    <string name="poster_shadow">Ombre d\'Affiche</string>
+    <string name="sepia">Sépia</string>
+    <string name="saturate">Saturation</string>
+    <string name="hue_rotate">Rotation de Teinte</string>
+    <string name="grayscale">Niveaux de Gris</string>
+    <string name="contrast">Contraste</string>
+    <string name="brightness">Luminosité</string>
+    <string name="blur">Flou</string>
+    <string name="shadow">Ombre</string>
 </resources>

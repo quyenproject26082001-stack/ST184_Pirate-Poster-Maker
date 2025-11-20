@@ -7,9 +7,9 @@
     <string name="next">Siguiente</string>
     <string name="language">Idioma</string>
 
-    <string name="title_1">Crea tu propio avatar como quieras</string>
-    <string name="title_2">Variedad de categorías únicas</string>
-    <string name="title_3">Estilos de personajes diversos</string>
+    <string name="title_1">Conviértete en un pirata de verdad</string>
+    <string name="title_2">Estilo pirata surrealista</string>
+    <string name="title_3">Crea un cartel de se busca con una gran recompensa</string>
 
     <string name="permission">Permiso</string>
     <string name="storage">Almacenamiento</string>
@@ -19,8 +19,8 @@
     <string name="granted_storage">Permiso de almacenamiento concedido</string>
     <string name="allow">Permitir</string>
     <string name="to_access">para acceder a las fotos en tu dispositivo</string>
-    <string name="to_access_13">para acceder a las notificaciones en tu dispositivo</string>
-    <string name="no_designs_yet">You don’t have any poster</string>
+    <string name="to_access_13">para acceder a las notificaciones de tu dispositivo</string>
+    <string name="no_designs_yet">No tienes ningún cartel</string>
 
     <string name="rate_us">Califícanos</string>
     <string name="share_app">Compartir aplicación</string>
@@ -73,21 +73,21 @@
     <string name="are_you_sure_you_want_to_delete_the_image">¿Seguro que deseas eliminar la imagen?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">Aún no lo has guardado, ¿quieres salir?</string>
     <string name="change_your_whole_design_are_you_sure">¿Deseas restablecer todo?</string>
-    <string name="character_maker">Creador de personajes</string>
-    <string name="no_item_here">No hay elementos aquí</string>
-    <string name="import_">Import</string>
-    <string name="templates">Templates</string>
-    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
-    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
-    <string name="bounty">Bounty</string>
-    <string name="photo_filter">Photo Filter</string>
-    <string name="poster_shadow">Poster Shadow</string>
+    <string name="character_maker">Cartel Se Busca \nCreador</string>
+    <string name="no_item_here">No Hay Elementos Aquí</string>
+    <string name="import_">Importar</string>
+    <string name="templates">Plantillas</string>
+    <string name="posterwantedtemplates">Plantillas de\nCarteles Se Busca</string>
+    <string name="posterwantedmaker">Creador de\nCarteles Se Busca</string>
+    <string name="bounty">Recompensa</string>
+    <string name="photo_filter">Filtro de Foto</string>
+    <string name="poster_shadow">Sombra del Cartel</string>
     <string name="sepia">Sepia</string>
-    <string name="saturate">Saturate</string>
-    <string name="hue_rotate">Hue Rotate</string>
-    <string name="grayscale">Grayscale</string>
-    <string name="contrast">Contrast</string>
-    <string name="brightness">Brightness</string>
-    <string name="blur">Blur</string>
-    <string name="shadow">Shadow</string>
+    <string name="saturate">Saturación</string>
+    <string name="hue_rotate">Rotación de Tono</string>
+    <string name="grayscale">Escala de Grises</string>
+    <string name="contrast">Contraste</string>
+    <string name="brightness">Brillo</string>
+    <string name="blur">Desenfoque</string>
+    <string name="shadow">Sombra</string>
 </resources>

@@ -7,9 +7,9 @@
     <string name="next">अगला</string>
     <string name="language">भाषा</string>
 
-    <string name="title_1">अपना खुद का अवतार बनाएं जैसा आप चाहें</string>
-    <string name="title_2">अद्वितीय श्रेणियों की विविधता</string>
-    <string name="title_3">विभिन्न चरित्र शैली</string>
+    <string name="title_1">एक असली समुद्री डाकू बनें</string>
+    <string name="title_2">असाधारण समुद्री डाकू शैली</string>
+    <string name="title_3">बड़े इनाम के साथ एक वांटेड पोस्टर बनाएं</string>
 
     <string name="permission">अनुमति</string>
     <string name="storage">स्टोरेज</string>
@@ -20,6 +20,7 @@
     <string name="allow">अनुमति दें</string>
     <string name="to_access">आपके डिवाइस की फ़ोटो तक पहुँचने के लिए</string>
     <string name="to_access_13">आपके डिवाइस की सूचनाओं तक पहुँचने के लिए</string>
+    <string name="no_designs_yet">आपके पास कोई पोस्टर नहीं है</string>
 
     <string name="rate_us">हमें रेट करें</string>
     <string name="share_app">ऐप साझा करें</string>
@@ -72,21 +73,21 @@
     <string name="are_you_sure_you_want_to_delete_the_image">क्या आप वाकई इस छवि को हटाना चाहते हैं?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">अभी तक सहेजा नहीं गया, क्या आप बाहर निकलना चाहते हैं?</string>
     <string name="change_your_whole_design_are_you_sure">क्या आप सब कुछ रीसेट करना चाहते हैं?</string>
-    <string name="character_maker">कैरेक्टर मेकर</string>
+    <string name="character_maker">वांटेड पोस्टर \nनिर्माता</string>
     <string name="no_item_here">यहाँ कोई आइटम नहीं है</string>
-    <string name="import_">Import</string>
-    <string name="templates">Templates</string>
-    <string name="posterwantedtemplates">Poster Wanted\nTemplates</string>
-    <string name="posterwantedmaker">Poster Wanted\nMaker</string>
-    <string name="bounty">Bounty</string>
-    <string name="photo_filter">Photo Filter</string>
-    <string name="poster_shadow">Poster Shadow</string>
-    <string name="sepia">Sepia</string>
-    <string name="saturate">Saturate</string>
-    <string name="hue_rotate">Hue Rotate</string>
-    <string name="grayscale">Grayscale</string>
-    <string name="contrast">Contrast</string>
-    <string name="brightness">Brightness</string>
-    <string name="blur">Blur</string>
-    <string name="shadow">Shadow</string>
+    <string name="import_">आयात करें</string>
+    <string name="templates">टेम्प्लेट</string>
+    <string name="posterwantedtemplates">वांटेड पोस्टर\nटेम्प्लेट</string>
+    <string name="posterwantedmaker">वांटेड पोस्टर\nनिर्माता</string>
+    <string name="bounty">इनाम</string>
+    <string name="photo_filter">फोटो फिल्टर</string>
+    <string name="poster_shadow">पोस्टर छाया</string>
+    <string name="sepia">सेपिया</string>
+    <string name="saturate">संतृप्ति</string>
+    <string name="hue_rotate">रंग घुमाएं</string>
+    <string name="grayscale">ग्रेस्केल</string>
+    <string name="contrast">कंट्रास्ट</string>
+    <string name="brightness">चमक</string>
+    <string name="blur">धुंधला</string>
+    <string name="shadow">छाया</string>
 </resources>

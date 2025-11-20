@@ -232,7 +232,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="@id/guideline2"
                             app:layout_constraintTop_toTopOf="@id/tvSpacingLabel"
-                            app:layout_constraintBottom_toBottomOf="tvSpacingLabel"
+                            app:layout_constraintBottom_toBottomOf="@id/tvSpacingLabel"
                             />
 
                         <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
