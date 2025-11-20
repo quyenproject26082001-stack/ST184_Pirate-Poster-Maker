@@ -1,6 +1,8 @@
 package com.charactor.avatar.maker.pfp.activity_app.makescreen
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
@@ -12,14 +14,18 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.charactor.avatar.maker.pfp.R
+import com.charactor.avatar.maker.pfp.activity_app.success.SuccessActivity
 import com.charactor.avatar.maker.pfp.activity_app.template.TemplateListActivity
 import com.charactor.avatar.maker.pfp.activity_app.wanted.WantedEditorActivity
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.*
 import com.charactor.avatar.maker.pfp.core.helper.AssetHelper
+import com.charactor.avatar.maker.pfp.core.helper.MediaHelper
 import com.charactor.avatar.maker.pfp.core.helper.ShadowTransformation
+import com.charactor.avatar.maker.pfp.core.utils.state.SaveState
 import com.charactor.avatar.maker.pfp.core.viewmodel.PosterEditorSharedViewModel
 import com.charactor.avatar.maker.pfp.databinding.ActivityMakeScreenBinding
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -134,7 +140,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             // Action bar
             actionBar.apply {
                 btnActionBarLeft.setOnSingleClick { handleBack() }
-                btnActionBarRight.setOnSingleClick { handleSave() }
+                btnActionBarRightText.setOnSingleClick { handleSave() }
             }
 
             // Templates button - Navigate to Template Selection Screen
@@ -226,9 +232,37 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * Handle save button - Save poster and navigate to SuccessActivity
      */
     private fun handleSave() {
-        // TODO: Capture poster view as bitmap and save to gallery
-        showToast("Saving poster...")
-        // After save success, navigate to SuccessActivity
+        // Capture poster view as bitmap
+        val posterView = binding.containerPoster
+        if (posterView.width == 0 || posterView.height == 0) {
+            showToast(strings(R.string.download_failed_please_try_again_later))
+            return
+        }
+
+        val bitmap = Bitmap.createBitmap(posterView.width, posterView.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        posterView.draw(canvas)
+
+        // Save bitmap to internal storage
+        lifecycleScope.launch {
+            MediaHelper.saveBitmapToInternalStorage(this@MakeScreenActivity, "posters", bitmap)
+                .collectLatest { state ->
+                    when (state) {
+                        is SaveState.Success -> {
+                            // Set path in ViewModel and navigate to SuccessActivity
+                            viewModel.setSavedImagePath(state.path)
+                            val intent = Intent(this@MakeScreenActivity, SuccessActivity::class.java)
+                            startActivity(intent)
+                        }
+                        is SaveState.Error -> {
+                            showToast(strings(R.string.download_failed_please_try_again_later))
+                        }
+                        SaveState.Loading -> {
+                            // Show loading indicator if needed
+                        }
+                    }
+                }
+        }
     }
 
     /**

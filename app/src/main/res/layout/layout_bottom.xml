@@ -22,9 +22,8 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/img_btn_bottom"
+            android:background="@drawable/bg_left_btn"
             android:gravity="center"
-            android:backgroundTint="#C4561B"
             android:orientation="horizontal"
             android:paddingHorizontal="12dp">
 
@@ -42,9 +41,9 @@
                 style="@style/single_marquee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/kurale_regular"
                 android:text="@string/share"
-                android:textColor="@color/white"
+                android:textColor="@color/app"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -52,12 +51,12 @@
         <LinearLayout
             android:id="@+id/btnBottomRight"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:background="@drawable/img_btn_bottom"
-            android:gravity="center"
+            android:background="@drawable/bg_right_btn"
             android:backgroundTint="#C4561B"
+            android:gravity="center"
             android:orientation="horizontal"
             android:paddingHorizontal="12dp">
 
@@ -75,7 +74,7 @@
                 style="@style/single_marquee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/kurale_regular"
                 android:text="@string/download"
                 android:textColor="@color/white"
                 android:textSize="16sp" />

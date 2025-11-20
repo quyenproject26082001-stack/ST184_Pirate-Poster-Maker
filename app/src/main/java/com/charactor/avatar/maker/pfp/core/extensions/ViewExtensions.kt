@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
 import android.view.WindowManager
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.FontRes
@@ -120,4 +121,17 @@ fun TextView.setTextContent(context: Context, resId: Int) {
 
 fun Context.strings(resId: Int) : String {
     return getString(resId)
+}
+
+// ----------------------------
+// SeekBar
+// ----------------------------
+fun SeekBar.onProgressChanged(action: (progress: Int) -> Unit) {
+    setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            action(progress)
+        }
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+    })
 }

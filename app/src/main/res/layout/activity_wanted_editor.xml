@@ -177,9 +177,8 @@
                             android:paddingHorizontal="12dp"
                             android:textColor="@android:color/black"
                             android:textSize="16sp"
-                            android:layout_marginStart="30dp"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvInputLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline2"
                             app:layout_constraintTop_toTopOf="@id/tvInputLabel"
                             app:layout_constraintBottom_toBottomOf="@id/tvInputLabel"
                             />
@@ -202,10 +201,9 @@
                             android:id="@+id/spinnerNameFont"
                             android:layout_width="0dp"
                             android:layout_height="24dp"
-                            android:layout_marginStart="30dp"
                             android:background="@drawable/bg_16_stroke_white"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFontLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline2"
                             app:layout_constraintBottom_toBottomOf="@id/tvFontLabel"
                             app:layout_constraintTop_toTopOf="@id/tvFontLabel" />
 
@@ -227,12 +225,22 @@
                             android:id="@+id/seekBarNameSpacing"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
                             android:max="100"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvSpacingLabel" />
+                            app:layout_constraintStart_toStartOf="@id/guideline2"
+                            app:layout_constraintTop_toTopOf="@id/tvSpacingLabel"
+                            app:layout_constraintBottom_toBottomOf="tvSpacingLabel"
+                            />
+
+                        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/guideline2"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.29"
+                            />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
@@ -301,7 +309,6 @@
                             android:id="@+id/edtBounty"
                             android:layout_width="0dp"
                             android:layout_height="24dp"
-                            android:layout_marginStart="30dp"
                             android:background="@drawable/bg_16_stroke_white"
                             android:fontFamily="@font/roboto_regular"
                             android:hint="Enter bounty"
@@ -310,7 +317,7 @@
                             android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="@id/tvBountyInputLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvBountyInputLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline1"
                             app:layout_constraintTop_toTopOf="@id/tvBountyInputLabel" />
 
                         <!-- Size Label -->
@@ -330,12 +337,13 @@
                             android:id="@+id/seekBarBountySize"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="50"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvBountySizeLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvBountySizeLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline1"
                             app:layout_constraintTop_toTopOf="@id/tvBountySizeLabel" />
 
                         <!-- Weight Label -->
@@ -355,12 +363,13 @@
                             android:id="@+id/seekBarBountyWeight"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="50"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvBountyWeightLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvBountyWeightLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline1"
                             app:layout_constraintTop_toTopOf="@id/tvBountyWeightLabel" />
 
                         <!-- Spacing Label -->
@@ -380,12 +389,13 @@
                             android:id="@+id/seekBarBountySpacing"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvBountySpacingLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvBountySpacingLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline1"
                             app:layout_constraintTop_toTopOf="@id/tvBountySpacingLabel" />
 
                         <!-- Position X Label -->
@@ -405,12 +415,13 @@
                             android:id="@+id/seekBarBountyPositionX"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="50"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvBountyPositionXLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvBountyPositionXLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline1"
                             app:layout_constraintTop_toTopOf="@id/tvBountyPositionXLabel" />
 
                         <!-- Position Y Label -->
@@ -430,13 +441,21 @@
                             android:id="@+id/seekBarBountyPositionY"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="50"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvBountyPositionYLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvBountyPositionYLabel"
+                            app:layout_constraintStart_toEndOf="@id/guideline1"
                             app:layout_constraintTop_toTopOf="@id/tvBountyPositionYLabel" />
+
+                        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                            android:orientation="vertical"
+                            android:id="@+id/guideline1"
+                            app:layout_constraintGuide_percent="0.29"
+                            android:layout_height="wrap_content"
+                            />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
@@ -506,12 +525,13 @@
                             android:id="@+id/seekBarFilterShadow"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterShadowLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterShadowLabel"
+                            app:layout_constraintStart_toStartOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterShadowLabel" />
 
                         <!-- Blur Label -->
@@ -531,12 +551,13 @@
                             android:id="@+id/seekBarFilterBlur"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterBlurLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterBlurLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterBlurLabel" />
 
                         <!-- Brightness Label -->
@@ -556,12 +577,13 @@
                             android:id="@+id/seekBarFilterBrightness"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="200"
                             android:progress="100"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterBrightnessLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterBrightnessLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterBrightnessLabel" />
 
                         <!-- Contrast Label -->
@@ -581,12 +603,13 @@
                             android:id="@+id/seekBarFilterContrast"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="200"
                             android:progress="100"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterContrastLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterContrastLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterContrastLabel" />
 
                         <!-- Grayscale Label -->
@@ -606,12 +629,13 @@
                             android:id="@+id/seekBarFilterGrayscale"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterGrayscaleLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterGrayscaleLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterGrayscaleLabel" />
 
                         <!-- Hue Rotate Label -->
@@ -631,12 +655,13 @@
                             android:id="@+id/seekBarFilterHueRotate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="360"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterHueRotateLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterHueRotateLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterHueRotateLabel" />
 
                         <!-- Saturate Label -->
@@ -656,12 +681,13 @@
                             android:id="@+id/seekBarFilterSaturate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="200"
                             android:progress="100"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterSaturateLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterSaturateLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterSaturateLabel" />
 
                         <!-- Sepia Label -->
@@ -681,13 +707,22 @@
                             android:id="@+id/seekBarFilterSepia"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvFilterSepiaLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvFilterSepiaLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidline"
                             app:layout_constraintTop_toTopOf="@id/tvFilterSepiaLabel" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guidline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.29"
+                             />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -757,13 +792,21 @@
                             android:id="@+id/seekBarPosterShadow"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="30dp"
                             android:max="100"
                             android:progress="0"
+                            android:progressDrawable="@drawable/seekbar_progress_orange"
+                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvPosterShadowLabel"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/tvPosterShadowLabel"
+                            app:layout_constraintStart_toEndOf="@id/guidlinePosterShadow"
                             app:layout_constraintTop_toTopOf="@id/tvPosterShadowLabel" />
+
+                        <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:id="@+id/guidlinePosterShadow"
+                            app:layout_constraintGuide_percent="0.29"
+                            />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>

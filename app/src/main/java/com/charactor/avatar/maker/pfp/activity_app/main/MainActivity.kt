@@ -15,6 +15,7 @@ import com.charactor.avatar.maker.pfp.core.utils.key.ValueKey
 import com.charactor.avatar.maker.pfp.core.utils.state.RateState
 import com.charactor.avatar.maker.pfp.databinding.ActivityHomeBinding
 import com.charactor.avatar.maker.pfp.activity_app.SettingsActivity
+import com.charactor.avatar.maker.pfp.activity_app.mydesign.MyDesignActivity
 import com.charactor.avatar.maker.pfp.activity_app.posterwanted.PosterWantedTemplateActivity
 import com.charactor.avatar.maker.pfp.core.extensions.gone
 
@@ -45,6 +46,9 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             }
             BtnPosterWantedTemplate.setOnSingleClick {
                 startIntentRightToLeft(PosterWantedTemplateActivity::class.java)
+            }
+            btnMydesgin.setOnSingleClick {
+                startIntentRightToLeft(MyDesignActivity::class.java)
             }
         }
     }
@@ -111,7 +115,6 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
     private fun updateText() {
         binding.apply {
             tv1.text = strings(R.string.character_maker)
-            tv2.text = strings(R.string.my_creation)
         }
     }
 

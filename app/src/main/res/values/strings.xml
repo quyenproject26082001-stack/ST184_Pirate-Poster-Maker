@@ -90,4 +90,10 @@
     <string name="brightness">Brightness</string>
     <string name="blur">Blur</string>
     <string name="shadow">Shadow</string>
+    <string name="my_design">My Design</string>
+    <string name="no_designs_yet">You don’t have any poster</string>
+    <string name="delete_design_confirmation">Are you sure you want to delete this design?</string>
+    <string name="design_deleted">Design deleted</string>
+    <string name="delete_failed">Delete failed</string>
+    <string name="cancel">Cancel</string>
 </resources>

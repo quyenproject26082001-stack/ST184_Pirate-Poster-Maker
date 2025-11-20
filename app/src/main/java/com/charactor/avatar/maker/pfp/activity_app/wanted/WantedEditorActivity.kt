@@ -425,70 +425,46 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
     private fun setupSeekBars() {
         // Name Spacing
-        binding.seekBarNameSpacing.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val spacing = progress / 10f
-                tvName?.letterSpacing = spacing
-                viewModel.setNameSpacing(spacing)
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarNameSpacing.onProgressChanged { progress ->
+            val spacing = progress / 10f
+            tvName?.letterSpacing = spacing
+            viewModel.setNameSpacing(spacing)
+        }
 
         // Bounty Size
-        binding.seekBarBountySize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val size = 12f + (progress / 100f) * 48f // 12sp to 60sp
-                tvBounty?.textSize = size
-                viewModel.setBountySize(size)
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarBountySize.onProgressChanged { progress ->
+            val size = 12f + (progress / 100f) * 48f // 12sp to 60sp
+            tvBounty?.textSize = size
+            viewModel.setBountySize(size)
+        }
 
         // Bounty Weight
-        binding.seekBarBountyWeight.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // Weight doesn't directly map to Android, but we can use different font styles
-                // For simplicity, we'll just store the value
-                viewModel.setBountyWeight(progress.toFloat())
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarBountyWeight.onProgressChanged { progress ->
+            // Weight doesn't directly map to Android, but we can use different font styles
+            // For simplicity, we'll just store the value
+            viewModel.setBountyWeight(progress.toFloat())
+        }
 
         // Bounty Spacing
-        binding.seekBarBountySpacing.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val spacing = progress / 10f
-                tvBounty?.letterSpacing = spacing
-                viewModel.setBountySpacing(spacing)
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarBountySpacing.onProgressChanged { progress ->
+            val spacing = progress / 10f
+            tvBounty?.letterSpacing = spacing
+            viewModel.setBountySpacing(spacing)
+        }
 
         // Bounty Position X
-        binding.seekBarBountyPositionX.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val offsetX = (progress - 50) * 2f // -100 to 100
-                tvBounty?.translationX = offsetX
-                viewModel.setBountyPositionX(offsetX)
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarBountyPositionX.onProgressChanged { progress ->
+            val offsetX = (progress - 50) * 2f // -100 to 100
+            tvBounty?.translationX = offsetX
+            viewModel.setBountyPositionX(offsetX)
+        }
 
         // Bounty Position Y
-        binding.seekBarBountyPositionY.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val offsetY = (progress - 50) * 2f // -100 to 100
-                tvBounty?.translationY = offsetY
-                viewModel.setBountyPositionY(offsetY)
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarBountyPositionY.onProgressChanged { progress ->
+            val offsetY = (progress - 50) * 2f // -100 to 100
+            tvBounty?.translationY = offsetY
+            viewModel.setBountyPositionY(offsetY)
+        }
 
         setupPhotoFilterSeekBars()
         setupPosterShadowSeekBar()
@@ -496,102 +472,66 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
     private fun setupPhotoFilterSeekBars() {
         // Shadow - Use dedicated shadow effect function
-        binding.seekBarFilterShadow.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.setFilterShadow(progress.toFloat())
-                applyShadowEffect(progress.toFloat())  // Use shadow layer approach instead of elevation
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterShadow.onProgressChanged { progress ->
+            viewModel.setFilterShadow(progress.toFloat())
+            applyShadowEffect(progress.toFloat())  // Use shadow layer approach instead of elevation
+        }
 
         // Blur
-        binding.seekBarFilterBlur.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.setFilterBlur(progress.toFloat())
-                applyFilters()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterBlur.onProgressChanged { progress ->
+            viewModel.setFilterBlur(progress.toFloat())
+            applyFilters()
+        }
 
         // Brightness
-        binding.seekBarFilterBrightness.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val brightness = progress / 100f // 0 to 2
-                viewModel.setFilterBrightness(brightness)
-                applyFilters()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterBrightness.onProgressChanged { progress ->
+            val brightness = progress / 100f // 0 to 2
+            viewModel.setFilterBrightness(brightness)
+            applyFilters()
+        }
 
         // Contrast
-        binding.seekBarFilterContrast.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val contrast = progress / 100f // 0 to 2
-                viewModel.setFilterContrast(contrast)
-                applyFilters()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterContrast.onProgressChanged { progress ->
+            val contrast = progress / 100f // 0 to 2
+            viewModel.setFilterContrast(contrast)
+            applyFilters()
+        }
 
         // Grayscale
-        binding.seekBarFilterGrayscale.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val grayscale = progress / 100f // 0 to 1
-                viewModel.setFilterGrayscale(grayscale)
-                applyFilters()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterGrayscale.onProgressChanged { progress ->
+            val grayscale = progress / 100f // 0 to 1
+            viewModel.setFilterGrayscale(grayscale)
+            applyFilters()
+        }
 
         // Hue Rotate
-        binding.seekBarFilterHueRotate.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val hueRotate = progress.toFloat() // 0 to 360
-                viewModel.setFilterHueRotate(hueRotate)
-                applyFilters()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterHueRotate.onProgressChanged { progress ->
+            val hueRotate = progress.toFloat() // 0 to 360
+            viewModel.setFilterHueRotate(hueRotate)
+            applyFilters()
+        }
 
         // Saturate
-        binding.seekBarFilterSaturate.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val saturate = progress / 100f // 0 to 2
-                viewModel.setFilterSaturate(saturate)
-                applyFilters()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterSaturate.onProgressChanged { progress ->
+            val saturate = progress / 100f // 0 to 2
+            viewModel.setFilterSaturate(saturate)
+            applyFilters()
+        }
 
         // Sepia
-        binding.seekBarFilterSepia.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val sepia = progress / 100f // 0 to 1
-                viewModel.setFilterSepia(sepia)
-                applyFilters()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarFilterSepia.onProgressChanged { progress ->
+            val sepia = progress / 100f // 0 to 1
+            viewModel.setFilterSepia(sepia)
+            applyFilters()
+        }
     }
 
     private fun setupPosterShadowSeekBar() {
-        binding.seekBarPosterShadow.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // Control template shadow instead of CardView elevation
-                applyTemplateShadow(progress.toFloat())
-                viewModel.setPosterShadow(progress.toFloat())
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+        binding.seekBarPosterShadow.onProgressChanged { progress ->
+            // Control template shadow instead of CardView elevation
+            applyTemplateShadow(progress.toFloat())
+            viewModel.setPosterShadow(progress.toFloat())
+        }
     }
 
     /**

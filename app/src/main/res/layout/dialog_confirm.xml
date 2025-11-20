@@ -25,7 +25,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:gravity="center"
                 android:text="@string/delete"
-                android:textColor="@color/white"
+                android:textColor="#000000"
                 android:textSize="18sp" />
             <!--            tvDescription-->
             <TextView

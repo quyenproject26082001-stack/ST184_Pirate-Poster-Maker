@@ -64,11 +64,10 @@
             android:layout_marginTop="24dp"
                >
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_template_makescreen"
-                    android:orientation="vertical"
                     android:padding="12dp">
 
                     <com.charactor.avatar.maker.pfp.core.custom.text.DoubleStrokeTextView
@@ -77,13 +76,16 @@
                         android:fontFamily="@font/kurale_regular"
                         android:text="@string/templates"
                         android:textColor="#FFFFFF"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:outerStrokeWidth="1dp"
                         app:outerStrokeColor="#000000"
                         android:textSize="30sp" />
 
 
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Import & Edit Row -->
@@ -103,7 +105,7 @@
                     android:layout_weight="1"
                     app:strokeColor="#C4561B"
                     app:strokeWidth="2dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="4dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="4dp">
 
@@ -125,7 +127,7 @@
                     app:strokeColor="#C4561B"
                     app:strokeWidth="2dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="4dp">
 

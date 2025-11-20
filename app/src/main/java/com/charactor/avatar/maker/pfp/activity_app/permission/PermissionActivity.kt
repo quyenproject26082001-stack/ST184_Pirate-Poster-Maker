@@ -45,14 +45,14 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>() {
 
     override fun initText() {
         binding.actionBar.tvCenter.select()
-        setGradientTextHeightColor(binding.tvContinue, "#FFA1F7".toColorInt(), "#821FED".toColorInt())
+        setGradientTextHeightColor(binding.tvContinue, "#C4561B".toColorInt(), "#C4561B".toColorInt())
         val textRes =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) R.string.to_access_13 else R.string.to_access
 
         binding.txtPer.text = TextUtils.concat(
             createColoredText(R.string.allow, R.color.white),
             " ",
-            createColoredText(R.string.app_name, R.color.purple_F0),
+            createColoredText(R.string.app_name, R.color.white),
             " ",
             createColoredText(textRes, R.color.white)
         )

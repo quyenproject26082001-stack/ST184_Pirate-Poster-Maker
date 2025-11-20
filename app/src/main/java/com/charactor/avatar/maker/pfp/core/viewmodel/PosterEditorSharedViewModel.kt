@@ -108,6 +108,10 @@ class PosterEditorSharedViewModel : ViewModel() {
     private val _posterShadow = MutableStateFlow(0f)
     val posterShadow: StateFlow<Float> = _posterShadow.asStateFlow()
 
+    // Saved image path (for SuccessActivity)
+    private val _savedImagePath = MutableStateFlow<String?>(null)
+    val savedImagePath: StateFlow<String?> = _savedImagePath.asStateFlow()
+
     // Setters
     fun setSelectedImageUri(uri: Uri?) {
         _selectedImageUri.value = uri
@@ -252,6 +256,10 @@ class PosterEditorSharedViewModel : ViewModel() {
         _hasChanges.value = true
     }
 
+    fun setSavedImagePath(path: String?) {
+        _savedImagePath.value = path
+    }
+
     /**
      * Mark that editing has started (user made first edit)
      * This switches MakeScreen from avatar.png to item.png display
@@ -294,6 +302,7 @@ class PosterEditorSharedViewModel : ViewModel() {
         _currentConfig.value = TemplateConfigProvider.getConfig(1)
         _hasChanges.value = false
         _isEditingStarted.value = false
+        _savedImagePath.value = null
         resetAll()
         _hasChanges.value = false
     }
