@@ -117,7 +117,11 @@ class PosterEditorSharedViewModel : ViewModel() {
     fun setSelectedTemplate(template: Int) {
         _selectedTemplate.value = template
         _currentConfig.value = TemplateConfigProvider.getConfig(template)
-        initFromConfig()
+        // Only reset text to defaults if editing hasn't started yet
+        // This preserves user's edited name/bounty when switching templates
+        if (!_isEditingStarted.value) {
+            initFromConfig()
+        }
         _hasChanges.value = true
     }
 

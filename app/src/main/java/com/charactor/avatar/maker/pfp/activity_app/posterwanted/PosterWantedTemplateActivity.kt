@@ -60,6 +60,13 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::adapter.isInitialized) {
+            adapter.cleanup()
+        }
+    }
+
     /**
      * Handle item click - Navigate to MakeScreen with selected data
      */
