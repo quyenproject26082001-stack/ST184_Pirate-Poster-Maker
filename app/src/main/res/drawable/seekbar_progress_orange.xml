@@ -1,11 +1,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Background - Phần chưa kéo (xám) -->
+    <!-- Background - Phần chưa kéo (màu kem nhạt) -->
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <corners android:radius="4dp"/>
-            <solid android:color="#FFFFFF"/>
-            <size android:height="6dp"/>
+            <corners android:radius="5dp"/>
+            <solid android:color="#F5E6D3"/>
+            <size android:height="1dp"/>
         </shape>
     </item>
 
@@ -13,9 +13,9 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape android:shape="rectangle">
-                <corners android:radius="4dp"/>
-                <solid android:color="#D2691E"/>
-                <size android:height="6dp"/>
+                <corners android:radius="5dp"/>
+                <solid android:color="#C4561B"/>
+                <size android:height="1dp"/>
             </shape>
         </clip>
     </item>

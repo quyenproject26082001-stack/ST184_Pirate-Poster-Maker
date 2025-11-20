@@ -150,7 +150,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="16dp"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <!-- Input Label -->
                         <TextView
@@ -183,7 +183,7 @@
                             app:layout_constraintBottom_toBottomOf="@id/tvInputLabel"
                             />
 
-                        <!-- Font Label -->
+                        <!-- Fonts Label -->
                         <TextView
                             android:id="@+id/tvFontLabel"
                             android:layout_width="wrap_content"
@@ -196,16 +196,56 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/edtName" />
 
-                        <!-- Font Spinner -->
-                        <Spinner
-                            android:id="@+id/spinnerNameFont"
+                        <!-- Font Selector Box with White Background -->
+                        <FrameLayout
+                            android:id="@+id/layoutFontSelector"
                             android:layout_width="0dp"
                             android:layout_height="24dp"
                             android:background="@drawable/bg_16_stroke_white"
+                            android:clickable="true"
+                            android:focusable="true"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/guideline2"
                             app:layout_constraintBottom_toBottomOf="@id/tvFontLabel"
-                            app:layout_constraintTop_toTopOf="@id/tvFontLabel" />
+                            app:layout_constraintTop_toTopOf="@id/tvFontLabel">
+
+                            <!-- Current Font Display -->
+                            <TextView
+                                android:id="@+id/tvCurrentNameFont"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="28dp"
+                                android:gravity="center_vertical"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="4dp"
+                                android:text="Old Town"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp" />
+
+                            <!-- Dropdown Arrow -->
+                            <ImageView
+                                android:id="@+id/imgFontArrow"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center_vertical|end"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/ic_down"
+                                app:tint="@color/app" />
+                        </FrameLayout>
+
+                        <!-- Font List (Expandable) -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvFontList"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_rcvfont"
+                            android:overScrollMode="never"
+                            android:paddingVertical="4dp"
+                            android:visibility="visible"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@id/layoutFontSelector"
+                            app:layout_constraintTop_toBottomOf="@id/layoutFontSelector"
+                            tools:listitem="@layout/item_font_selector" />
 
                         <!-- Spacing Label -->
                         <TextView
@@ -218,17 +258,16 @@
                             android:textColor="@color/app"
                             android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/spinnerNameFont" />
+                            app:layout_constraintTop_toBottomOf="@id/rvFontList" />
 
                         <!-- Spacing SeekBar -->
                         <SeekBar
+                            style="@style/CustomSeekBar"
                             android:id="@+id/seekBarNameSpacing"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:max="100"
                             android:progress="0"
-                            android:progressDrawable="@drawable/seekbar_progress_orange"
-                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="@id/guideline2"
                             app:layout_constraintTop_toTopOf="@id/tvSpacingLabel"
@@ -334,13 +373,12 @@
                             app:layout_constraintTop_toBottomOf="@id/edtBounty" />
 
                         <SeekBar
+                            style="@style/CustomSeekBar"
                             android:id="@+id/seekBarBountySize"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:max="100"
                             android:progress="50"
-                            android:progressDrawable="@drawable/seekbar_progress_orange"
-                            android:thumb="@drawable/seekbar_thumb_orange"
                             app:layout_constraintBottom_toBottomOf="@id/tvBountySizeLabel"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/guideline1"

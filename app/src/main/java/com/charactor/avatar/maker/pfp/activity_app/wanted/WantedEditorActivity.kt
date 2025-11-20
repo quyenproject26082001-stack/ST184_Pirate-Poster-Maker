@@ -11,16 +11,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.charactor.avatar.maker.pfp.R
+import com.charactor.avatar.maker.pfp.adapter.FontItem
+import com.charactor.avatar.maker.pfp.adapter.FontSelectorAdapter
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.*
 import com.charactor.avatar.maker.pfp.core.helper.AssetHelper
@@ -55,12 +57,12 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private val fontList = listOf(
-        "Roboto Bold" to R.font.roboto_bold,
-        "Roboto Medium" to R.font.roboto_medium,
-        "Roboto Regular" to R.font.roboto_regular,
-        "Londrina Solid" to R.font.londrina_solid_regular,
-        "Montserrat Bold" to R.font.montserrat_bold,
-        "Montserrat Medium" to R.font.montserrat_medium
+        FontItem("Roboto Bold", R.font.roboto_bold),
+        FontItem("Roboto Medium", R.font.roboto_medium),
+        FontItem("Roboto Regular", R.font.roboto_regular),
+        FontItem("Londrina Solid", R.font.londrina_solid_regular),
+        FontItem("Montserrat Bold", R.font.montserrat_bold),
+        FontItem("Montserrat Medium", R.font.montserrat_medium)
     )
 
     override fun setViewBinding(): ActivityWantedEditorBinding {
@@ -96,7 +98,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             }
         }
 
-        setupFontSpinners()
+        setupFontSelector()
         setupSeekBars()
         setupEditTexts()
 
@@ -314,7 +316,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             edtBounty.setText("$2,000,000")
 
             // Reset Name section
-            spinnerNameFont.setSelection(0) // First font
+            tvCurrentNameFont.text = fontList[0].name
+            val initialTypeface = ResourcesCompat.getFont(this@WantedEditorActivity, fontList[0].fontResId)
+            tvName?.typeface = initialTypeface
+            tvCurrentNameFont.typeface = initialTypeface
             seekBarNameSpacing.progress = 0
 
             // Reset Bounty section
@@ -374,21 +379,48 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
     }
 
-    private fun setupFontSpinners() {
-        val fontNames = fontList.map { it.first }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, fontNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    private fun setupFontSelector() {
+        // Set initial font name and apply font
+        val initialFont = fontList[0]
+        binding.tvCurrentNameFont.text = initialFont.name
+        val initialTypeface = ResourcesCompat.getFont(this, initialFont.fontResId)
+        tvName?.typeface = initialTypeface
+        binding.tvCurrentNameFont.typeface = initialTypeface
+        viewModel.setNameFont(initialFont.name)
 
-        binding.spinnerNameFont.adapter = adapter
-        binding.spinnerNameFont.setSelection(0)
-        binding.spinnerNameFont.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                val fontRes = fontList[position].second
-                val typeface = ResourcesCompat.getFont(this@WantedEditorActivity, fontRes)
-                tvName?.typeface = typeface
-                viewModel.setNameFont(fontList[position].first)
+        // Setup RecyclerView with adapter
+        val selectedIndex = 0
+        val adapter = FontSelectorAdapter(fontList, selectedIndex) { fontItem, _ ->
+            // Update current font display
+            binding.tvCurrentNameFont.text = fontItem.name
+            val typeface = ResourcesCompat.getFont(this, fontItem.fontResId)
+            tvName?.typeface = typeface
+            binding.tvCurrentNameFont.typeface = typeface
+
+            // Update ViewModel
+            viewModel.setNameFont(fontItem.name)
+
+            // Collapse the font list after selection
+            binding.rvFontList.visibility = View.GONE
+            binding.imgFontArrow.rotation = 0f
+        }
+
+        binding.rvFontList.apply {
+            layoutManager = LinearLayoutManager(this@WantedEditorActivity)
+            this.adapter = adapter
+        }
+
+        // Toggle expand/collapse on click
+        binding.layoutFontSelector.setOnClickListener {
+            if (binding.rvFontList.visibility == View.GONE) {
+                // Expand
+                binding.rvFontList.visibility = View.VISIBLE
+                binding.imgFontArrow.rotation = 180f
+            } else {
+                // Collapse
+                binding.rvFontList.visibility = View.GONE
+                binding.imgFontArrow.rotation = 0f
             }
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
     }
 
