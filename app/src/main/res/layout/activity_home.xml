@@ -163,7 +163,7 @@
                         android:layout_weight="0"
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
-                        android:text="My Design"
+                        android:text="@string/my_design"
                         app:outerStrokeWidth="1dp"
                         app:outerStrokeColor="#000000"
                         android:textColor="@color/white"

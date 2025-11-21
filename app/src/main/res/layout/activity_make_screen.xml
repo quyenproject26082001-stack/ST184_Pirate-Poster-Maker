@@ -136,7 +136,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/kurale_regular"
-                        android:text="Edit"
+                        android:text="@string/edit"
                         android:textColor="#C4561B"
                         android:textSize="18sp" />
                 </com.google.android.material.card.MaterialCardView>

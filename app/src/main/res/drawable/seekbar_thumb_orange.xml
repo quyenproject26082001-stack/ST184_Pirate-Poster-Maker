@@ -5,17 +5,17 @@
         <shape android:shape="oval">
             <solid android:color="#C4561B"/>
             <size
-                android:width="18dp"
-                android:height="18dp"/>
+                android:width="12dp"
+                android:height="12dp"/>
         </shape>
     </item>
 
     <!-- Vòng tròn trong - Màu trắng -->
     <item
-        android:top="1.5dp"
-        android:bottom="1.5dp"
-        android:left="1.5dp"
-        android:right="1.5dp">
+        android:top="2dp"
+        android:bottom="2dp"
+        android:left="2dp"
+        android:right="2dp">
         <shape android:shape="oval">
             <solid android:color="#FFFFFF"/>
         </shape>

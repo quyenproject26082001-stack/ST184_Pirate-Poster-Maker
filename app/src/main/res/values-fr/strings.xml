@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Character Avatar Creator</string>
+    <string name="app_name">Créateur d\'Avatar de Personnage</string>
     <string name="go_to_setting_message">L\'application a besoin de cette autorisation</string>
     <string name="settings">Paramètres</string>
     <string name="this_action_can_contain_ads">Cette action peut contenir des publicités</string>
@@ -7,9 +7,9 @@
     <string name="next">Suivant</string>
     <string name="language">Langue</string>
 
-    <string name="title_1">Deviens un vrai pirate</string>
+    <string name="title_1">Devenez un vrai pirate</string>
     <string name="title_2">Style pirate surréaliste</string>
-    <string name="title_3">Crée une affiche recherché avec une énorme prime</string>
+    <string name="title_3">Créez une affiche de recherché avec une énorme prime</string>
 
     <string name="permission">Autorisation</string>
     <string name="storage">Stockage</string>
@@ -18,70 +18,71 @@
     <string name="granted_notification">Autorisation de notification accordée</string>
     <string name="granted_storage">Autorisation de stockage accordée</string>
     <string name="allow">Autoriser</string>
-    <string name="to_access">pour accéder aux photos sur ton appareil</string>
-    <string name="to_access_13">pour accéder aux notifications sur ton appareil</string>
-    <string name="no_designs_yet">Tu n\'as aucune affiche</string>
+    <string name="to_access">pour accéder aux photos sur votre appareil</string>
+    <string name="to_access_13">pour accéder aux notifications sur votre appareil</string>
+    <string name="no_designs_yet">Vous n\'avez aucune affiche</string>
 
-    <string name="rate_us">Évalue-nous</string>
-    <string name="share_app">Partager l\'application</string>
-    <string name="privacy_policy"><![CDATA[Confidentialité et Politique]]></string>
+    <string name="rate_us">Évaluez-nous</string>
+    <string name="share_app">Partager l\'App</string>
+    <string name="privacy_policy"><![CDATA[Confidentialité & Politique]]></string>
 
-    <string name="zero_star_title">Aimes-tu l\'application ?</string>
-    <string name="zero_star">J\'ai besoin de ton amour</string>
+    <string name="zero_star_title">Aimez-vous l\'application?</string>
+    <string name="zero_star">J\'ai besoin de votre amour</string>
 
-    <string name="one_star_title">Le petit ami m\'a fait pleurer</string>
+    <string name="one_star_title">Petit ami m\'a fait pleurer</string>
     <string name="one_star">Je vais pleurer toute la journée</string>
 
     <string name="two_star_title">Je suis un peu triste</string>
     <string name="two_star">Je ne mangerai pas de riz aujourd\'hui</string>
 
-    <string name="three_star_title">Bon travail, petit ami</string>
-    <string name="three_star">Je sais que tu ne me laisseras pas triste</string>
+    <string name="three_star_title">Bon travail petit ami</string>
+    <string name="three_star">Je savais que tu ne me laisserais pas triste</string>
 
     <string name="four_star_title">Tu es si beau</string>
     <string name="four_star">Le prince est si beau</string>
 
     <string name="five_star_title">Je t\'aime tellement</string>
-    <string name="five_star">Marions-nous</string>
+    <string name="five_star">marions-nous</string>
 
-    <string name="rate_us_0">Tu ne l\'as pas encore noté !</string>
+    <string name="rate_us_0">Vous n\'avez pas encore évalué!</string>
     <string name="rate">Évaluer</string>
     <string name="exit">Quitter</string>
-    <string name="have_rated">Merci d\'avoir évalué notre application</string>
+    <string name="have_rated">Merci d\'avoir évalué notre app</string>
     <string name="share">Partager</string>
     <string name="delete">Supprimer</string>
     <string name="download">Télécharger</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
-    <string name="wait_a_minute">Attends un instant...</string>
+    <string name="wait_a_minute">Patientez quelques secondes...</string>
     <string name="reset">Réinitialiser</string>
     <string name="download_success">Téléchargement réussi dans l\'album Character Maker</string>
-    <string name="please_check_your_internet">Veuillez vérifier votre connexion Internet</string>
+    <string name="please_check_your_internet">Veuillez vérifier votre connexion internet</string>
     <string name="please_select_an_image">Veuillez sélectionner une image</string>
     <string name="error">Erreur</string>
+
     <string name="an_error_occurred">Une erreur s\'est produite, veuillez réessayer plus tard.</string>
-    <string name="image_has_been_saved_successfully">Image enregistrée avec succès !</string>
+    <string name="image_has_been_saved_successfully">Image enregistrée avec succès!</string>
     <string name="save">Enregistrer</string>
-    <string name="are_you_sure_want_to_delete_this_item">Voulez-vous vraiment supprimer cet élément ?</string>
+    <string name="are_you_sure_want_to_delete_this_item">Êtes-vous sûr de vouloir supprimer cet élément?</string>
     <string name="downloading">Téléchargement...</string>
-    <string name="successfully">Avec succès</string>
-    <string name="download_failed_please_try_again_later">Échec du téléchargement, veuillez réessayer plus tard !</string>
-    <string name="save_failed_please_try_again">Échec de l\'enregistrement, veuillez réessayer !</string>
-    <string name="delete_failed_please_try_again">Échec de la suppression, veuillez réessayer !</string>
-    <string name="my_creation">Ma création</string>
-    <string name="delete_your_customize">Supprimer ta personnalisation</string>
-    <string name="are_you_sure_you_want_to_delete_the_image">Voulez-vous vraiment supprimer l\'image ?</string>
-    <string name="haven_t_saved_it_yet_do_you_want_to_exit">Pas encore enregistré, veux-tu quitter ?</string>
-    <string name="change_your_whole_design_are_you_sure">Veux-tu tout réinitialiser ?</string>
-    <string name="character_maker">Affiche Recherché \nCréateur</string>
+    <string name="successfully">Succès</string>
+    <string name="download_failed_please_try_again_later">Échec du téléchargement, veuillez réessayer plus tard!</string>
+    <string name="save_failed_please_try_again">Échec de l\'enregistrement, veuillez réessayer!</string>
+    <string name="delete_failed_please_try_again">Échec de la suppression, veuillez réessayer!</string>
+    <string name="my_creation">Ma Création</string>
+    <string name="delete_your_customize">Supprimer votre personnalisation</string>
+    <string name="are_you_sure_you_want_to_delete_the_image">Êtes-vous sûr de vouloir supprimer l\'image?</string>
+    <string name="haven_t_saved_it_yet_do_you_want_to_exit">Pas encore enregistré, voulez-vous quitter?</string>
+    <string name="change_your_whole_design_are_you_sure">Voulez-vous tout réinitialiser?</string>
+    <string name="character_maker">Créateur d\'Affiche\nde Recherché</string>
     <string name="no_item_here">Aucun Élément Ici</string>
     <string name="import_">Importer</string>
     <string name="templates">Modèles</string>
-    <string name="posterwantedtemplates">Modèles d\'Affiches\nRecherché</string>
-    <string name="posterwantedmaker">Créateur d\'Affiches\nRecherché</string>
+    <string name="posterwantedtemplates">Modèles d\'Affiche\nde Recherché</string>
+    <string name="posterwantedmaker">Créateur d\'Affiche\nde Recherché</string>
     <string name="bounty">Prime</string>
     <string name="photo_filter">Filtre Photo</string>
-    <string name="poster_shadow">Ombre d\'Affiche</string>
+    <string name="poster_shadow">Ombre de l\'Affiche</string>
     <string name="sepia">Sépia</string>
     <string name="saturate">Saturation</string>
     <string name="hue_rotate">Rotation de Teinte</string>
@@ -90,4 +91,30 @@
     <string name="brightness">Luminosité</string>
     <string name="blur">Flou</string>
     <string name="shadow">Ombre</string>
+
+    <string name="wanted_poster_maker">Créateur d\'Affiche</string>
+    <string name="my_design">Mon Design</string>
+    <string name="delete_design_confirmation">Êtes-vous sûr de vouloir supprimer ce design?</string>
+    <string name="design_deleted">Design supprimé</string>
+    <string name="delete_failed">Échec de la suppression</string>
+    <string name="cancel">Annuler</string>
+    <string name="poster_templates">Modèles d\'Affiche</string>
+    <string name="default_name">Pirate</string>
+    <string name="default_bounty">1 000 000</string>
+    <string name="reset_to_default_values">Réinitialiser aux valeurs par défaut?</string>
+    <string name="please_import_a_photo_first">Veuillez d\'abord importer une photo</string>
+    <string name="failed_to_load_image">Échec du chargement de l\'image</string>
+    <string name="background_removed_success">Arrière-plan supprimé avec succès</string>
+    <string name="failed_to_remove_background">Échec de la suppression de l\'arrière-plan</string>
+    <string name="error_message">Une erreur s\'est produite</string>
+    <string name="position_y">Position Y</string>
+    <string name="spacing">Espacement</string>
+    <string name="input">Entrée</string>
+    <string name="size">Taille</string>
+    <string name="weight">Poids</string>
+    <string name="position_x">Position X</string>
+    <string name="name">Nom</string>
+    <string name="enter_name">Entrez le nom</string>
+    <string name="enter_bounty">Entrez la prime</string>
+    <string name="edit">Modifier</string>
 </resources>

@@ -94,7 +94,7 @@
 
     <string name="wanted_poster_maker">Poster Maker</string>
     <string name="my_design">My Design</string>
-    <string name="delete_design_confirmation">Are you sure you want to delete this design?</string>
+    <string name="delete_design_confirmation">Are you sure want to delete this design?</string>
     <string name="design_deleted">Design deleted</string>
     <string name="delete_failed">Delete failed</string>
     <string name="cancel">Cancel</string>
@@ -107,4 +107,14 @@
     <string name="background_removed_success">Background removed successfully</string>
     <string name="failed_to_remove_background">Failed to remove background</string>
     <string name="error_message">An error occurred</string>
+    <string name="position_y">Position Y</string>
+    <string name="spacing">Spacing</string>
+    <string name="input">Input</string>
+    <string name="size">Size</string>
+    <string name="weight">Weight</string>
+    <string name="position_x">Position X</string>
+    <string name="name">Name</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_bounty">Enter bounty</string>
+    <string name="edit">Edit</string>
 </resources>
