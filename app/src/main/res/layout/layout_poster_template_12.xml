@@ -39,13 +39,13 @@
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        app:layout_constraintWidth_percent="0.60"
-        app:layout_constraintHeight_percent="0.47"
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintHeight_percent="0.36"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.44" />
+        app:layout_constraintVertical_bias="0.54" />
 
     <!-- Avatar: photoLeft=0.20, photoTop=0.25, photoRight=0.80, photoBottom=0.72 -->
     <ImageView
