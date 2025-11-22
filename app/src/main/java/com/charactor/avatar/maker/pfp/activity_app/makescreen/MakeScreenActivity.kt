@@ -372,9 +372,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 loadImageToPreview(uri)
             } ?: loadDefaultAvatar()
 
-            // Update shadows
-            applyPosterShadow(viewModel.posterShadow.value)
-            applyPhotoShadow(viewModel.filterShadow.value)
+            // Apply ALL effects from ViewModel to match Editor
+            applyAllEffectsFromViewModel()
         } else {
             // Hide all editable elements - show only avatar.png preview
             tvName?.visibility = View.GONE
@@ -382,6 +381,140 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             imgAvatar?.visibility = View.GONE
             imgAvatarShadow?.visibility = View.GONE
             imgTemplateShadow?.visibility = View.GONE
+        }
+    }
+
+    /**
+     * Apply all effects from ViewModel to preview
+     * This ensures MakeScreen preview matches Editor preview exactly
+     */
+    private fun applyAllEffectsFromViewModel() {
+        val config = viewModel.getConfig()
+
+        // Apply template colors and base sizes
+        try {
+            if (config.hasName) {
+                tvName?.setTextColor(Color.parseColor(config.nameColor))
+                tvName?.textSize = config.nameSize
+            }
+            tvBounty?.setTextColor(Color.parseColor(config.bountyColor))
+            // Note: bounty size is overridden below by user's custom size
+        } catch (e: Exception) {
+            tvName?.setTextColor(Color.BLACK)
+            tvBounty?.setTextColor(Color.BLACK)
+        }
+
+        // Name effects
+        tvName?.letterSpacing = viewModel.nameSpacing.value
+        // TODO: Apply font typeface (need to map font name to resource)
+
+        // Bounty effects (override config values with user's customization)
+        tvBounty?.textSize = viewModel.bountySize.value
+        tvBounty?.letterSpacing = viewModel.bountySpacing.value
+        tvBounty?.translationX = viewModel.bountyPositionX.value
+        tvBounty?.translationY = viewModel.bountyPositionY.value
+
+        // Photo filters
+        applyPhotoFilters()
+
+        // Shadows
+        applyPosterShadow(viewModel.posterShadow.value)
+        applyPhotoShadow(viewModel.filterShadow.value)
+    }
+
+    /**
+     * Apply photo filters to imgAvatar
+     * EXACTLY LIKE WantedEditorActivity.applyFilters()
+     */
+    private fun applyPhotoFilters() {
+        val brightness = viewModel.filterBrightness.value
+        val contrast = viewModel.filterContrast.value
+        val saturation = viewModel.filterSaturate.value
+        val grayscale = viewModel.filterGrayscale.value
+        val hueRotate = viewModel.filterHueRotate.value
+        val sepia = viewModel.filterSepia.value
+        val blur = viewModel.filterBlur.value
+
+        val colorMatrix = android.graphics.ColorMatrix()
+
+        // Brightness
+        val brightnessMatrix = android.graphics.ColorMatrix(floatArrayOf(
+            brightness, 0f, 0f, 0f, 0f,
+            0f, brightness, 0f, 0f, 0f,
+            0f, 0f, brightness, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        colorMatrix.postConcat(brightnessMatrix)
+
+        // Contrast
+        val scale = contrast
+        val translate = (1f - contrast) / 2f * 255f
+        val contrastMatrix = android.graphics.ColorMatrix(floatArrayOf(
+            scale, 0f, 0f, 0f, translate,
+            0f, scale, 0f, 0f, translate,
+            0f, 0f, scale, 0f, translate,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        colorMatrix.postConcat(contrastMatrix)
+
+        // Saturation
+        val saturationMatrix = android.graphics.ColorMatrix()
+        saturationMatrix.setSaturation(saturation)
+        colorMatrix.postConcat(saturationMatrix)
+
+        // Grayscale
+        if (grayscale > 0) {
+            val invGrayscale = 1 - grayscale
+            val grayscaleMatrix = android.graphics.ColorMatrix(floatArrayOf(
+                invGrayscale + grayscale * 0.299f, grayscale * 0.587f, grayscale * 0.114f, 0f, 0f,
+                grayscale * 0.299f, invGrayscale + grayscale * 0.587f, grayscale * 0.114f, 0f, 0f,
+                grayscale * 0.299f, grayscale * 0.587f, invGrayscale + grayscale * 0.114f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            colorMatrix.postConcat(grayscaleMatrix)
+        }
+
+        // Hue Rotation
+        if (hueRotate != 0f) {
+            val angle = hueRotate * Math.PI.toFloat() / 180f
+            val cosA = kotlin.math.cos(angle.toDouble()).toFloat()
+            val sinA = kotlin.math.sin(angle.toDouble()).toFloat()
+
+            val hueRotateMatrix = android.graphics.ColorMatrix(floatArrayOf(
+                0.213f + cosA * 0.787f - sinA * 0.213f, 0.715f - cosA * 0.715f - sinA * 0.715f, 0.072f - cosA * 0.072f + sinA * 0.928f, 0f, 0f,
+                0.213f - cosA * 0.213f + sinA * 0.143f, 0.715f + cosA * 0.285f + sinA * 0.140f, 0.072f - cosA * 0.072f - sinA * 0.283f, 0f, 0f,
+                0.213f - cosA * 0.213f - sinA * 0.787f, 0.715f - cosA * 0.715f + sinA * 0.715f, 0.072f + cosA * 0.928f + sinA * 0.072f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            colorMatrix.postConcat(hueRotateMatrix)
+        }
+
+        // Sepia
+        if (sepia > 0) {
+            val invSepia = 1 - sepia
+            val sepiaMatrix = android.graphics.ColorMatrix(floatArrayOf(
+                invSepia + sepia * 0.393f, sepia * 0.769f, sepia * 0.189f, 0f, 0f,
+                sepia * 0.349f, invSepia + sepia * 0.686f, sepia * 0.168f, 0f, 0f,
+                sepia * 0.272f, sepia * 0.534f, invSepia + sepia * 0.131f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            colorMatrix.postConcat(sepiaMatrix)
+        }
+
+        // Apply ColorMatrix filter
+        imgAvatar?.colorFilter = android.graphics.ColorMatrixColorFilter(colorMatrix)
+
+        // Apply Blur (requires API 31+)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            if (blur > 0) {
+                val blurRadius = blur / 100f * 25f // Max blur radius 25
+                val blurEffect = android.graphics.RenderEffect.createBlurEffect(
+                    blurRadius, blurRadius, android.graphics.Shader.TileMode.CLAMP
+                )
+                imgAvatar?.setRenderEffect(blurEffect)
+            } else {
+                imgAvatar?.setRenderEffect(null)
+            }
         }
     }
 

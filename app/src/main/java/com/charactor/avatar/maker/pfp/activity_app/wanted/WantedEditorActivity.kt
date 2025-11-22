@@ -73,6 +73,16 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Inflate template layout dynamically
         inflateTemplateLayout(viewModel.selectedTemplate.value)
 
+        // IMPORTANT: Setup listeners FIRST before restoring values
+        // This ensures that when we restore values, listeners are already attached
+        // and will trigger to update the preview (tvName, tvBounty, filters, etc.)
+        setupFontSelector()
+        setupSeekBars()
+        setupEditTexts()
+
+        // Apply text colors from template config
+        applyTemplateColors()
+
         // Check if this is first time entering Editor (no edits yet)
         val isFirstTime = !viewModel.isEditingStarted.value
 
@@ -96,14 +106,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             viewModel.selectedImageUri.value?.let { uri ->
                 loadImageToAvatars(uri)
             }
+
+            // RESTORE UI VALUES FROM VIEWMODEL
+            // Since listeners are already setup, they will trigger and update the preview
+            restoreUIFromViewModel()
         }
-
-        setupFontSelector()
-        setupSeekBars()
-        setupEditTexts()
-
-        // Apply text colors from template config
-        applyTemplateColors()
     }
 
     /**
@@ -303,6 +310,61 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     /**
+     * Restore all UI values from ViewModel
+     * Called when returning to Editor after saving
+     *
+     * IMPORTANT: This must be called AFTER setupSeekBars() and setupEditTexts()
+     * so that listeners are already attached and will trigger when values are set
+     */
+    private fun restoreUIFromViewModel() {
+        // Restore EditText values
+        // TextWatcher will trigger and update tvName/tvBounty automatically
+        binding.edtName.setText(viewModel.nameText.value)
+        binding.edtBounty.setText(viewModel.bountyText.value)
+
+        // Restore Name section
+        // Listener will trigger and apply letterSpacing to tvName
+        binding.seekBarNameSpacing.progress = (viewModel.nameSpacing.value * 10f).toInt()
+
+        // Restore Bounty section
+        // Listeners will trigger and apply size/spacing/position to tvBounty
+        val bountySizeProgress = ((viewModel.bountySize.value - 12f) / 48f * 100f).toInt()
+        binding.seekBarBountySize.progress = bountySizeProgress
+
+        binding.seekBarBountyWeight.progress = viewModel.bountyWeight.value.toInt()
+
+        binding.seekBarBountySpacing.progress = (viewModel.bountySpacing.value * 10f).toInt()
+
+        binding.seekBarBountyPositionX.progress = ((viewModel.bountyPositionX.value / 2f) + 50).toInt()
+
+        binding.seekBarBountyPositionY.progress = ((viewModel.bountyPositionY.value / 2f) + 50).toInt()
+
+        // Restore Photo Filter section
+        // Listeners will trigger and apply shadow/blur/filters to imgAvatar
+        binding.seekBarFilterShadow.progress = viewModel.filterShadow.value.toInt()
+
+        binding.seekBarFilterBlur.progress = viewModel.filterBlur.value.toInt()
+
+        binding.seekBarFilterBrightness.progress = (viewModel.filterBrightness.value * 100f).toInt()
+
+        binding.seekBarFilterContrast.progress = (viewModel.filterContrast.value * 100f).toInt()
+
+        binding.seekBarFilterGrayscale.progress = (viewModel.filterGrayscale.value * 100f).toInt()
+
+        binding.seekBarFilterHueRotate.progress = viewModel.filterHueRotate.value.toInt()
+
+        binding.seekBarFilterSaturate.progress = (viewModel.filterSaturate.value * 100f).toInt()
+
+        binding.seekBarFilterSepia.progress = (viewModel.filterSepia.value * 100f).toInt()
+
+        // Restore Poster Shadow section
+        // Listener will trigger and apply template shadow
+        binding.seekBarPosterShadow.progress = viewModel.posterShadow.value.toInt()
+
+        // Font restoration is handled by setupFontSelector()
+    }
+
+    /**
      * Handle reset button - Reset all values to default
      */
     private fun handleReset() {
@@ -380,16 +442,23 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private fun setupFontSelector() {
-        // Set initial font name and apply font
-        val initialFont = fontList[0]
+        // Find font index from ViewModel (for restoring state)
+        val savedFontName = viewModel.nameFont.value
+        val selectedIndex = fontList.indexOfFirst { it.name == savedFontName }.takeIf { it >= 0 } ?: 0
+        val initialFont = fontList[selectedIndex]
+
+        // Set initial/restored font name and apply font
         binding.tvCurrentNameFont.text = initialFont.name
         val initialTypeface = ResourcesCompat.getFont(this, initialFont.fontResId)
         tvName?.typeface = initialTypeface
         binding.tvCurrentNameFont.typeface = initialTypeface
-        viewModel.setNameFont(initialFont.name)
+
+        // Only update ViewModel if we're using default (not restoring)
+        if (savedFontName != initialFont.name) {
+            viewModel.setNameFont(initialFont.name)
+        }
 
         // Setup RecyclerView with adapter
-        val selectedIndex = 0
         val adapter = FontSelectorAdapter(fontList, selectedIndex) { fontItem, _ ->
             // Update current font display
             binding.tvCurrentNameFont.text = fontItem.name
