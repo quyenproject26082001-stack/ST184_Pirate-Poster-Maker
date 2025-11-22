@@ -324,7 +324,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // Restore Name section
         // Listener will trigger and apply letterSpacing to tvName
-        binding.seekBarNameSpacing.progress = (viewModel.nameSpacing.value * 10f).toInt()
+        binding.seekBarNameSpacing.progress = (viewModel.nameSpacing.value * 100f).toInt()  // spacing 0-1.0 → progress 0-100
 
         // Restore Bounty section
         // Listeners will trigger and apply size/spacing/position to tvBounty
@@ -333,7 +333,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         binding.seekBarBountyWeight.progress = viewModel.bountyWeight.value.toInt()
 
-        binding.seekBarBountySpacing.progress = (viewModel.bountySpacing.value * 10f).toInt()
+        binding.seekBarBountySpacing.progress = (viewModel.bountySpacing.value * 100f).toInt()  // spacing 0-1.0 → progress 0-100
 
         binding.seekBarBountyPositionX.progress = ((viewModel.bountyPositionX.value / 2f) + 50).toInt()
 
@@ -368,14 +368,14 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Handle reset button - Reset all values to default
      */
     private fun handleReset() {
-        // Reset ViewModel data
+        // Reset ViewModel data to template config defaults
         viewModel.resetAll()
 
-        // Reset UI components to match default values
+        // Reset UI components to match ViewModel defaults (from template config)
         binding.apply {
-            // Reset EditTexts
-            edtName.setText("NAME HERE")
-            edtBounty.setText("$2,000,000")
+            // Reset EditTexts to template config defaults (NOT hardcoded values!)
+            edtName.setText(viewModel.nameText.value)
+            edtBounty.setText(viewModel.bountyText.value)
 
             // Reset Name section
             tvCurrentNameFont.text = fontList[0].name
@@ -385,7 +385,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             seekBarNameSpacing.progress = 0
 
             // Reset Bounty section
-            seekBarBountySize.progress = 25 // Default 24f maps to ~25% progress
+            // Calculate progress from config bounty size (12-60sp range)
+            val bountySizeProgress = ((viewModel.bountySize.value - 12f) / 48f * 100f).toInt()
+            seekBarBountySize.progress = bountySizeProgress
             seekBarBountyWeight.progress = 0
             seekBarBountySpacing.progress = 0
             seekBarBountyPositionX.progress = 50 // Center (0f offset)
@@ -405,11 +407,12 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             seekBarPosterShadow.progress = 0
         }
 
-        // Reset TextViews (will be updated by EditText listeners)
-        tvName?.text = strings(R.string.default_name)
-        tvBounty?.text = strings(R.string.default_bounty)
+        // Reset TextViews to template config defaults
+        // Note: EditText listeners will also update these, but we set them here for immediate feedback
+        tvName?.text = viewModel.nameText.value
+        tvBounty?.text = viewModel.bountyText.value
         tvName?.letterSpacing = 0f
-        tvBounty?.textSize = 24f
+        tvBounty?.textSize = viewModel.bountySize.value  // Use config default size
         tvBounty?.letterSpacing = 0f
         tvBounty?.translationX = 0f
         tvBounty?.translationY = 0f
@@ -525,9 +528,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private fun setupSeekBars() {
-        // Name Spacing
+        // Name Spacing (0-1.0 for reasonable text spacing)
         binding.seekBarNameSpacing.onProgressChanged { progress ->
-            val spacing = progress / 10f
+            val spacing = progress / 100f  // 0-100 → 0-1.0
             tvName?.letterSpacing = spacing
             viewModel.setNameSpacing(spacing)
         }
@@ -546,9 +549,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             viewModel.setBountyWeight(progress.toFloat())
         }
 
-        // Bounty Spacing
+        // Bounty Spacing (0-1.0 for reasonable text spacing)
         binding.seekBarBountySpacing.onProgressChanged { progress ->
-            val spacing = progress / 10f
+            val spacing = progress / 100f  // 0-100 → 0-1.0
             tvBounty?.letterSpacing = spacing
             viewModel.setBountySpacing(spacing)
         }

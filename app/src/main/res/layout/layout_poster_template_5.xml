@@ -64,7 +64,7 @@
         android:id="@+id/imgAvatar"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:src="@drawable/avatar"
         app:layout_constraintWidth_percent="0.64"
         app:layout_constraintHeight_percent="0.39"
@@ -108,4 +108,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.93" />
 
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/guidline"
+        app:layout_constraintGuide_percent="0.29"
+        />
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/guidline1"
+        app:layout_constraintGuide_percent="0.71"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
