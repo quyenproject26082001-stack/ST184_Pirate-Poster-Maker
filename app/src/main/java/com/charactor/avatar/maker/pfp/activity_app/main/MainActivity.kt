@@ -114,7 +114,10 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
     private fun updateText() {
         binding.apply {
-            tv1.text = strings(R.string.character_maker)
+            tv1.text = strings(R.string.posterwantedmaker)
+            tv2.text = strings(R.string.posterwantedtemplates)
+            tv3.text = strings(R.string.my_design)
+
         }
     }
 

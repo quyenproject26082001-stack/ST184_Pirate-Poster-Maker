@@ -37,7 +37,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleHome">
@@ -94,7 +94,7 @@
                 android:id="@+id/BtnPosterWantedTemplate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="8dp">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -137,7 +137,7 @@
                 android:id="@+id/btnMydesgin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="8dp">
 
                 <ImageView
                     android:layout_width="match_parent"

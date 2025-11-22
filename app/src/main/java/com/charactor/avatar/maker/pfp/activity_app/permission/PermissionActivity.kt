@@ -128,7 +128,7 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>() {
     override fun initActionBar() {
         binding.actionBar.tvCenter.apply {
             text = getString(R.string.permission)
-            visible()
+            gone()
         }
     }
 

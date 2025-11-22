@@ -74,7 +74,7 @@ class MyDesignActivity : BaseActivity<ActivityMyDesignBinding>() {
             btnActionBarLeft.setImageResource(R.drawable.ic_back)
             btnActionBarLeft.visible()
             tvCenter.text = strings(R.string.my_design)
-            tvCenter.visible()
+            tvCenter.gone()
             btnActionBarRight.gone()
             btnActionBarRightText.gone()
             btnActionBarReset.gone()

@@ -54,7 +54,7 @@
         android:padding="3dp"
         android:text="@string/next"
         android:textColor="#C4561B"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
