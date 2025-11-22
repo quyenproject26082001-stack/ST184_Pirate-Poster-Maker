@@ -996,9 +996,15 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Both create contour shadow following the object shape!
      */
     private fun applyTemplateShadow(shadowValue: Float) {
-        val shadowView = imgTemplateShadow ?: return
+        android.util.Log.d("PosterShadow", "=== applyTemplateShadow called ===")
+        android.util.Log.d("PosterShadow", "seekbar value: $shadowValue")
+
+        val shadowView = imgTemplateShadow
+        android.util.Log.d("PosterShadow", "shadowView is null: ${shadowView == null}")
+        if (shadowView == null) return
 
         if (shadowValue <= 0) {
+            android.util.Log.d("PosterShadow", "shadowValue <= 0, hiding shadow")
             shadowView.visibility = View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 shadowView.setRenderEffect(null)
@@ -1006,19 +1012,23 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             return
         }
 
+        android.util.Log.d("PosterShadow", "Setting visibility to VISIBLE")
         shadowView.visibility = View.VISIBLE
 
         // Remap: seekbar 0-100 → effective shadow 35-100
         val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)
+        android.util.Log.d("PosterShadow", "effectiveShadowValue (35-100): $effectiveShadowValue")
 
         // EXACTLY LIKE Photo Filter: Reload with new transformation parameters
         val shadowRadius = effectiveShadowValue / 100f * 15f  // 35-100 → 5.25-15px blur
         val shadowAlpha = effectiveShadowValue / 100f * 0.9f   // 35-100 → 0.315-0.9
+        android.util.Log.d("PosterShadow", "shadowRadius: $shadowRadius, shadowAlpha: $shadowAlpha")
 
         // Load template from assets with ShadowTransformation
         // This creates shadow following the template's alpha channel/contour
         val templateId = viewModel.selectedTemplate.value
         val templatePath = AssetHelper.getTemplateItemPath(templateId)
+        android.util.Log.d("PosterShadow", "templateId: $templateId, templatePath: $templatePath")
 
         Glide.with(this)
             .load(templatePath)
@@ -1028,21 +1038,25 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // 1. Alpha - overall shadow visibility (MATCHED with Photo Filter)
         val viewAlpha = (effectiveShadowValue / 100f).coerceIn(0f, 1f)  // 35-100 → 0.35-1.0
         shadowView.alpha = viewAlpha
+        android.util.Log.d("PosterShadow", "viewAlpha: $viewAlpha")
 
         // 2. Offset - shadow displacement (MATCHED with Photo Filter)
         val offsetX = effectiveShadowValue / 100f * 5f   // 35-100 → 1.75-5dp
         val offsetY = effectiveShadowValue / 100f * 5f   // 35-100 → 1.75-5dp
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
+        android.util.Log.d("PosterShadow", "offset: X=$offsetX, Y=$offsetY")
 
         // 3. Scale - noticeable shadow width increase
         val scale = 1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
         shadowView.scaleX = scale
         shadowView.scaleY = scale
+        android.util.Log.d("PosterShadow", "scale: $scale")
 
         // 4. Additional blur via RenderEffect (API 31+) for extra softness (MATCHED)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val additionalBlur = effectiveShadowValue / 100f * 10f  // 35-100 → 3.5-10px additional blur
+            android.util.Log.d("PosterShadow", "Android 12+: additionalBlur=$additionalBlur")
             if (additionalBlur > 0) {
                 val blurEffect = RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, Shader.TileMode.CLAMP
@@ -1051,6 +1065,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             } else {
                 shadowView.setRenderEffect(null)
             }
+        } else {
+            android.util.Log.d("PosterShadow", "Android < 12: No RenderEffect")
         }
     }
 }

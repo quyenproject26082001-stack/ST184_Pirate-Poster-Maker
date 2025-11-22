@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(gradlew.bat assembleDebug:*)",
-      "Bash(./gradlew.bat assembleDebug:*)"
+      "Bash(./gradlew.bat assembleDebug:*)",
+      "Bash(dir /s /b \"D:\\DONESHADOW\\ST184_Pirate-Poster-Maker\\app\\src\\main\\java\\*.java\")",
+      "Bash(findstr:*)",
+      "Bash(done)",
+      "Bash(python fix_shadow_templates.py:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix shadow clipping in Template 1: Make imgAvatarShadow larger than imgAvatar\n\nChanges:\n- Increase imgAvatarShadow size from 0.6x0.4 to 0.76x0.52 (~27% larger)\n- Remove padding=\"50dp\" from imgAvatarShadow (not needed with percentage constraints)\n- Keep layerType=\"hardware\" and clipToPadding=\"false\" for smooth blur\n- imgTemplateShadow already has negative margins and padding for blur space\n\nWhy this fixes the issue:\n- Previous: Shadow same size as avatar → completely hidden behind it\n- Now: Shadow larger → blur visible around avatar edges\n- Works even with images that have solid backgrounds\n\nTest: Import image with background, drag shadow seekbar 0→100, see blur around edges\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
