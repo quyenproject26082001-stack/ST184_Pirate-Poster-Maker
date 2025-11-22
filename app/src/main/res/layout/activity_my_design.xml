@@ -49,6 +49,7 @@
         android:textSize="16sp"
         android:visibility="visible"
         android:gravity="center"
+        android:fontFamily="@font/kurale_regular"
         android:background="@drawable/bg_empty"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

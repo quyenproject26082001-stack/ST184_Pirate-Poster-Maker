@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import jp.wasabeef.glide.transformations.BlurTransformation
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.adapter.FontItem
 import com.charactor.avatar.maker.pfp.adapter.FontSelectorAdapter
@@ -156,6 +157,15 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         imgAvatarShadow = posterView.findViewById(R.id.imgAvatarShadow)
         tvName = posterView.findViewById(R.id.tvName)
         tvBounty = posterView.findViewById(R.id.tvBounty)
+
+        // Enable auto-resize for tvName to handle long text + high spacing
+        // Higher minTextSize (18sp) makes it PREFER wrapping over shrinking
+        tvName?.setAutoSizeTextTypeUniformWithConfiguration(
+            18,     // minTextSize: 18sp (prefer wrapping to multiple lines)
+            28,     // maxTextSize: 28sp
+            1,      // granularity: 1sp step
+            android.util.TypedValue.COMPLEX_UNIT_SP
+        )
 
         // Load template background
         loadTemplateBackground()
@@ -324,7 +334,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // Restore Name section
         // Listener will trigger and apply letterSpacing to tvName
-        binding.seekBarNameSpacing.progress = (viewModel.nameSpacing.value * 100f).toInt()  // spacing 0-1.0 → progress 0-100
+        binding.seekBarNameSpacing.progress = (viewModel.nameSpacing.value * 500f).toInt()  // spacing 0-0.2 → progress 0-100
 
         // Restore Bounty section
         // Listeners will trigger and apply size/spacing/position to tvBounty
@@ -333,7 +343,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         binding.seekBarBountyWeight.progress = viewModel.bountyWeight.value.toInt()
 
-        binding.seekBarBountySpacing.progress = (viewModel.bountySpacing.value * 100f).toInt()  // spacing 0-1.0 → progress 0-100
+        binding.seekBarBountySpacing.progress = (viewModel.bountySpacing.value * 500f).toInt()  // spacing 0-0.2 → progress 0-100
 
         binding.seekBarBountyPositionX.progress = ((viewModel.bountyPositionX.value / 2f) + 50).toInt()
 
@@ -528,10 +538,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private fun setupSeekBars() {
-        // Name Spacing (0-1.0 for reasonable text spacing)
+        // Name Spacing (0-0.2 for text spacing)
         binding.seekBarNameSpacing.onProgressChanged { progress ->
-            val spacing = progress / 100f  // 0-100 → 0-1.0
+            val spacing = progress / 500f  // 0-100 → 0-0.2
             tvName?.letterSpacing = spacing
+            // Auto-size handles long TEXT, multi-line handles wide SPACING
             viewModel.setNameSpacing(spacing)
         }
 
@@ -549,9 +560,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             viewModel.setBountyWeight(progress.toFloat())
         }
 
-        // Bounty Spacing (0-1.0 for reasonable text spacing)
+        // Bounty Spacing (0-0.2 for text spacing)
         binding.seekBarBountySpacing.onProgressChanged { progress ->
-            val spacing = progress / 100f  // 0-100 → 0-1.0
+            val spacing = progress / 500f  // 0-100 → 0-0.2
             tvBounty?.letterSpacing = spacing
             viewModel.setBountySpacing(spacing)
         }
@@ -584,6 +595,17 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Blur
         binding.seekBarFilterBlur.onProgressChanged { progress ->
             viewModel.setFilterBlur(progress.toFloat())
+
+            // For Android 8-11: Reload image with blur transformation
+            // For Android 12+: Use RenderEffect (faster, in applyFilters())
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                // Android 8-11: Reload image with Glide blur transformation
+                val currentUri = viewModel.selectedImageUri.value
+                if (currentUri != null) {
+                    reloadImageWithBlur(currentUri, progress.toFloat())
+                }
+            }
+
             applyFilters()
         }
 
@@ -635,6 +657,30 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             // Control template shadow instead of CardView elevation
             applyTemplateShadow(progress.toFloat())
             viewModel.setPosterShadow(progress.toFloat())
+        }
+    }
+
+    /**
+     * Reload image with blur transformation (for Android 8-11)
+     * Android 12+ uses RenderEffect which is faster
+     */
+    private fun reloadImageWithBlur(uri: Uri, blurValue: Float) {
+        imgAvatar?.let { imageView ->
+            if (blurValue > 0) {
+                // Calculate blur radius (0-25)
+                val blurRadius = (blurValue / 100f * 25f).toInt().coerceAtLeast(1)
+
+                Glide.with(this)
+                    .load(uri)
+                    .transform(CenterCrop(), BlurTransformation(blurRadius, 3)) // radius, sampling
+                    .into(imageView)
+            } else {
+                // No blur - reload normal
+                Glide.with(this)
+                    .load(uri)
+                    .centerCrop()
+                    .into(imageView)
+            }
         }
     }
 
@@ -809,7 +855,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             // Note: Shadow is now handled by applyShadowEffect() using shadow layer approach
             // Old elevation-based shadow code removed as it didn't work properly with ImageView
 
-            // Apply Blur (requires API 31+)
+            // Apply Blur
+            // Android 12+ (API 31+): Use RenderEffect (fast)
+            // Android 8-11 (API 26-30): Handled by reloadImageWithBlur() using Glide transformation
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (blur > 0) {
                     val blurRadius = blur / 100f * 25f // Max blur radius 25
@@ -821,6 +869,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     imgAvatar?.setRenderEffect(null)
                 }
             }
+            // Note: For Android < 12, blur is applied via Glide transformation in reloadImageWithBlur()
         }
     }
 

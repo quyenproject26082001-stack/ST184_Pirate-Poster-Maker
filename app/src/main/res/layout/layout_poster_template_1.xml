@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
+    android:background="@android:color/transparent"
     android:clipToPadding="false">
 
     <!-- Template Background -->
@@ -17,6 +18,7 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/template"
+        android:padding="15dp"
         tools:src="@drawable/template_1_preview"
         app:layout_constraintDimensionRatio="H,3:4"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,10 +31,7 @@
         android:id="@+id/imgTemplateShadow"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="-50dp"
-        android:layout_marginEnd="-50dp"
-        android:layout_marginBottom="-50dp"
+
         android:padding="50dp"
         android:scaleType="fitXY"
         android:visibility="gone"
@@ -85,10 +84,13 @@
         android:text="NAME HERE"
         android:textColor="#3D3D3D"
         android:textSize="28sp"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="18sp"
+        android:autoSizeMaxTextSize="28sp"
+        android:autoSizeStepGranularity="1sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:maxLines="1"
-        android:ellipsize="end"
+        android:maxLines="3"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guidline"
