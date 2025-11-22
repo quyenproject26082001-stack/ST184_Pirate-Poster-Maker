@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/img_bg_edit"
-    tools:context="com.charactor.avatar.maker.pfp.activity_app.wanted.WantedEditorActivity"
-    >
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context="com.charactor.avatar.maker.pfp.activity_app.wanted.WantedEditorActivity">
 
     <!-- Action Bar -->
     <FrameLayout
@@ -24,6 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
 
@@ -32,7 +35,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="20dp"
+            android:background="@android:color/transparent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <!-- Poster Preview - Container for dynamic template layouts -->
             <androidx.cardview.widget.CardView
@@ -40,13 +46,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:cardElevation="4dp">
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardElevation="0dp">
 
                 <!-- Container to inflate template layouts dynamically -->
                 <FrameLayout
                     android:id="@+id/containerPoster"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false" />
 
             </androidx.cardview.widget.CardView>
 

@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipChildren="false"
+    android:background="@android:color/transparent"
     android:clipToPadding="false">
 
     <!-- Template Shadow Layer: No aspect ratio, just follows parent bounds with negative margins -->

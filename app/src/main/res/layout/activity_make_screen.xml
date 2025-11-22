@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
+            android:background="@android:color/transparent"
             android:clipChildren="false"
             android:clipToPadding="false">
 
@@ -60,6 +61,7 @@
                     android:id="@+id/containerPoster"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
                     android:clipChildren="false"
                     android:clipToPadding="false" />
 
