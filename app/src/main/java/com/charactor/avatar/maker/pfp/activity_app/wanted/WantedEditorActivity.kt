@@ -718,9 +718,15 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Reloads shadow with transformation that follows alpha channel (contour shadow like icon)
      */
     private fun applyShadowEffect(shadowValue: Float) {
-        val shadowView = imgAvatarShadow ?: return
+        android.util.Log.d("PhotoShadow", "=== applyShadowEffect called ===")
+        android.util.Log.d("PhotoShadow", "shadowValue: $shadowValue")
+
+        val shadowView = imgAvatarShadow
+        android.util.Log.d("PhotoShadow", "shadowView is null: ${shadowView == null}")
+        if (shadowView == null) return
 
         if (shadowValue <= 0) {
+            android.util.Log.d("PhotoShadow", "shadowValue <= 0, hiding shadow")
             shadowView.visibility = View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 shadowView.setRenderEffect(null)
@@ -728,38 +734,47 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             return
         }
 
+        android.util.Log.d("PhotoShadow", "Setting visibility to VISIBLE")
         shadowView.visibility = View.VISIBLE
 
         // Reload shadow with new transformation parameters
         val currentUri = viewModel.selectedImageUri.value
+        android.util.Log.d("PhotoShadow", "currentUri: $currentUri")
         if (currentUri != null) {
             val shadowRadius = shadowValue / 100f * 15f // 0-15px blur in transformation
             val shadowAlpha = shadowValue / 100f * 0.9f
+            android.util.Log.d("PhotoShadow", "Loading shadow: radius=$shadowRadius, alpha=$shadowAlpha")
 
             Glide.with(this)
                 .load(currentUri)
                 .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
                 .into(shadowView)
+        } else {
+            android.util.Log.e("PhotoShadow", "currentUri is NULL - cannot load shadow!")
         }
 
         // 1. Alpha - overall shadow visibility
         val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
         shadowView.alpha = viewAlpha
+        android.util.Log.d("PhotoShadow", "viewAlpha: $viewAlpha")
 
         // 2. Offset - shadow displacement (small for natural look)
         val offsetX = shadowValue / 100f * 5f   // 0-5dp
-        val offsetY = shadowValue / 100f * 0f   // 0dp (no vertical offset)
+        val offsetY = shadowValue / 100f * 5f   // 0-5dp
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
+        android.util.Log.d("PhotoShadow", "offset: X=$offsetX, Y=$offsetY")
 
         // 3. Scale - very minimal to maintain shape accuracy
         val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0 to 1.03
         shadowView.scaleX = scale
         shadowView.scaleY = scale
+        android.util.Log.d("PhotoShadow", "scale: $scale")
 
         // 4. Additional blur via RenderEffect (API 31+) for extra softness
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val additionalBlur = shadowValue / 100f * 10f // 0-10px additional blur
+            android.util.Log.d("PhotoShadow", "API 31+ additionalBlur: $additionalBlur")
             if (additionalBlur > 0) {
                 val blurEffect = RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, Shader.TileMode.CLAMP
@@ -768,7 +783,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             } else {
                 shadowView.setRenderEffect(null)
             }
+        } else {
+            android.util.Log.d("PhotoShadow", "API < 31, no RenderEffect")
         }
+
+        android.util.Log.d("PhotoShadow", "=== applyShadowEffect done ===")
     }
 
     private fun applyFilters() {
@@ -1001,7 +1020,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // 2. Offset - shadow displacement (MATCHED with Photo Filter)
         val offsetX = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
-        val offsetY = shadowValue / 100f * 0f   // 0dp (no vertical offset)
+        val offsetY = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
