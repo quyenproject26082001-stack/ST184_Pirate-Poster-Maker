@@ -748,7 +748,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // 2. Offset - shadow displacement (small for natural look)
         val offsetX = shadowValue / 100f * 5f   // 0-5dp
-        val offsetY = shadowValue / 100f * 7f   // 0-7dp
+        val offsetY = shadowValue / 100f * 0f   // 0dp (no vertical offset)
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
@@ -1001,7 +1001,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // 2. Offset - shadow displacement (MATCHED with Photo Filter)
         val offsetX = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
-        val offsetY = shadowValue / 100f * 7f   // 0-7dp (SAME as Photo Filter)
+        val offsetY = shadowValue / 100f * 0f   // 0dp (no vertical offset)
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 

@@ -11,6 +11,27 @@
     android:background="@android:color/transparent"
     android:clipToPadding="false">
 
+
+    <!-- Template Shadow Layer: Full size (no margin) to show shadow in 15dp gap -->
+    <ImageView
+        android:id="@+id/imgTemplateShadow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="0dp"
+        android:layout_marginStart="-50dp"
+        android:layout_marginTop="-50dp"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="-50dp"
+        android:padding="50dp"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:layerType="hardware"
+        android:clipToPadding="false"
+        app:layout_constraintDimensionRatio="H,3:4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
     <!-- Template Background -->
     <ImageView
         android:id="@+id/imgTemplate"
@@ -26,22 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Template Shadow Layer: Full size (no margin) to show shadow in 15dp gap -->
-    <ImageView
-        android:id="@+id/imgTemplateShadow"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="0dp"
-        android:padding="50dp"
-        android:scaleType="fitXY"
-        android:visibility="gone"
-        android:layerType="hardware"
-        android:clipToPadding="false"
-        app:layout_constraintDimensionRatio="H,3:4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+
 
     <!-- Avatar Shadow Layer: LARGER than avatar to show blur around edges -->
     <ImageView

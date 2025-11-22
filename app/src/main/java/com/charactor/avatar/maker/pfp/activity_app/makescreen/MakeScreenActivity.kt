@@ -588,7 +588,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         shadowView.alpha = viewAlpha
 
         val offsetX = shadowValue / 100f * 5f
-        val offsetY = shadowValue / 100f * 7f
+        val offsetY = shadowValue / 100f * 0f
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
@@ -644,7 +644,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         shadowView.alpha = viewAlpha
 
         val offsetX = shadowValue / 100f * 5f
-        val offsetY = shadowValue / 100f * 7f
+        val offsetY = shadowValue / 100f * 0f
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 

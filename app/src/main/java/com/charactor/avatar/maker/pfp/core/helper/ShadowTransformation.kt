@@ -28,24 +28,32 @@ class ShadowTransformation(
         val width = toTransform.width
         val height = toTransform.height
 
-        // Create output bitmap with transparent background
-        val output = pool.get(width, height, Bitmap.Config.ARGB_8888)
+        // Calculate padding needed for blur to extend beyond edges
+        // Use 3x shadowRadius to ensure blur has enough space to be visible outside
+        val padding = (shadowRadius * 3).toInt().coerceAtLeast(10)
+
+        // Create output bitmap LARGER than input to allow shadow to appear outside edges
+        val outputWidth = width + padding * 2
+        val outputHeight = height + padding * 2
+        val output = pool.get(outputWidth, outputHeight, Bitmap.Config.ARGB_8888)
         output.eraseColor(Color.TRANSPARENT)
 
         val canvas = Canvas(output)
 
-        // Step 1: Draw the original bitmap to get the alpha channel
+        // Step 1: Draw the original bitmap in the CENTER (offset by padding)
+        // This creates transparent space around the image for blur to expand into
         val alphaPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        canvas.drawBitmap(toTransform, 0f, 0f, alphaPaint)
+        canvas.drawBitmap(toTransform, padding.toFloat(), padding.toFloat(), alphaPaint)
 
         // Step 2: Apply black color while preserving alpha channel (creates silhouette)
         val blackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.argb((shadowAlpha * 255).toInt(), 0, 0, 0)
             xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         }
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), blackPaint)
+        canvas.drawRect(0f, 0f, outputWidth.toFloat(), outputHeight.toFloat(), blackPaint)
 
         // Step 3: Apply blur if radius > 0
+        // Blur will now expand into the transparent padding area, creating shadow outside edges
         if (shadowRadius > 0) {
             return fastBlur(output, shadowRadius.toInt(), pool)
         }
