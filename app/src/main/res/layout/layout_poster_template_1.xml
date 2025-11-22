@@ -6,7 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPosterContent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <!-- Template Background -->
     <ImageView
@@ -27,23 +29,32 @@
         android:id="@+id/imgTemplateShadow"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="-50dp"
+        android:layout_marginTop="-50dp"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="-50dp"
+        android:padding="50dp"
         android:scaleType="fitXY"
         android:visibility="gone"
+        android:layerType="hardware"
+        android:clipToPadding="false"
         app:layout_constraintDimensionRatio="H,3:4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Avatar Shadow Layer -->
+    <!-- Avatar Shadow Layer: LARGER than avatar to show blur around edges -->
     <ImageView
         android:id="@+id/imgAvatarShadow"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:visibility="visible"
-        app:layout_constraintWidth_percent="0.6"
-        app:layout_constraintHeight_percent="0.4"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:layerType="hardware"
+        android:clipToPadding="false"
+        app:layout_constraintWidth_percent="0.76"
+        app:layout_constraintHeight_percent="0.52"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
