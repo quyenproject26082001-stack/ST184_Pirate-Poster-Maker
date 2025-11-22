@@ -79,17 +79,20 @@
     <!-- Name Text: namePositionY=0.68, nameColor=#3D3D3D, nameSize=28sp -->
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
         android:text="NAME HERE"
         android:textColor="#3D3D3D"
         android:textSize="28sp"
         android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guidline"
+        app:layout_constraintEnd_toEndOf="@id/guidline1"
         app:layout_constraintVertical_bias="0.718" />
 
     <!-- Bounty Text: bountyPositionY=0.92, bountyColor=#3D3D3D, bountySize=32sp -->
