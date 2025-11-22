@@ -12,12 +12,11 @@
     android:clipToPadding="false">
 
 
-    <!-- Template Shadow Layer: Full size (no margin) to show shadow in 15dp gap -->
+    <!-- Template Shadow Layer: No aspect ratio, just follows parent bounds with negative margins -->
     <ImageView
         android:id="@+id/imgTemplateShadow"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="0dp"
         android:layout_marginStart="-50dp"
         android:layout_marginTop="-50dp"
         android:layout_marginEnd="-50dp"
@@ -27,11 +26,10 @@
         android:visibility="gone"
         android:layerType="hardware"
         android:clipToPadding="false"
-        app:layout_constraintDimensionRatio="H,3:4"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
     <!-- Template Background -->
     <ImageView
         android:id="@+id/imgTemplate"
@@ -58,13 +56,12 @@
         android:visibility="gone"
         android:layerType="hardware"
         android:clipToPadding="false"
-        app:layout_constraintWidth_percent="0.76"
-        app:layout_constraintHeight_percent="0.52"
-        app:layout_constraintTop_toTopOf="@id/imgTemplate"
-        app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
+        app:layout_constraintWidth_percent="0.65"
+        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintTop_toTopOf="@id/imgAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Avatar Image: photoLeft=0.12, photoTop=0.28, photoRight=0.88, photoBottom=0.62 -->
     <ImageView

@@ -10,6 +10,25 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <!-- Template Shadow Layer: No aspect ratio, just follows parent bounds with negative margins -->
+    <ImageView
+        android:id="@+id/imgTemplateShadow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="-50dp"
+        android:layout_marginTop="-50dp"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="-50dp"
+        android:padding="50dp"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:layerType="hardware"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Template Background -->
     <ImageView
         android:id="@+id/imgTemplate"
@@ -24,43 +43,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Template Shadow Layer -->
-    <ImageView
-        android:id="@+id/imgTemplateShadow"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="-50dp"
-        android:layout_marginEnd="-50dp"
-        android:layout_marginBottom="-50dp"
-        android:padding="50dp"
-        android:scaleType="fitXY"
-        android:visibility="gone"
-        android:layerType="hardware"
-        android:clipToPadding="false"
-        app:layout_constraintDimensionRatio="H,3:4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <!-- Avatar Shadow Layer -->
+    <!-- Avatar Shadow Layer: LARGER than avatar to show blur around edges -->
     <ImageView
         android:id="@+id/imgAvatarShadow"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="50dp"
         android:scaleType="fitXY"
         android:visibility="gone"
         android:layerType="hardware"
         android:clipToPadding="false"
-        app:layout_constraintWidth_percent="0.60"
-        app:layout_constraintHeight_percent="0.510"
-        app:layout_constraintTop_toTopOf="@id/imgTemplate"
-        app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
+        app:layout_constraintWidth_percent="0.65"
+        app:layout_constraintHeight_percent="0.55"
+        app:layout_constraintTop_toTopOf="@id/imgAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.6" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Avatar Image: photoLeft=0.15, photoTop=0.18, photoRight=0.85, photoBottom=0.78 -->
     <ImageView
