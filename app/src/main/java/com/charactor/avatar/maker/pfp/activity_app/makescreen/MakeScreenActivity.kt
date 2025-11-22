@@ -571,9 +571,12 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         shadowView.visibility = View.VISIBLE
 
+        // Remap: seekbar 0-100 → effective shadow 35-100
+        val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)
+
         // Reload with new transformation parameters
-        val shadowRadius = shadowValue / 100f * 15f
-        val shadowAlpha = shadowValue / 100f * 0.9f
+        val shadowRadius = effectiveShadowValue / 100f * 15f  // 35-100 → 5.25-15px
+        val shadowAlpha = effectiveShadowValue / 100f * 0.9f  // 35-100 → 0.315-0.9
 
         val templateId = viewModel.selectedTemplate.value
         val templatePath = AssetHelper.getTemplateItemPath(templateId)
@@ -584,21 +587,21 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             .into(shadowView)
 
         // View properties
-        val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
+        val viewAlpha = (effectiveShadowValue / 100f).coerceIn(0f, 1f)  // 35-100 → 0.35-1.0
         shadowView.alpha = viewAlpha
 
-        val offsetX = shadowValue / 100f * 5f
-        val offsetY = shadowValue / 100f * 5f
+        val offsetX = effectiveShadowValue / 100f * 5f  // 35-100 → 1.75-5dp
+        val offsetY = effectiveShadowValue / 100f * 5f  // 35-100 → 1.75-5dp
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
-        val scale = 1f + (shadowValue / 100f * 0.03f)
+        val scale = 1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
         shadowView.scaleX = scale
         shadowView.scaleY = scale
 
         // Additional blur (API 31+)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            val additionalBlur = shadowValue / 100f * 10f
+            val additionalBlur = effectiveShadowValue / 100f * 10f  // 35-100 → 3.5-10px
             if (additionalBlur > 0) {
                 val blurEffect = android.graphics.RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, android.graphics.Shader.TileMode.CLAMP
@@ -627,11 +630,14 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         shadowView.visibility = View.VISIBLE
 
+        // Remap: seekbar 0-100 → effective shadow 35-100
+        val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)
+
         // Reload shadow with new transformation
         val currentUri = viewModel.selectedImageUri.value
         if (currentUri != null) {
-            val shadowRadius = shadowValue / 100f * 15f
-            val shadowAlpha = shadowValue / 100f * 0.9f
+            val shadowRadius = effectiveShadowValue / 100f * 15f  // 35-100 → 5.25-15px
+            val shadowAlpha = effectiveShadowValue / 100f * 0.9f  // 35-100 → 0.315-0.9
 
             Glide.with(this)
                 .load(currentUri)
@@ -640,21 +646,21 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         }
 
         // View properties
-        val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
+        val viewAlpha = (effectiveShadowValue / 100f).coerceIn(0f, 1f)  // 35-100 → 0.35-1.0
         shadowView.alpha = viewAlpha
 
-        val offsetX = shadowValue / 100f * 5f
-        val offsetY = shadowValue / 100f * 5f
+        val offsetX = effectiveShadowValue / 100f * 5f  // 35-100 → 1.75-5dp
+        val offsetY = effectiveShadowValue / 100f * 5f  // 35-100 → 1.75-5dp
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
-        val scale = 1f + (shadowValue / 100f * 0.03f)
+        val scale = 1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
         shadowView.scaleX = scale
         shadowView.scaleY = scale
 
         // Additional blur (API 31+)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            val additionalBlur = shadowValue / 100f * 10f
+            val additionalBlur = effectiveShadowValue / 100f * 10f  // 35-100 → 3.5-10px
             if (additionalBlur > 0) {
                 val blurEffect = android.graphics.RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, android.graphics.Shader.TileMode.CLAMP

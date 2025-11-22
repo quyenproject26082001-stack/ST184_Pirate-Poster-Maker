@@ -594,16 +594,20 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // Blur
         binding.seekBarFilterBlur.onProgressChanged { progress ->
+            android.util.Log.d("PhotoBlur", "=== Blur seekbar changed ===")
+            android.util.Log.d("PhotoBlur", "Progress: $progress")
+            android.util.Log.d("PhotoBlur", "API Level: ${Build.VERSION.SDK_INT}")
+
             viewModel.setFilterBlur(progress.toFloat())
 
-            // For Android 8-11: Reload image with blur transformation
-            // For Android 12+: Use RenderEffect (faster, in applyFilters())
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                // Android 8-11: Reload image with Glide blur transformation
-                val currentUri = viewModel.selectedImageUri.value
-                if (currentUri != null) {
-                    reloadImageWithBlur(currentUri, progress.toFloat())
-                }
+            // Use Glide BlurTransformation for ALL Android versions
+            // RenderEffect on Android 12+ causes zoom artifacts, so we use Glide instead
+            android.util.Log.d("PhotoBlur", "Using Glide BlurTransformation (all API levels)")
+            val currentUri = viewModel.selectedImageUri.value
+            if (currentUri != null) {
+                reloadImageWithBlur(currentUri, progress.toFloat())
+            } else {
+                android.util.Log.e("PhotoBlur", "currentUri is NULL!")
             }
 
             applyFilters()
@@ -665,22 +669,36 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Android 12+ uses RenderEffect which is faster
      */
     private fun reloadImageWithBlur(uri: Uri, blurValue: Float) {
+        android.util.Log.d("PhotoBlur", "=== reloadImageWithBlur ===")
+        android.util.Log.d("PhotoBlur", "blurValue: $blurValue")
+
         imgAvatar?.let { imageView ->
+            android.util.Log.d("PhotoBlur", "imgAvatar size BEFORE: ${imageView.width}x${imageView.height}")
+            android.util.Log.d("PhotoBlur", "imgAvatar scaleType: ${imageView.scaleType}")
+
             if (blurValue > 0) {
                 // Calculate blur radius (0-25)
                 val blurRadius = (blurValue / 100f * 25f).toInt().coerceAtLeast(1)
+                android.util.Log.d("PhotoBlur", "Applying BlurTransformation: radius=$blurRadius, sampling=3")
 
                 Glide.with(this)
                     .load(uri)
                     .transform(CenterCrop(), BlurTransformation(blurRadius, 3)) // radius, sampling
                     .into(imageView)
             } else {
+                android.util.Log.d("PhotoBlur", "No blur - loading with centerCrop only")
                 // No blur - reload normal
                 Glide.with(this)
                     .load(uri)
                     .centerCrop()
                     .into(imageView)
             }
+
+            imageView.post {
+                android.util.Log.d("PhotoBlur", "imgAvatar size AFTER: ${imageView.width}x${imageView.height}")
+            }
+        } ?: run {
+            android.util.Log.e("PhotoBlur", "imgAvatar is NULL!")
         }
     }
 
@@ -719,7 +737,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      */
     private fun applyShadowEffect(shadowValue: Float) {
         android.util.Log.d("PhotoShadow", "=== applyShadowEffect called ===")
-        android.util.Log.d("PhotoShadow", "shadowValue: $shadowValue")
+        android.util.Log.d("PhotoShadow", "seekbar value: $shadowValue")
+
+        // Remap: seekbar 0-100 → effective shadow 35-100
+        val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)
+        android.util.Log.d("PhotoShadow", "effectiveShadowValue (35-100): $effectiveShadowValue")
 
         val shadowView = imgAvatarShadow
         android.util.Log.d("PhotoShadow", "shadowView is null: ${shadowView == null}")
@@ -741,8 +763,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         val currentUri = viewModel.selectedImageUri.value
         android.util.Log.d("PhotoShadow", "currentUri: $currentUri")
         if (currentUri != null) {
-            val shadowRadius = shadowValue / 100f * 15f // 0-15px blur in transformation
-            val shadowAlpha = shadowValue / 100f * 0.9f
+            val shadowRadius = effectiveShadowValue / 100f * 15f // 35-100 → 5.25-15px
+            val shadowAlpha = effectiveShadowValue / 100f * 0.9f  // 35-100 → 0.315-0.9
             android.util.Log.d("PhotoShadow", "Loading shadow: radius=$shadowRadius, alpha=$shadowAlpha")
 
             Glide.with(this)
@@ -754,37 +776,27 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
 
         // 1. Alpha - overall shadow visibility
-        val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
+        val viewAlpha = (effectiveShadowValue / 100f).coerceIn(0f, 1f)  // 35-100 → 0.35-1.0
         shadowView.alpha = viewAlpha
         android.util.Log.d("PhotoShadow", "viewAlpha: $viewAlpha")
 
-        // 2. Offset - shadow displacement (small for natural look)
-        val offsetX = shadowValue / 100f * 5f   // 0-5dp
-        val offsetY = shadowValue / 100f * 5f   // 0-5dp
+        // 2. Offset - shadow displacement
+        val offsetX = effectiveShadowValue / 100f * 5f   // 35-100 → 1.75-5dp
+        val offsetY = effectiveShadowValue / 100f * 5f   // 35-100 → 1.75-5dp
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
         android.util.Log.d("PhotoShadow", "offset: X=$offsetX, Y=$offsetY")
 
-        // 3. Scale - very minimal to maintain shape accuracy
-        val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0 to 1.03
+        // 3. Scale - noticeable shadow width increase
+        val scale = 1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
         shadowView.scaleX = scale
         shadowView.scaleY = scale
         android.util.Log.d("PhotoShadow", "scale: $scale")
 
-        // 4. Additional blur via RenderEffect (API 31+) for extra softness
+        // 4. Additional blur via RenderEffect (API 31+) - DISABLED
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val additionalBlur = shadowValue / 100f * 10f // 0-10px additional blur
-            android.util.Log.d("PhotoShadow", "API 31+ additionalBlur: $additionalBlur")
-            if (additionalBlur > 0) {
-                val blurEffect = RenderEffect.createBlurEffect(
-                    additionalBlur, additionalBlur, Shader.TileMode.CLAMP
-                )
-                shadowView.setRenderEffect(blurEffect)
-            } else {
-                shadowView.setRenderEffect(null)
-            }
-        } else {
-            android.util.Log.d("PhotoShadow", "API < 31, no RenderEffect")
+            shadowView.setRenderEffect(null)
+            android.util.Log.d("PhotoShadow", "RenderEffect disabled (using Glide blur only)")
         }
 
         android.util.Log.d("PhotoShadow", "=== applyShadowEffect done ===")
@@ -875,20 +887,16 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             // Old elevation-based shadow code removed as it didn't work properly with ImageView
 
             // Apply Blur
-            // Android 12+ (API 31+): Use RenderEffect (fast)
-            // Android 8-11 (API 26-30): Handled by reloadImageWithBlur() using Glide transformation
+            // NOTE: Blur is now handled by Glide BlurTransformation for ALL Android versions
+            // RenderEffect on Android 12+ caused zoom artifacts, so we disabled it
+            android.util.Log.d("PhotoBlur", "=== applyFilters() - Blur section ===")
+            android.util.Log.d("PhotoBlur", "Blur is handled by Glide BlurTransformation in reloadImageWithBlur()")
+
+            // Make sure no RenderEffect is applied
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (blur > 0) {
-                    val blurRadius = blur / 100f * 25f // Max blur radius 25
-                    val blurEffect = RenderEffect.createBlurEffect(
-                        blurRadius, blurRadius, Shader.TileMode.CLAMP
-                    )
-                    imgAvatar?.setRenderEffect(blurEffect)
-                } else {
-                    imgAvatar?.setRenderEffect(null)
-                }
+                imgAvatar?.setRenderEffect(null)
+                android.util.Log.d("PhotoBlur", "Cleared any existing RenderEffect")
             }
-            // Note: For Android < 12, blur is applied via Glide transformation in reloadImageWithBlur()
         }
     }
 
@@ -1000,9 +1008,12 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         shadowView.visibility = View.VISIBLE
 
+        // Remap: seekbar 0-100 → effective shadow 35-100
+        val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)
+
         // EXACTLY LIKE Photo Filter: Reload with new transformation parameters
-        val shadowRadius = shadowValue / 100f * 15f  // 0-15px blur (SAME as Photo Filter)
-        val shadowAlpha = shadowValue / 100f * 0.9f   // Dynamic alpha
+        val shadowRadius = effectiveShadowValue / 100f * 15f  // 35-100 → 5.25-15px blur
+        val shadowAlpha = effectiveShadowValue / 100f * 0.9f   // 35-100 → 0.315-0.9
 
         // Load template from assets with ShadowTransformation
         // This creates shadow following the template's alpha channel/contour
@@ -1015,23 +1026,23 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             .into(shadowView)
 
         // 1. Alpha - overall shadow visibility (MATCHED with Photo Filter)
-        val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
+        val viewAlpha = (effectiveShadowValue / 100f).coerceIn(0f, 1f)  // 35-100 → 0.35-1.0
         shadowView.alpha = viewAlpha
 
         // 2. Offset - shadow displacement (MATCHED with Photo Filter)
-        val offsetX = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
-        val offsetY = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
+        val offsetX = effectiveShadowValue / 100f * 5f   // 35-100 → 1.75-5dp
+        val offsetY = effectiveShadowValue / 100f * 5f   // 35-100 → 1.75-5dp
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
-        // 3. Scale - very minimal to maintain shape accuracy (MATCHED)
-        val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0-1.03 (SAME as Photo Filter)
+        // 3. Scale - noticeable shadow width increase
+        val scale = 1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
         shadowView.scaleX = scale
         shadowView.scaleY = scale
 
         // 4. Additional blur via RenderEffect (API 31+) for extra softness (MATCHED)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val additionalBlur = shadowValue / 100f * 10f  // 0-10px additional blur (SAME as Photo Filter)
+            val additionalBlur = effectiveShadowValue / 100f * 10f  // 35-100 → 3.5-10px additional blur
             if (additionalBlur > 0) {
                 val blurEffect = RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, Shader.TileMode.CLAMP
