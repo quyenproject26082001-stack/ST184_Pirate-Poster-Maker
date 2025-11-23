@@ -70,7 +70,28 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         if (result.resultCode == RESULT_OK) {
             result.data?.let { data ->
                 val selectedTemplateId = data.getIntExtra("selectedTemplateId", 1)
+
+                // Get old config before changing template
+                val oldConfig = viewModel.getConfig()
+
+                // Extract bounty number by removing old prefix/suffix
+                val currentBountyText = viewModel.bountyText.value
+                val bountyNumber = currentBountyText
+                    .removePrefix(oldConfig.bountyPrefix)
+                    .removeSuffix(oldConfig.bountySuffix)
+
+                // Change template
                 viewModel.setSelectedTemplate(selectedTemplateId)
+
+                // Get new config
+                val newConfig = viewModel.getConfig()
+
+                // Update bountySize to new template's default size
+                viewModel.setBountySize(newConfig.bountySize)
+
+                // Update bounty text with new prefix/suffix (keep the number)
+                viewModel.setBountyText("${newConfig.bountyPrefix}${bountyNumber}${newConfig.bountySuffix}")
+
                 updatePreviewWithCurrentState()
             }
         }
