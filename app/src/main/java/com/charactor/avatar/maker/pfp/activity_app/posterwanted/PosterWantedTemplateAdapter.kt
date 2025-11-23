@@ -102,7 +102,8 @@ class PosterWantedTemplateAdapter(
 
                 // Set texts
                 tvName.text = item.name
-                tvBounty.text = item.bounty
+                // Use full bounty text with prefix and suffix
+                tvBounty.text = item.getFullBountyText()
 
                 // Load images synchronously
                 val templateBitmap = withContext(Dispatchers.IO) {

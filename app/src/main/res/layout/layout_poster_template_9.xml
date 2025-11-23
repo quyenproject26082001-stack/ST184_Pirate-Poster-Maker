@@ -95,7 +95,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.65" />
 
-    <!-- Bounty: bountyPositionY=0.92, bountyColor=#8B4513 (sienna), bountySize=28sp -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideBountyStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.56" />
+
     <TextView
         android:id="@+id/tvBounty"
         android:layout_width="wrap_content"
@@ -103,13 +109,11 @@
         android:fontFamily="@font/roboto_bold"
         android:text="15,000"
         android:textColor="#8B4513"
-        android:textSize="28sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintVertical_bias="0.94" />
+        app:layout_constraintStart_toStartOf="@id/guideBountyStart"
+        app:layout_constraintVertical_bias="0.958" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

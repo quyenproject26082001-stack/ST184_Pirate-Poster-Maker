@@ -26,6 +26,7 @@ data class TemplateConfig(
     val bountyPositionY: Float = 0.9f,
     val bountyColor: String = "#000000",
     val bountySize: Float = 20f,
+    val maxBountyLength: Int? = null,  // Max bounty text length for random generation (null = no limit)
 
     // Photo area configuration (relative coordinates 0-1)
     val photoLeft: Float = 0.15f,
@@ -64,6 +65,7 @@ object TemplateConfigProvider {
             bountyPositionY = 0.92f,
             bountyColor = "#3D3D3D",
             bountySize = 32f,
+            maxBountyLength = 12,  // "$2,000,000" = 10 chars, allow up to 12
             photoLeft = 0.12f,
             photoTop = 0.28f,
             photoRight = 0.88f,
@@ -82,6 +84,7 @@ object TemplateConfigProvider {
             bountyPositionY = 0.92f,
             bountyColor = "#3D3D3D",
             bountySize = 36f,
+            maxBountyLength = 7,
             photoLeft = 0.15f,
             photoTop = 0.30f,
             photoRight = 0.85f,
@@ -163,7 +166,8 @@ object TemplateConfigProvider {
             nameSize = 24f,
             hasBounty = true,
             bountyDefaultText = "330,000,000",
-            bountyPrefix = "₿",
+            bountyPrefix = "",
+            maxBountyLength = 14,
             bountySuffix = "-",
             bountyPositionX = 0.5f,
             bountyPositionY = 0.84f,  // Adjusted from 0.82f
@@ -184,9 +188,11 @@ object TemplateConfigProvider {
             namePositionY = 0.68f,  // Adjusted from 0.60f
             nameColor = "#5D4E37",
             nameSize = 26f,
+            maxBountyLength = 6,
+
             hasBounty = true,
             bountyDefaultText = "20,000",
-            bountyPrefix = "$",
+            bountyPrefix = "",
             bountySuffix = "",
             bountyPositionX = 0.5f,
             bountyPositionY = 0.75f,  // Adjusted from 0.66f
@@ -204,8 +210,10 @@ object TemplateConfigProvider {
             hasName = false,
             hasBounty = true,
             bountyDefaultText = "10,000",
-            bountyPrefix = "$",
+            bountyPrefix = "",
             bountySuffix = "",
+            maxBountyLength = 6,
+
             bountyPositionX = 0.5f,
             bountyPositionY = 0.90f,  // Adjusted from 0.88f
             bountyColor = "#3D3D3D",
@@ -222,7 +230,9 @@ object TemplateConfigProvider {
             hasName = false,
             hasBounty = true,
             bountyDefaultText = "15,000",
-            bountyPrefix = "$ ",
+            bountyPrefix = "",
+            maxBountyLength = 6,
+
             bountySuffix = "",
             bountyPositionX = 0.5f,
             bountyPositionY = 0.92f,  // Adjusted from 0.90f
@@ -277,6 +287,8 @@ object TemplateConfigProvider {
             hasBounty = true,
             bountyDefaultText = "20,000",
             bountyPrefix = "$",
+            maxBountyLength = 6,
+
             bountySuffix = "",
             bountyPositionX = 0.5f,
             bountyPositionY = 0.85f,  // Adjusted from 0.82f
@@ -294,8 +306,10 @@ object TemplateConfigProvider {
             hasName = false,
             hasBounty = true,
             bountyDefaultText = "1,000,000",
-            bountyPrefix = "$$ ",
-            bountySuffix = " $$",
+            bountyPrefix = "",
+            maxBountyLength = 12,
+
+            bountySuffix = "",
             bountyPositionX = 0.5f,
             bountyPositionY = 0.92f,  // Adjusted from 0.90f
             bountyColor = "#8B4513",
@@ -337,6 +351,7 @@ object TemplateConfigProvider {
             bountyDefaultText = "100,000",
             bountyPrefix = "$ ",
             bountySuffix = "",
+            maxBountyLength = 15,
             bountyPositionX = 0.5f,
             bountyPositionY = 0.82f,  // Adjusted from 0.78f
             bountyColor = "#F5F5DC",
@@ -355,6 +370,7 @@ object TemplateConfigProvider {
             bountyDefaultText = "10,000",
             bountyPrefix = "$ ",
             bountySuffix = "",
+            maxBountyLength = 8,
             bountyPositionX = 0.5f,
             bountyPositionY = 0.72f,  // Adjusted from 0.68f
             bountyColor = "#3D2B1F",

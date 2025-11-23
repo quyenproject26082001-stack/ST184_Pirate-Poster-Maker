@@ -74,7 +74,8 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         // Set data to ViewModel
         viewModel.setSelectedTemplate(item.templateId)
         viewModel.setNameText(item.name)
-        viewModel.setBountyText(item.bounty)
+        // Use full bounty text with prefix and suffix from template config
+        viewModel.setBountyText(item.getFullBountyText())
 
         // Set avatar URI from assets
         val avatarUri = Uri.parse(item.getAvatarPath())
