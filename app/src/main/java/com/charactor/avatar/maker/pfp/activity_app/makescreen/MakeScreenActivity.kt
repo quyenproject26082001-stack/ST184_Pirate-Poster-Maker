@@ -571,12 +571,9 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         shadowView.visibility = View.VISIBLE
 
-        // Remap: seekbar 0-100 → effective shadow 35-100
-        val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)
-
-        // Reload with new transformation parameters
-        val shadowRadius = effectiveShadowValue / 100f * 15f  // 35-100 → 5.25-15px
-        val shadowAlpha = effectiveShadowValue / 100f * 0.9f  // 35-100 → 0.315-0.9
+        // EXACTLY LIKE Photo Filter: Reload with new transformation parameters
+        val shadowRadius = shadowValue / 100f * 15f  // 0-15px blur (SAME as Photo Filter)
+        val shadowAlpha = shadowValue / 100f * 0.9f   // Dynamic alpha
 
         val templateId = viewModel.selectedTemplate.value
         val templatePath = AssetHelper.getTemplateItemPath(templateId)
@@ -587,21 +584,21 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             .into(shadowView)
 
         // View properties
-        val viewAlpha = (effectiveShadowValue / 100f).coerceIn(0f, 1f)  // 35-100 → 0.35-1.0
+        val viewAlpha = (shadowValue / 100f).coerceIn(0f, 1f)
         shadowView.alpha = viewAlpha
 
-        val offsetX = effectiveShadowValue / 100f * 5f  // 35-100 → 1.75-5dp
-        val offsetY = effectiveShadowValue / 100f * 5f  // 35-100 → 1.75-5dp
+        val offsetX = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
+        val offsetY = shadowValue / 100f * 5f   // 0-5dp (SAME as Photo Filter)
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
-        val scale = 1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
+        val scale = 1f + (shadowValue / 100f * 0.03f)  // 1.0-1.03 (SAME as Photo Filter)
         shadowView.scaleX = scale
         shadowView.scaleY = scale
 
         // Additional blur (API 31+)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            val additionalBlur = effectiveShadowValue / 100f * 10f  // 35-100 → 3.5-10px
+            val additionalBlur = shadowValue / 100f * 10f  // 0-10px additional blur (SAME as Photo Filter)
             if (additionalBlur > 0) {
                 val blurEffect = android.graphics.RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, android.graphics.Shader.TileMode.CLAMP
