@@ -290,8 +290,6 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             AssetHelper.getTemplateAvatarPath(templateId)
         }
 
-        android.util.Log.d("MakeScreen", "Loading template: $templateId, isEditing: $isEditing, path: $templatePath")
-
         imgTemplate?.let { imageView ->
             Glide.with(this)
                 .load(templatePath)
@@ -339,13 +337,13 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * Load image into preview
      */
     private fun loadImageToPreview(uri: Uri) {
-        // For Android 8-11: Apply blur via Glide transformation
-        // For Android 12+: Apply blur via RenderEffect in applyPhotoFilters()
+        // NOTE: Use Glide BlurTransformation for ALL Android versions (consistent with WantedEditor)
+        // Apply blur via Glide transformation regardless of Android version
         val blur = viewModel.filterBlur.value
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S && blur > 0) {
+        if (blur > 0) {
             reloadImageWithBlur(uri, blur)
         } else {
-            // Load into main avatar
+            // Load into main avatar without blur
             imgAvatar?.let { imageView ->
                 Glide.with(this)
                     .load(uri)
@@ -533,24 +531,18 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         imgAvatar?.colorFilter = android.graphics.ColorMatrixColorFilter(colorMatrix)
 
         // Apply Blur
-        // Android 12+: Use RenderEffect (fast)
-        // Android 8-11: Handled by reloadImageWithBlur() using Glide transformation
+        // NOTE: Use Glide BlurTransformation for ALL Android versions (consistent with WantedEditor)
+        // RenderEffect on Android 12+ was causing zoom artifacts, so we use Glide instead
+
+        // Clear any existing RenderEffect
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            if (blur > 0) {
-                val blurRadius = blur / 100f * 25f // Max blur radius 25
-                val blurEffect = android.graphics.RenderEffect.createBlurEffect(
-                    blurRadius, blurRadius, android.graphics.Shader.TileMode.CLAMP
-                )
-                imgAvatar?.setRenderEffect(blurEffect)
-            } else {
-                imgAvatar?.setRenderEffect(null)
-            }
-        } else if (blur > 0) {
-            // For Android 8-11: Reload image with blur transformation
-            val currentUri = viewModel.selectedImageUri.value
-            if (currentUri != null) {
-                reloadImageWithBlur(currentUri, blur)
-            }
+            imgAvatar?.setRenderEffect(null)
+        }
+
+        // Apply blur using Glide for ALL Android versions
+        val currentUri = viewModel.selectedImageUri.value
+        if (currentUri != null) {
+            reloadImageWithBlur(currentUri, blur)
         }
     }
 

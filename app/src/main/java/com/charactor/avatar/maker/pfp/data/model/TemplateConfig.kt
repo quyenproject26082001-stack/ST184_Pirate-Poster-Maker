@@ -97,8 +97,8 @@ object TemplateConfigProvider {
             bountyPrefix = "$",
             bountySuffix = "",
             bountyPositionX = 0.5f,
-            bountyPositionY = 0.92f,
-            bountyColor = "#8B0000",
+            bountyPositionY = 0.93f,
+            bountyColor = "#776955",
             bountySize = 24f,
             photoLeft = 0.15f,
             photoTop = 0.18f,  // Adjusted from 0.25f

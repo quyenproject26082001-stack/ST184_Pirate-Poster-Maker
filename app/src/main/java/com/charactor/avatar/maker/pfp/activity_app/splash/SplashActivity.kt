@@ -3,20 +3,18 @@ package com.charactor.avatar.maker.pfp.activity_app.splash
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
-import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.initNetworkMonitor
-import com.charactor.avatar.maker.pfp.core.utils.state.HandleState
 import com.charactor.avatar.maker.pfp.databinding.ActivitySplashBinding
 import com.charactor.avatar.maker.pfp.activity_app.intro.IntroActivity
 import com.charactor.avatar.maker.pfp.activity_app.language.LanguageActivity
-import com.charactor.avatar.maker.pfp.activity_app.main.DataViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     var intentActivity: Intent? = null
-    private val dataViewModel: DataViewModel by viewModels()
+
     override fun setViewBinding(): ActivitySplashBinding {
         return ActivitySplashBinding.inflate(LayoutInflater.from(this))
     }
@@ -40,25 +38,22 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         binding.imvLoading.startAnimation(rotateAnimation)
 
         initNetworkMonitor()
-        dataViewModel.ensureData(this)
+
+        // Simple delay then navigate
+        navigateAfterDelay()
+    }
+
+    private fun navigateAfterDelay() {
+        lifecycleScope.launch {
+            // Delay 2 seconds for splash screen
+            delay(2500)
+            startActivity(intentActivity)
+            finishAffinity()
+        }
     }
 
     override fun dataObservable() {
-        lifecycleScope.launch {
-            dataViewModel.allData.collect { dataList ->
-                if (dataList.isNotEmpty()){
-                    dataViewModel.getAllParts(this@SplashActivity).collect { dataAPI ->
-                        when(dataAPI){
-                            HandleState.LOADING -> {}
-                            else -> {
-                                startActivity(intentActivity)
-                                finishAffinity()
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // No data observation needed for Wanted Poster Maker
     }
 
     override fun viewListener() {

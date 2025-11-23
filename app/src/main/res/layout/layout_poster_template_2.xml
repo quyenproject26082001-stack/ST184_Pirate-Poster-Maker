@@ -113,6 +113,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.65"
-        app:layout_constraintVertical_bias="0.92" />
+        app:layout_constraintVertical_bias="0.94" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

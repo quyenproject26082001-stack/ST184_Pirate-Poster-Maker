@@ -49,9 +49,32 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     private var tvName: TextView? = null
     private var tvBounty: TextView? = null
 
+    // LOCAL TEMPORARY STATE - Only saved to ViewModel when user clicks SAVE button
+    // If user clicks BACK, these values are discarded and ViewModel remains unchanged
+    private var tempSelectedImageUri: Uri? = null
+    private var tempNameText: String = ""
+    private var tempBountyText: String = ""
+    private var tempNameFont: String = "Roboto Bold"
+    private var tempNameSpacing: Float = 0f
+    private var tempBountySize: Float = 24f
+    private var tempBountyWeight: Float = 0f
+    private var tempBountySpacing: Float = 0f
+    private var tempBountyPositionX: Float = 0f
+    private var tempBountyPositionY: Float = 0f
+    private var tempFilterShadow: Float = 0f
+    private var tempFilterBlur: Float = 0f
+    private var tempFilterBrightness: Float = 1f
+    private var tempFilterContrast: Float = 1f
+    private var tempFilterGrayscale: Float = 0f
+    private var tempFilterHueRotate: Float = 0f
+    private var tempFilterSaturate: Float = 1f
+    private var tempFilterSepia: Float = 0f
+    private var tempPosterShadow: Float = 0f
+
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            viewModel.setSelectedImageUri(it)
+            // Write to local variable instead of ViewModel
+            tempSelectedImageUri = it
             // Load image into both avatar and shadow ImageViews
             loadImageToAvatars(it)
         }
@@ -103,13 +126,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             tvBounty?.visibility = View.VISIBLE
             imgAvatar?.visibility = View.VISIBLE
 
-            // Load current image if exists
-            viewModel.selectedImageUri.value?.let { uri ->
-                loadImageToAvatars(uri)
-            }
-
             // RESTORE UI VALUES FROM VIEWMODEL
-            // Since listeners are already setup, they will trigger and update the preview
+            // Image loading is now handled inside restoreUIFromViewModel()
             restoreUIFromViewModel()
         }
     }
@@ -175,7 +193,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.apply {
             // Action bar
             actionBar.apply {
-                btnActionBarLeft.setOnSingleClick { handleBackLeftToRight() }
+                btnActionBarLeft.setOnSingleClick { handleBack() }
                 btnActionBarRight.setOnSingleClick { handleSave() }
                 btnActionBarReset.setOnSingleClick { handleReset() }
             }
@@ -213,15 +231,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     override fun dataObservable() {
-        lifecycleScope.launch {
-            viewModel.selectedImageUri.collect { uri ->
-                uri?.let {
-                    // Show imgAvatar when user imports an image
-                    imgAvatar?.visibility = View.VISIBLE
-                    loadImageToAvatars(it)
-                }
-            }
-        }
+        // NOTE: selectedImageUri observer removed - now using local variable tempSelectedImageUri
+        // Image loading is handled directly in pickImageLauncher callback
 
         // Observe template config changes to show/hide sections
         lifecycleScope.launch {
@@ -281,14 +292,46 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
     }
 
+    /**
+     * Handle Back button
+     */
+    private fun handleBack() {
+        // Data is already in shared ViewModel - just go back
+        handleBackLeftToRight()
+    }
+
+    /**
+     * Handle Save button - Copy all local variables to ViewModel and mark editing started
+     */
     private fun handleSave() {
+        // Copy ALL local variables to ViewModel (19 properties)
+        tempSelectedImageUri?.let { viewModel.setSelectedImageUri(it) }
+        viewModel.setNameText(tempNameText)
+        viewModel.setBountyText(tempBountyText)
+        viewModel.setNameFont(tempNameFont)
+        viewModel.setNameSpacing(tempNameSpacing)
+        viewModel.setBountySize(tempBountySize)
+        viewModel.setBountyWeight(tempBountyWeight)
+        viewModel.setBountySpacing(tempBountySpacing)
+        viewModel.setBountyPositionX(tempBountyPositionX)
+        viewModel.setBountyPositionY(tempBountyPositionY)
+        viewModel.setFilterShadow(tempFilterShadow)
+        viewModel.setFilterBlur(tempFilterBlur)
+        viewModel.setFilterBrightness(tempFilterBrightness)
+        viewModel.setFilterContrast(tempFilterContrast)
+        viewModel.setFilterGrayscale(tempFilterGrayscale)
+        viewModel.setFilterHueRotate(tempFilterHueRotate)
+        viewModel.setFilterSaturate(tempFilterSaturate)
+        viewModel.setFilterSepia(tempFilterSepia)
+        viewModel.setPosterShadow(tempPosterShadow)
+
         // Mark editing as started if user made any changes
         // This will switch MakeScreen from avatar.png to item.png display
         if (viewModel.hasChanges.value) {
             viewModel.markEditingStarted()
         }
 
-        // Data is already in shared ViewModel - MakeScreenActivity will automatically have access
+        // ViewModel now has all saved data - MakeScreenActivity will automatically have access
         setResult(RESULT_OK)
         finish()
     }
@@ -327,7 +370,33 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * so that listeners are already attached and will trigger when values are set
      */
     private fun restoreUIFromViewModel() {
-        // Restore EditText values
+        // STEP 1: Load all ViewModel values into local variables
+        tempSelectedImageUri = viewModel.selectedImageUri.value
+        tempNameText = viewModel.nameText.value
+        tempBountyText = viewModel.bountyText.value
+        tempNameFont = viewModel.nameFont.value
+        tempNameSpacing = viewModel.nameSpacing.value
+        tempBountySize = viewModel.bountySize.value
+        tempBountyWeight = viewModel.bountyWeight.value
+        tempBountySpacing = viewModel.bountySpacing.value
+        tempBountyPositionX = viewModel.bountyPositionX.value
+        tempBountyPositionY = viewModel.bountyPositionY.value
+        tempFilterShadow = viewModel.filterShadow.value
+        tempFilterBlur = viewModel.filterBlur.value
+        tempFilterBrightness = viewModel.filterBrightness.value
+        tempFilterContrast = viewModel.filterContrast.value
+        tempFilterGrayscale = viewModel.filterGrayscale.value
+        tempFilterHueRotate = viewModel.filterHueRotate.value
+        tempFilterSaturate = viewModel.filterSaturate.value
+        tempFilterSepia = viewModel.filterSepia.value
+        tempPosterShadow = viewModel.posterShadow.value
+
+        // Load image if exists (using tempSelectedImageUri)
+        tempSelectedImageUri?.let { uri ->
+            loadImageToAvatars(uri)
+        }
+
+        // STEP 2: Restore EditText values
         // TextWatcher will trigger and update tvName/tvBounty automatically
         binding.edtName.setText(viewModel.nameText.value)
         binding.edtBounty.setText(viewModel.bountyText.value)
@@ -372,6 +441,14 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.seekBarPosterShadow.progress = viewModel.posterShadow.value.toInt()
 
         // Font restoration is handled by setupFontSelector()
+
+        // IMPORTANT: Apply text properties DIRECTLY to ensure synchronization with MakeScreen
+        // Seekbar listeners may not trigger immediately, causing property mismatch between screens
+        tvName?.letterSpacing = viewModel.nameSpacing.value
+        tvBounty?.textSize = viewModel.bountySize.value
+        tvBounty?.letterSpacing = viewModel.bountySpacing.value
+        tvBounty?.translationX = viewModel.bountyPositionX.value
+        tvBounty?.translationY = viewModel.bountyPositionY.value
     }
 
     /**
@@ -380,6 +457,27 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     private fun handleReset() {
         // Reset ViewModel data to template config defaults
         viewModel.resetAll()
+
+        // Reset local variables to match ViewModel defaults
+        tempSelectedImageUri = viewModel.selectedImageUri.value
+        tempNameText = viewModel.nameText.value
+        tempBountyText = viewModel.bountyText.value
+        tempNameFont = viewModel.nameFont.value
+        tempNameSpacing = viewModel.nameSpacing.value
+        tempBountySize = viewModel.bountySize.value
+        tempBountyWeight = viewModel.bountyWeight.value
+        tempBountySpacing = viewModel.bountySpacing.value
+        tempBountyPositionX = viewModel.bountyPositionX.value
+        tempBountyPositionY = viewModel.bountyPositionY.value
+        tempFilterShadow = viewModel.filterShadow.value
+        tempFilterBlur = viewModel.filterBlur.value
+        tempFilterBrightness = viewModel.filterBrightness.value
+        tempFilterContrast = viewModel.filterContrast.value
+        tempFilterGrayscale = viewModel.filterGrayscale.value
+        tempFilterHueRotate = viewModel.filterHueRotate.value
+        tempFilterSaturate = viewModel.filterSaturate.value
+        tempFilterSepia = viewModel.filterSepia.value
+        tempPosterShadow = viewModel.posterShadow.value
 
         // Reset UI components to match ViewModel defaults (from template config)
         binding.apply {
@@ -466,10 +564,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         tvName?.typeface = initialTypeface
         binding.tvCurrentNameFont.typeface = initialTypeface
 
-        // Only update ViewModel if we're using default (not restoring)
-        if (savedFontName != initialFont.name) {
-            viewModel.setNameFont(initialFont.name)
-        }
+        // Initialize local variable with current font
+        tempNameFont = initialFont.name
 
         // Setup RecyclerView with adapter
         val adapter = FontSelectorAdapter(fontList, selectedIndex) { fontItem, _ ->
@@ -479,8 +575,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             tvName?.typeface = typeface
             binding.tvCurrentNameFont.typeface = typeface
 
-            // Update ViewModel
-            viewModel.setNameFont(fontItem.name)
+            // Write to local variable instead of ViewModel
+            tempNameFont = fontItem.name
 
             // Collapse the font list after selection
             binding.rvFontList.visibility = View.GONE
@@ -517,7 +613,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     tvName?.visibility = View.VISIBLE
                 }
                 tvName?.text = text
-                viewModel.setNameText(text)
+                // Write to local variable instead of ViewModel
+                tempNameText = text
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -531,7 +628,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     tvBounty?.visibility = View.VISIBLE
                 }
                 tvBounty?.text = text
-                viewModel.setBountyText(text)
+                // Write to local variable instead of ViewModel
+                tempBountyText = text
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -543,42 +641,48 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             val spacing = progress / 500f  // 0-100 → 0-0.2
             tvName?.letterSpacing = spacing
             // Auto-size handles long TEXT, multi-line handles wide SPACING
-            viewModel.setNameSpacing(spacing)
+            // Write to local variable instead of ViewModel
+            tempNameSpacing = spacing
         }
 
         // Bounty Size
         binding.seekBarBountySize.onProgressChanged { progress ->
             val size = 12f + (progress / 100f) * 48f // 12sp to 60sp
             tvBounty?.textSize = size
-            viewModel.setBountySize(size)
+            // Write to local variable instead of ViewModel
+            tempBountySize = size
         }
 
         // Bounty Weight
         binding.seekBarBountyWeight.onProgressChanged { progress ->
             // Weight doesn't directly map to Android, but we can use different font styles
             // For simplicity, we'll just store the value
-            viewModel.setBountyWeight(progress.toFloat())
+            // Write to local variable instead of ViewModel
+            tempBountyWeight = progress.toFloat()
         }
 
         // Bounty Spacing (0-0.2 for text spacing)
         binding.seekBarBountySpacing.onProgressChanged { progress ->
             val spacing = progress / 500f  // 0-100 → 0-0.2
             tvBounty?.letterSpacing = spacing
-            viewModel.setBountySpacing(spacing)
+            // Write to local variable instead of ViewModel
+            tempBountySpacing = spacing
         }
 
         // Bounty Position X
         binding.seekBarBountyPositionX.onProgressChanged { progress ->
             val offsetX = (progress - 50) * 2f // -100 to 100
             tvBounty?.translationX = offsetX
-            viewModel.setBountyPositionX(offsetX)
+            // Write to local variable instead of ViewModel
+            tempBountyPositionX = offsetX
         }
 
         // Bounty Position Y
         binding.seekBarBountyPositionY.onProgressChanged { progress ->
             val offsetY = (progress - 50) * 2f // -100 to 100
             tvBounty?.translationY = offsetY
-            viewModel.setBountyPositionY(offsetY)
+            // Write to local variable instead of ViewModel
+            tempBountyPositionY = offsetY
         }
 
         setupPhotoFilterSeekBars()
@@ -588,26 +692,20 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     private fun setupPhotoFilterSeekBars() {
         // Shadow - Use dedicated shadow effect function
         binding.seekBarFilterShadow.onProgressChanged { progress ->
-            viewModel.setFilterShadow(progress.toFloat())
+            // Write to local variable instead of ViewModel
+            tempFilterShadow = progress.toFloat()
             applyShadowEffect(progress.toFloat())  // Use shadow layer approach instead of elevation
         }
 
         // Blur
         binding.seekBarFilterBlur.onProgressChanged { progress ->
-            android.util.Log.d("PhotoBlur", "=== Blur seekbar changed ===")
-            android.util.Log.d("PhotoBlur", "Progress: $progress")
-            android.util.Log.d("PhotoBlur", "API Level: ${Build.VERSION.SDK_INT}")
-
-            viewModel.setFilterBlur(progress.toFloat())
+            // Write to local variable instead of ViewModel
+            tempFilterBlur = progress.toFloat()
 
             // Use Glide BlurTransformation for ALL Android versions
             // RenderEffect on Android 12+ causes zoom artifacts, so we use Glide instead
-            android.util.Log.d("PhotoBlur", "Using Glide BlurTransformation (all API levels)")
-            val currentUri = viewModel.selectedImageUri.value
-            if (currentUri != null) {
-                reloadImageWithBlur(currentUri, progress.toFloat())
-            } else {
-                android.util.Log.e("PhotoBlur", "currentUri is NULL!")
+            if (tempSelectedImageUri != null) {
+                reloadImageWithBlur(tempSelectedImageUri!!, progress.toFloat())
             }
 
             applyFilters()
@@ -616,42 +714,48 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Brightness
         binding.seekBarFilterBrightness.onProgressChanged { progress ->
             val brightness = progress / 100f // 0 to 2
-            viewModel.setFilterBrightness(brightness)
+            // Write to local variable instead of ViewModel
+            tempFilterBrightness = brightness
             applyFilters()
         }
 
         // Contrast
         binding.seekBarFilterContrast.onProgressChanged { progress ->
             val contrast = progress / 100f // 0 to 2
-            viewModel.setFilterContrast(contrast)
+            // Write to local variable instead of ViewModel
+            tempFilterContrast = contrast
             applyFilters()
         }
 
         // Grayscale
         binding.seekBarFilterGrayscale.onProgressChanged { progress ->
             val grayscale = progress / 100f // 0 to 1
-            viewModel.setFilterGrayscale(grayscale)
+            // Write to local variable instead of ViewModel
+            tempFilterGrayscale = grayscale
             applyFilters()
         }
 
         // Hue Rotate
         binding.seekBarFilterHueRotate.onProgressChanged { progress ->
             val hueRotate = progress.toFloat() // 0 to 360
-            viewModel.setFilterHueRotate(hueRotate)
+            // Write to local variable instead of ViewModel
+            tempFilterHueRotate = hueRotate
             applyFilters()
         }
 
         // Saturate
         binding.seekBarFilterSaturate.onProgressChanged { progress ->
             val saturate = progress / 100f // 0 to 2
-            viewModel.setFilterSaturate(saturate)
+            // Write to local variable instead of ViewModel
+            tempFilterSaturate = saturate
             applyFilters()
         }
 
         // Sepia
         binding.seekBarFilterSepia.onProgressChanged { progress ->
             val sepia = progress / 100f // 0 to 1
-            viewModel.setFilterSepia(sepia)
+            // Write to local variable instead of ViewModel
+            tempFilterSepia = sepia
             applyFilters()
         }
     }
@@ -660,7 +764,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.seekBarPosterShadow.onProgressChanged { progress ->
             // Control template shadow instead of CardView elevation
             applyTemplateShadow(progress.toFloat())
-            viewModel.setPosterShadow(progress.toFloat())
+            // Write to local variable instead of ViewModel
+            tempPosterShadow = progress.toFloat()
         }
     }
 
@@ -717,7 +822,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // Load into shadow layer with ShadowTransformation
         // This creates shadow that follows the alpha channel/contour of the image like icon shadow
-        val shadowRadius = viewModel.filterShadow.value / 100f * 15f
+        // Read from local variable instead of ViewModel
+        val shadowRadius = tempFilterShadow / 100f * 15f
         val shadowAlpha = 0.8f
 
         imgAvatarShadow?.let { imageView ->
@@ -760,7 +866,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         shadowView.visibility = View.VISIBLE
 
         // Reload shadow with new transformation parameters
-        val currentUri = viewModel.selectedImageUri.value
+        // Read from local variable instead of ViewModel
+        val currentUri = tempSelectedImageUri
         android.util.Log.d("PhotoShadow", "currentUri: $currentUri")
         if (currentUri != null) {
             val shadowRadius = effectiveShadowValue / 100f * 15f // 35-100 → 5.25-15px
@@ -804,13 +911,14 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
     private fun applyFilters() {
         lifecycleScope.launch {
-            val brightness = viewModel.filterBrightness.value
-            val contrast = viewModel.filterContrast.value
-            val saturation = viewModel.filterSaturate.value
-            val grayscale = viewModel.filterGrayscale.value
-            val hueRotate = viewModel.filterHueRotate.value
-            val sepia = viewModel.filterSepia.value
-            val blur = viewModel.filterBlur.value
+            // Read from local variables instead of ViewModel
+            val brightness = tempFilterBrightness
+            val contrast = tempFilterContrast
+            val saturation = tempFilterSaturate
+            val grayscale = tempFilterGrayscale
+            val hueRotate = tempFilterHueRotate
+            val sepia = tempFilterSepia
+            val blur = tempFilterBlur
             // Note: shadow is now handled separately by applyShadowEffect()
 
             val colorMatrix = ColorMatrix()

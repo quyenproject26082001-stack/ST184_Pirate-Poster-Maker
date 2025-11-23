@@ -97,7 +97,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.65" />
 
-    <!-- Bounty Text: bountyPositionY=0.92, bountyColor=#8B0000 (dark red), bountySize=24sp -->
+    <!-- Bounty Text: bountyPositionY=0.92, bountyColor=#776955 (), bountySize=24sp -->
     <TextView
         android:id="@+id/tvBounty"
         android:layout_width="wrap_content"
@@ -111,6 +111,6 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.94" />
+        app:layout_constraintVertical_bias="0.955" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
