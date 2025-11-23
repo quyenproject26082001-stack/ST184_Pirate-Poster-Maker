@@ -34,6 +34,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
+        android:layout_margin="15dp"
+
         android:src="@drawable/template"
         tools:src="@drawable/template_7_preview"
         app:layout_constraintDimensionRatio="H,3:4"

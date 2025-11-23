@@ -35,6 +35,8 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/template"
+        android:layout_margin="15dp"
+
         tools:src="@drawable/template_11_preview"
         app:layout_constraintDimensionRatio="H,3:4"
         app:layout_constraintTop_toTopOf="parent"
