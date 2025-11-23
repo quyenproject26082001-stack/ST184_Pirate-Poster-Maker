@@ -56,8 +56,8 @@
         android:visibility="gone"
         android:layerType="hardware"
         android:clipToPadding="false"
-        app:layout_constraintWidth_percent="0.65"
-        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintWidth_percent="0.55"
+        app:layout_constraintHeight_percent="0.4"
         app:layout_constraintTop_toTopOf="@id/imgAvatar"
         app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,8 +70,8 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/avatar"
-        app:layout_constraintWidth_percent="0.6"
-        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.35"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guidline"
         app:layout_constraintEnd_toEndOf="@id/guidline1"
-        app:layout_constraintVertical_bias="0.718" />
+        app:layout_constraintVertical_bias="0.722" />
 
     <!-- Bounty Text: bountyPositionY=0.92, bountyColor=#3D3D3D, bountySize=32sp -->
     <TextView
@@ -122,13 +122,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/guidline"
-        app:layout_constraintGuide_percent="0.2"
+        app:layout_constraintGuide_percent="0.215"
         />
     <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/guidline1"
-        app:layout_constraintGuide_percent="0.8"
+        app:layout_constraintGuide_percent="0.775"
         />
 
 

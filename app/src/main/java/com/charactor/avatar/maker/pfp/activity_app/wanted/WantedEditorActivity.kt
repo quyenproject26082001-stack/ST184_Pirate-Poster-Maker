@@ -226,8 +226,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Observe template config changes to show/hide sections
         lifecycleScope.launch {
             viewModel.currentConfig.collect { config ->
-                // Show/hide Name section based on template config
-                binding.layoutNameHeader.visibility = if (config.hasName) android.view.View.VISIBLE else android.view.View.GONE
+                // Show/hide Name section CardView based on template config
+                binding.cardNameSection.visibility = if (config.hasName) android.view.View.VISIBLE else android.view.View.GONE
                 binding.layoutNameContent.visibility = android.view.View.GONE
 
                 // Show/hide Bounty section based on template config

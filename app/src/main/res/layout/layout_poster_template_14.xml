@@ -54,7 +54,7 @@
         android:layerType="hardware"
         android:clipToPadding="false"
         app:layout_constraintWidth_percent="0.51"
-        app:layout_constraintHeight_percent="0.42"
+        app:layout_constraintHeight_percent="0.41"
         app:layout_constraintTop_toTopOf="@id/imgAvatar"
         app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
         android:src="@drawable/avatar"
 
         app:layout_constraintWidth_percent="0.46"
-        app:layout_constraintHeight_percent="0.37"
+        app:layout_constraintHeight_percent="0.36"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +96,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guidline"
         app:layout_constraintEnd_toEndOf="@id/guidline1"
-        app:layout_constraintVertical_bias="0.7" />
+        app:layout_constraintVertical_bias="0.71" />
 
     <!-- Bounty: bountyPositionY=0.92, bountySize=24sp -->
     <TextView
@@ -117,13 +117,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/guidline"
-        app:layout_constraintGuide_percent="0.2"
+        app:layout_constraintGuide_percent="0.1"
         />
     <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/guidline1"
-        app:layout_constraintGuide_percent="0.8"
+        app:layout_constraintGuide_percent="0.9"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
