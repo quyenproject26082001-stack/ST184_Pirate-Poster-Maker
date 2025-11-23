@@ -109,11 +109,11 @@
         android:fontFamily="@font/roboto_bold"
         android:text="15,000"
         android:textColor="#8B4513"
-        android:textSize="40sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guideBountyStart"
-        app:layout_constraintVertical_bias="0.958" />
+        app:layout_constraintVertical_bias="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

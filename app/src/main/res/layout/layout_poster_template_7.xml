@@ -83,7 +83,7 @@
         android:fontFamily="@font/roboto_bold"
         android:text="NAME HERE"
         android:textColor="#5D4E37"
-        android:textSize="26sp"
+        android:textSize="22sp"
         android:autoSizeTextType="uniform"
         android:autoSizeMinTextSize="18sp"
         android:autoSizeMaxTextSize="28sp"
@@ -95,7 +95,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guidline"
         app:layout_constraintEnd_toEndOf="@id/guidline1"
-        app:layout_constraintVertical_bias="0.693" />
+        app:layout_constraintVertical_bias="0.696" />
 
     <!-- Bounty: bountyPositionY=0.75, bountyColor=#5D4E37, bountySize=28sp -->
     <TextView
@@ -103,15 +103,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
-        android:text="$20,000"
+        android:text="20,000"
         android:textColor="#5D4E37"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideBountyStart"
         app:layout_constraintVertical_bias="0.78" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideBountyStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidline"

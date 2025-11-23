@@ -38,46 +38,125 @@ data class PosterWantedItem(
     companion object {
         // Random pirate names
         private val PIRATE_NAMES = listOf(
-            "MONKEY D. LUFFY",
-            "RORONOA ZORO",
-            "NAMI",
-            "USOPP",
-            "SANJI",
-            "TONY CHOPPER",
-            "NICO ROBIN",
-            "FRANKY",
-            "BROOK",
-            "JINBE",
-            "SHANKS",
-            "BLACKBEARD",
-            "KAIDO",
-            "BIG MOM",
-            "WHITEBEARD",
-            "GOL D. ROGER",
-            "PORTGAS D. ACE",
-            "TRAFALGAR LAW",
-            "EUSTASS KID",
-            "DRACULE MIHAWK",
-            "BOA HANCOCK",
-            "CROCODILE",
-            "DONQUIXOTE",
-            "KATAKURI",
-            "MARCO",
-            "SABO",
-            "BUGGY",
-            "SMOKER",
-            "AOKIJI",
-            "KIZARU",
-            "AKAINU",
-            "FUJITORA",
-            "GARP",
-            "SENGOKU",
-            "RAYLEIGH",
-            "CAPTAIN JACK",
-            "BLACKHEART",
-            "REDBEARD",
-            "STORMWIND",
-            "SEAWOLF"
+            "THE BUTCHER",
+            "THE RIPPER",
+            "THE STRANGLER",
+            "THE SLASHER",
+            "THE REAPER",
+            "THE DESTROYER",
+            "THE TERROR",
+            "THE MENACE",
+            "THE SAVAGE",
+            "SCARFACE",
+            "DEAD EYE",
+            "MAD DOG",
+            "WILD BEAST",
+            "COLD BLOOD",
+            "RAZOR BLADE",
+            "BONE BREAKER",
+            "SKULL CRUSHER",
+            "HEAD HUNTER",
+            "THE VICIOUS",
+            "THE RUTHLESS",
+            "THE MERCILESS",
+            "THE BRUTAL",
+            "THE MANIAC",
+            "THE PSYCHO",
+            "THE LUNATIC",
+            "THE BANDIT",
+            "THE OUTLAW",
+            "THE FUGITIVE",
+            "THE CRIMINAL",
+            "THE THIEF",
+            "THE SMUGGLER",
+            "THE TRAITOR",
+            "THE DECEIVER",
+            "THE BETRAYER",
+            "THE ASSASSIN",
+            "THE KILLER",
+            "THE MURDERER",
+            "BLACK HAND",
+            "RED HAND",
+            "IRON CLAW",
+            "VENOM FANG",
+            "DEATH WISH",
+            "NIGHT STALKER",
+            "SHADOW KILLER",
+            "DARK SLAYER",
+            "BLOOD DRINKER",
+            "SOUL TAKER",
+            "THE TORTURER",
+            "THE HANGMAN",
+            "THE POISONER",
+            "THE ARSONIST",
+            "THE BOMBER",
+            "THE SNIPER",
+            "THE ENFORCER",
+            "SNAKE EYES",
+            "VIPER TOOTH",
+            "DEMON EYES",
+            "DEVIL HAND",
+            "CURSE BRINGER",
+            "PAIN DEALER",
+            "MISERY MAKER",
+            "CHAOS KING",
+            "ANARCHY LORD",
+            "MAYHEM MASTER",
+            "THE WANTED",
+            "THE HUNTED",
+            "THE NOTORIOUS",
+            "THE INFAMOUS",
+            "THE DANGEROUS",
+            "THE DEADLY",
+            "THE VIOLENT",
+            "THE ARMED",
+            "THE HOSTILE",
+            "SCAR FACE",
+            "BROKEN TOOTH",
+            "ONE EYE",
+            "NO MERCY",
+            "QUICK DRAW",
+            "FAST BLADE",
+            "SILENT KILLER",
+            "LAST BREATH",
+            "DOOMSDAY",
+            "DARK TERROR",
+            "FIRE BRINGER",
+            "DARKSIDE",
+            "BLACKOUT",
+            "CROSSFIRE",
+            "SURE SHOT",
+            "KILL ZONE",
+            "GIGGLE HOOK",
+            "SCARE SAIL",
+            "JOKER DEPTH",
+            "TICKLE TIDE",
+            "LAUGH LURK",
+            "FUNNY FANG",
+            "CREEPY GRIN",
+            "SILLY SLASH",
+            "BOO BLADE",
+            "CHUCKLE CLAW",
+            "SPOOKY SWAB",
+            "WITTY WRAITH",
+            "GOOFY GHOUL",
+            "EERIE ECHO",
+            "PRANK PLANK",
+            "HAUNT HAH",
+            "SMIRK SHADOW",
+            "DROLL DOOM",
+            "FREAKY FOG",
+            "QUIP QUAKE",
+            "BIZARRE BAY",
+            "ODD OCEAN",
+            "WHIMSY WRECK",
+            "ZANY ZOMBIE",
+            "PUN PIRATE",
+            "GLEE GHOST",
+            "MOCK MENACE",
+            "RIDDLE RIP",
+            "JEST JAWS",
+            "CLOWN CURSE"
         )
 
         // Random bounty amounts
@@ -142,7 +221,7 @@ data class PosterWantedItem(
         )
         /**
          * Generate random poster wanted items
-         * Uses maxBountyLength from template config to limit bounty length
+         * Uses maxNameLength and maxBountyLength from template config to limit text lengths
          */
         fun generateRandomItems(count: Int): List<PosterWantedItem> {
             val items = mutableListOf<PosterWantedItem>()
@@ -172,12 +251,30 @@ data class PosterWantedItem(
                     BOUNTY_AMOUNTS.minByOrNull { it.length } ?: BOUNTY_AMOUNTS[0]
                 }
 
+                // Filter names based on maxNameLength
+                val maxNameLen = config.maxNameLength
+                val availableNames = if (maxNameLen != null) {
+                    // Limit to names with length <= maxNameLength
+                    PIRATE_NAMES.filter { it.length <= maxNameLen }
+                } else {
+                    // No limit - use all names
+                    PIRATE_NAMES
+                }
+
+                // Select random name from available options
+                val selectedName = if (availableNames.isNotEmpty()) {
+                    availableNames[random.nextInt(availableNames.size)]
+                } else {
+                    // Fallback: use shortest name if filter is too strict
+                    PIRATE_NAMES.minByOrNull { it.length } ?: PIRATE_NAMES[0]
+                }
+
                 items.add(
                     PosterWantedItem(
                         id = i,
                         templateId = templateId,
                         avatarId = random.nextInt(25) + 1,        // 1-25
-                        name = PIRATE_NAMES[random.nextInt(PIRATE_NAMES.size)],
+                        name = selectedName,  // Use filtered name
                         bounty = selectedBounty
                     )
                 )

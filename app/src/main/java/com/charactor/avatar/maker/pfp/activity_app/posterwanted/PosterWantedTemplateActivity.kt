@@ -77,6 +77,11 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         // Use full bounty text with prefix and suffix from template config
         viewModel.setBountyText(item.getFullBountyText())
 
+        // Explicitly set bountySize from template config
+        // This ensures thumbnail and actual poster have the same text size
+        // (fixes issue where ViewModel persists old bountySize from previous session)
+        viewModel.setBountySize(viewModel.getConfig().bountySize)
+
         // Set avatar URI from assets
         val avatarUri = Uri.parse(item.getAvatarPath())
         viewModel.setSelectedImageUri(avatarUri)

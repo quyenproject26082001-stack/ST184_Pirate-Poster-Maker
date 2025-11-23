@@ -16,6 +16,7 @@ data class TemplateConfig(
     val namePositionY: Float = 0.65f, // 0-1 relative to height
     val nameColor: String = "#000000",
     val nameSize: Float = 24f,
+    val maxNameLength: Int? = null,  // Max name text length for validation/random (null = no limit)
 
     // Bounty field configuration
     val hasBounty: Boolean = true,
@@ -57,6 +58,7 @@ object TemplateConfigProvider {
             namePositionY = 0.68f,
             nameColor = "#3D3D3D",
             nameSize = 28f,
+            maxNameLength = 9,  // "NAME HERE" = 9 chars, allow up to 20
             hasBounty = true,
             bountyDefaultText = "2,000,000",
             bountyPrefix = "$",
@@ -65,7 +67,7 @@ object TemplateConfigProvider {
             bountyPositionY = 0.92f,
             bountyColor = "#3D3D3D",
             bountySize = 32f,
-            maxBountyLength = 12,  // "$2,000,000" = 10 chars, allow up to 12
+            maxBountyLength = 10,  // "$2,000,000" = 10 chars, allow up to 12
             photoLeft = 0.12f,
             photoTop = 0.28f,
             photoRight = 0.88f,
@@ -141,6 +143,7 @@ object TemplateConfigProvider {
             namePositionY = 0.66f,  // Adjusted from 0.62f
             nameColor = "#3D3D3D",
             nameSize = 22f,
+            maxNameLength = 9,
             hasBounty = true,
             bountyDefaultText = "1,000,000",
             bountyPrefix = "$",
