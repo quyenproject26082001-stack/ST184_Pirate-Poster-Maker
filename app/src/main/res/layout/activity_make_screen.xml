@@ -31,7 +31,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="16dp"
+        android:paddingHorizontal="16dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
@@ -52,6 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
+                android:layout_marginTop="6dp"
                 android:clipToPadding="false"
                 app:cardBackgroundColor="@android:color/transparent"
                 app:cardElevation="0dp">
@@ -73,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 app:cardBackgroundColor="@android:color/transparent"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
                >
 
                 <androidx.constraintlayout.widget.ConstraintLayout

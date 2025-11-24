@@ -52,6 +52,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             viewModel.setSelectedImageUri(it)
             // Mark editing started to switch from avatar.png to item.png
             viewModel.markEditingStarted()
+            // Show Save button
+            showSaveButton()
             // Refresh entire preview with item.png and all elements visible
             updatePreviewWithCurrentState()
         }
@@ -61,6 +63,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     private val editActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
             // Data is already updated in shared ViewModel, just refresh UI
+            // Make sure Save button is visible after editing
+            if (viewModel.isEditingStarted.value) {
+                showSaveButton()
+            }
             updatePreviewWithCurrentState()
         }
     }
@@ -92,6 +98,11 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 // Update bounty text with new prefix/suffix (keep the number)
                 viewModel.setBountyText("${newConfig.bountyPrefix}${bountyNumber}${newConfig.bountySuffix}")
 
+                // Mark editing started so Save button appears
+                viewModel.markEditingStarted()
+                // Show Save button
+                showSaveButton()
+
                 updatePreviewWithCurrentState()
             }
         }
@@ -102,6 +113,14 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     }
 
     override fun initView() {
+        // Check if template was selected from Intent (for direct navigation)
+        val selectedTemplateFromIntent = intent.getIntExtra("selectedTemplateId", -1)
+        if (selectedTemplateFromIntent != -1) {
+            // User selected a specific template from another screen
+            viewModel.setSelectedTemplate(selectedTemplateFromIntent)
+            viewModel.markEditingStarted()
+        }
+
         // Load template layout and background from assets
         inflateTemplateLayout(viewModel.selectedTemplate.value)
 
@@ -228,12 +247,28 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         binding.actionBar.apply {
             btnActionBarLeft.setImageResource(R.drawable.ic_back)
             btnActionBarLeft.visible()
-            btnActionBarRightText.visible()
-            tvRightText.visible()
+            // Show/hide Save button based on editing state
+            if (viewModel.isEditingStarted.value) {
+                btnActionBarRightText.visible()
+                tvRightText.visible()
+            } else {
+                btnActionBarRightText.gone()
+                tvRightText.gone()
+            }
             tvCenter.text = strings(R.string.wanted_poster_maker)
             tvCenter.visible()
             btnActionBarRight.gone()
             btnActionBarReset.gone()
+        }
+    }
+
+    /**
+     * Show Save button (call when editing starts)
+     */
+    private fun showSaveButton() {
+        binding.actionBar.apply {
+            btnActionBarRightText.visible()
+            tvRightText.visible()
         }
     }
 
