@@ -36,7 +36,7 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         binding.rvTemplates.apply{
             layoutManager = GridLayoutManager(this@PosterWantedTemplateActivity,2)
             setHasFixedSize(true)
-            setItemViewCacheSize(50)
+            setItemViewCacheSize(100)
         }
         // Generate 100 random items
         waitingDialog = WaitingDialog(this)
