@@ -30,13 +30,14 @@
         android:id="@+id/rvDesigns"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="12dp"
+        android:paddingHorizontal="12dp"
         android:clipToPadding="false"
+        android:layout_marginTop="5dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_my_design" />
+        tools:listitem="@layout/layout_poster_template_1" />
 
     <!-- Empty State -->
     <TextView
@@ -47,7 +48,7 @@
         android:text="@string/no_designs_yet"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:gravity="center"
         android:fontFamily="@font/kurale_regular"
         android:background="@drawable/bg_empty"
