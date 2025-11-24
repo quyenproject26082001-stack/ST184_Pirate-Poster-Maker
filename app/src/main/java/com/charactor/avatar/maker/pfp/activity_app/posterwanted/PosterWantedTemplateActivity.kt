@@ -9,6 +9,7 @@ import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.*
 import com.charactor.avatar.maker.pfp.core.viewmodel.PosterEditorSharedViewModel
 import com.charactor.avatar.maker.pfp.databinding.ActivityPosterWantedTemplateBinding
+import com.charactor.avatar.maker.pfp.dialog.WaitingDialog
 
 /**
  * Poster Wanted Template Activity
@@ -20,20 +21,27 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
     private val viewModel = PosterEditorSharedViewModel.getInstance()
     private lateinit var adapter: PosterWantedTemplateAdapter
 
+    private var waitingDialog: WaitingDialog? =null
     override fun setViewBinding(): ActivityPosterWantedTemplateBinding {
         return ActivityPosterWantedTemplateBinding.inflate(LayoutInflater.from(this))
     }
 
     override fun initView() {
         // Generate 100 random items
+        waitingDialog = WaitingDialog(this)
+        waitingDialog?.show()
         val items = PosterWantedItem.generateRandomItems(100)
 
         // Setup adapter
         adapter = PosterWantedTemplateAdapter(items) { item ->
             onItemClicked(item)
         }
-
         binding.rvTemplates.adapter = adapter
+        binding.rvTemplates.postDelayed({
+
+            waitingDialog?.dismiss()
+
+        },1500)
     }
 
     override fun viewListener() {

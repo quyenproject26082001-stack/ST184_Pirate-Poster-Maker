@@ -5,7 +5,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80545454"
         android:gravity="center">
 
         <FrameLayout
@@ -26,6 +25,7 @@
                     android:translationY="-20dp"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"
+                    app:lottie_colorFilter="@color/app"
                     app:lottie_rawRes="@raw/lottie_splash" />
             </FrameLayout>
 
@@ -35,10 +35,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:text="@string/wait_a_minute"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/kurale_regular"
                 android:layout_marginBottom="20dp"
                 android:gravity="center"
-                android:textColor="@color/white"
+                android:textColor="@color/app"
                 android:textSize="18sp" />
         </FrameLayout>
     </LinearLayout>
