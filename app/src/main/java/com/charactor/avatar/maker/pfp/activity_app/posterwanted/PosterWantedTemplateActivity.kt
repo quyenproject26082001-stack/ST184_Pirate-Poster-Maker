@@ -3,6 +3,8 @@ package com.charactor.avatar.maker.pfp.activity_app.posterwanted
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.activity_app.makescreen.MakeScreenActivity
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
@@ -10,6 +12,9 @@ import com.charactor.avatar.maker.pfp.core.extensions.*
 import com.charactor.avatar.maker.pfp.core.viewmodel.PosterEditorSharedViewModel
 import com.charactor.avatar.maker.pfp.databinding.ActivityPosterWantedTemplateBinding
 import com.charactor.avatar.maker.pfp.dialog.WaitingDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Poster Wanted Template Activity
@@ -27,21 +32,31 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
     }
 
     override fun initView() {
+
+        binding.rvTemplates.apply{
+            layoutManager = GridLayoutManager(this@PosterWantedTemplateActivity,2)
+            setHasFixedSize(true)
+            setItemViewCacheSize(50)
+        }
         // Generate 100 random items
         waitingDialog = WaitingDialog(this)
         waitingDialog?.show()
-        val items = PosterWantedItem.generateRandomItems(100)
+        lifecycleScope.launch {
 
-        // Setup adapter
-        adapter = PosterWantedTemplateAdapter(items) { item ->
-            onItemClicked(item)
+            val items = withContext(Dispatchers.Default){
+
+                PosterWantedItem.generateRandomItems(100)
+            }
+
+            adapter = PosterWantedTemplateAdapter(items) { item ->
+                onItemClicked(item)
+            }
+
+            binding.rvTemplates.adapter = adapter
+            binding.rvTemplates.postDelayed({
+                waitingDialog?.dismiss()
+            }, 1500)
         }
-        binding.rvTemplates.adapter = adapter
-        binding.rvTemplates.postDelayed({
-
-            waitingDialog?.dismiss()
-
-        },1500)
     }
 
     override fun viewListener() {
