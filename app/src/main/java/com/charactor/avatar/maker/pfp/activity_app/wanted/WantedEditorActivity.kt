@@ -236,13 +236,35 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             maxLines = 1
             // Note: Do NOT use setSingleLine(true) - it conflicts with autoSize
             // Use TextViewCompat for API 24+ compatibility
+            val config = viewModel.getConfig()
+
+            // IMPORTANT: Disable autoSize first to clear any XML-defined autoSize configuration
+            // This prevents XML autoSize from conflicting with programmatic autoSize
+            TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                this,
+                TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+            )
+
+            // Now set autoSize with correct configuration
             TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 this,
                 8,      // minTextSize: 8sp (allow more shrinking for long text)
-                40,     // maxTextSize: 28sp
+                config.nameSize.toInt(),     // maxTextSize:
                 1,      // granularity: 1sp step
                 android.util.TypedValue.COMPLEX_UNIT_SP
             )
+
+            // Log after setting autoSize
+            post {
+                val textSizePx = tvName?.textSize ?: 0f
+                val textSizeSp = textSizePx / resources.displayMetrics.scaledDensity
+                android.util.Log.d("TextSizeDebug", "───────────────────────────────────────")
+                android.util.Log.d("TextSizeDebug", "WANTED EDITOR - After setAutoSize")
+                android.util.Log.d("TextSizeDebug", "Template: ${config.id}")
+                android.util.Log.d("TextSizeDebug", "tvName textSize: ${textSizeSp.toInt()}sp (${textSizePx}px)")
+                android.util.Log.d("TextSizeDebug", "AutoSize maxTextSize set to: ${config.nameSize.toInt()}sp")
+                android.util.Log.d("TextSizeDebug", "───────────────────────────────────────")
+            }
         }
 
         // Load template background
@@ -460,8 +482,25 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             tvBounty?.setTextColor(Color.parseColor(config.bountyColor))
 
             // Apply text sizes
-            tvName?.textSize = config.nameSize
+            // Note: tvName textSize is already configured via autoSize in inflateTemplateLayout()
+            // Setting textSize here would conflict with autoSize configuration
             tvBounty?.textSize = config.bountySize
+
+            // Log text sizes for debugging
+            tvName?.post {
+                val nameTextSizePx = tvName?.textSize ?: 0f
+                val nameTextSizeSp = nameTextSizePx / resources.displayMetrics.scaledDensity
+                android.util.Log.d("TextSizeDebug", "═══════════════════════════════════════")
+                android.util.Log.d("TextSizeDebug", "WANTED EDITOR - applyTemplateColors()")
+                android.util.Log.d("TextSizeDebug", "Template: ${config.id}")
+                android.util.Log.d("TextSizeDebug", "tvName textSize: ${nameTextSizeSp.toInt()}sp (${nameTextSizePx}px)")
+                android.util.Log.d("TextSizeDebug", "config.nameSize: ${config.nameSize}sp")
+                val bountyTextSizePx = tvBounty?.textSize ?: 0f
+                val bountyTextSizeSp = bountyTextSizePx / resources.displayMetrics.scaledDensity
+                android.util.Log.d("TextSizeDebug", "tvBounty textSize: ${bountyTextSizeSp.toInt()}sp (${bountyTextSizePx}px)")
+                android.util.Log.d("TextSizeDebug", "config.bountySize: ${config.bountySize}sp")
+                android.util.Log.d("TextSizeDebug", "═══════════════════════════════════════")
+            }
         } catch (e: Exception) {
             // Fallback to default colors if parsing fails
             tvName?.setTextColor(Color.BLACK)
@@ -844,6 +883,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 // Force TextView to recalculate auto-resize properly when deleting text
                 // Solution: Set to max size first to expand height, then re-enable auto-size
                 tvName?.apply {
+                    val config = viewModel.getConfig()
                     // Step 1: Disable auto-size
                     TextViewCompat.setAutoSizeTextTypeWithDefaults(
                         this,
@@ -851,14 +891,14 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     )
 
                     // Step 2: Set to max text size to force TextView expand height
-                    textSize = 30f  // maxTextSize in sp
+                    textSize = config.nameSize  // maxTextSize from config
 
                     // Step 3: Re-enable auto-size after TextView has expanded
                     post {
                         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                             this,
                             8,      // minTextSize: 8sp
-                            30,     // maxTextSize: 30sp
+                            config.nameSize.toInt(),     // maxTextSize from config
                             1,      // granularity: 1sp step
                             android.util.TypedValue.COMPLEX_UNIT_SP
                         )
@@ -1359,7 +1399,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 dismissLoading()
                 setRemoveBackgroundButtonEnabled(true)
                 e.printStackTrace()
-                showToast(getString(R.string.error_message, e.message ?: "Unknown"))
+                showToast("${getString(R.string.error_message)}: ${e.message ?: "Unknown"}")
             }
         }
     }

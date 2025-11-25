@@ -499,6 +499,22 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         tvBounty?.translationX = viewModel.bountyPositionX.value
         tvBounty?.translationY = viewModel.bountyPositionY.value
 
+        // Log text sizes for debugging
+        tvName?.post {
+            val nameTextSizePx = tvName?.textSize ?: 0f
+            val nameTextSizeSp = nameTextSizePx / resources.displayMetrics.scaledDensity
+            android.util.Log.d("TextSizeDebug", "═══════════════════════════════════════")
+            android.util.Log.d("TextSizeDebug", "MAKE SCREEN - applyAllEffectsFromViewModel()")
+            android.util.Log.d("TextSizeDebug", "Template: ${config.id}")
+            android.util.Log.d("TextSizeDebug", "tvName textSize: ${nameTextSizeSp.toInt()}sp (${nameTextSizePx}px)")
+            android.util.Log.d("TextSizeDebug", "config.nameSize: ${config.nameSize}sp")
+            val bountyTextSizePx = tvBounty?.textSize ?: 0f
+            val bountyTextSizeSp = bountyTextSizePx / resources.displayMetrics.scaledDensity
+            android.util.Log.d("TextSizeDebug", "tvBounty textSize: ${bountyTextSizeSp.toInt()}sp (${bountyTextSizePx}px)")
+            android.util.Log.d("TextSizeDebug", "viewModel.bountySize: ${viewModel.bountySize.value}sp")
+            android.util.Log.d("TextSizeDebug", "═══════════════════════════════════════")
+        }
+
         // Photo filters
         applyPhotoFilters()
 

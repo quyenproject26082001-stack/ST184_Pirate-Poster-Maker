@@ -190,7 +190,7 @@ object TemplateConfigProvider {
             namePositionX = 0.5f,
             namePositionY = 0.68f,  // Adjusted from 0.60f
             nameColor = "#5D4E37",
-            nameSize = 26f,
+            nameSize = 22f,
             maxBountyLength = 6,
 
             hasBounty = true,

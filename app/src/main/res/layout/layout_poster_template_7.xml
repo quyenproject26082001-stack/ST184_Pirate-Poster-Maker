@@ -75,7 +75,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.475" />
 
-    <!-- Name: namePositionY=0.68, nameColor=#5D4E37, nameSize=26sp -->
+    <!-- Name: namePositionY=0.68, nameColor=#5D4E37, nameSize=22sp -->
     <TextView
         android:id="@+id/tvName"
         android:layout_width="0dp"
@@ -84,13 +84,9 @@
         android:text="NAME HERE"
         android:textColor="#5D4E37"
         android:textSize="22sp"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="18sp"
-        android:autoSizeMaxTextSize="28sp"
-        android:autoSizeStepGranularity="1sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:maxLines="3"
+        android:maxLines="1"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guidline"
