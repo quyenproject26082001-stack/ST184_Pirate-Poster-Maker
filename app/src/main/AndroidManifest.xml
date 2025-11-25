@@ -54,6 +54,7 @@
         <activity
             android:name=".activity_app.wanted.WantedEditorActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity_app.makescreen.MakeScreenActivity"

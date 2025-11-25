@@ -8,6 +8,7 @@ import com.charactor.avatar.maker.pfp.core.utils.DataLocal
 import com.charactor.avatar.maker.pfp.databinding.ActivityIntroBinding
 import com.charactor.avatar.maker.pfp.activity_app.main.MainActivity
 import com.charactor.avatar.maker.pfp.activity_app.permission.PermissionActivity
+import com.charactor.avatar.maker.pfp.core.extensions.hideNavigation
 import com.charactor.avatar.maker.pfp.core.extensions.setOnSingleClick
 import kotlin.system.exitProcess
 
@@ -20,6 +21,11 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
 
     override fun initView() {
         initVpg()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        hideNavigation(false)
     }
 
     override fun viewListener() {
