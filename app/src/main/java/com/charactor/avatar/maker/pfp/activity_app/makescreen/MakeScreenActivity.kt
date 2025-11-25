@@ -194,7 +194,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             }
 
             // Import button - Pick image from gallery
-            cvImport.setOnSingleClick {
+            cvImport.setOnSingleClick(2000) {
                 pickImageLauncher.launch("image/*")
             }
 

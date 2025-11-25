@@ -239,7 +239,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 this,
                 8,      // minTextSize: 8sp (allow more shrinking for long text)
-                28,     // maxTextSize: 28sp
+                40,     // maxTextSize: 28sp
                 1,      // granularity: 1sp step
                 android.util.TypedValue.COMPLEX_UNIT_SP
             )
@@ -714,7 +714,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * This prevents issues with combining diacritical marks (Vietnamese accents), emojis, etc.
      */
     private fun applyGraphemeClusterFilter() {
-        val maxGraphemeClusters = 15
+        val maxGraphemeClusters = 25
 
         val graphemeFilter = InputFilter { source, start, end, dest, dstart, dend ->
             val existingText = dest.toString()
@@ -840,10 +840,50 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     tvName?.visibility = View.VISIBLE
                 }
                 tvName?.text = text
+
+                // Force TextView to recalculate auto-resize properly when deleting text
+                // Solution: Set to max size first to expand height, then re-enable auto-size
+                tvName?.apply {
+                    // Step 1: Disable auto-size
+                    TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                        this,
+                        TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+                    )
+
+                    // Step 2: Set to max text size to force TextView expand height
+                    textSize = 30f  // maxTextSize in sp
+
+                    // Step 3: Re-enable auto-size after TextView has expanded
+                    post {
+                        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                            this,
+                            8,      // minTextSize: 8sp
+                            30,     // maxTextSize: 30sp
+                            1,      // granularity: 1sp step
+                            android.util.TypedValue.COMPLEX_UNIT_SP
+                        )
+                    }
+                }
+
                 // Write to local variable instead of ViewModel
                 tempNameText = text
             }
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                // Log textSize after auto-resize calculation
+                tvName?.post {
+                    val currentSize = tvName?.textSize ?: 0f
+                    val currentSizeSp = currentSize / resources.displayMetrics.scaledDensity
+                    val textLength = s?.length ?: 0
+                    val letterSpacing = tvName?.letterSpacing ?: 0f
+                    android.util.Log.d("AutoResize", "═══════════════════════════════")
+                    android.util.Log.d("AutoResize", "Text: '${s.toString()}'")
+                    android.util.Log.d("AutoResize", "Length: $textLength characters")
+                    android.util.Log.d("AutoResize", "TextSize: ${currentSizeSp.toInt()}sp (${currentSize}px)")
+                    android.util.Log.d("AutoResize", "LetterSpacing: $letterSpacing")
+                    android.util.Log.d("AutoResize", "Width: ${tvName?.width}px, Height: ${tvName?.height}px")
+                    android.util.Log.d("AutoResize", "═══════════════════════════════")
+                }
+            }
         })
 
         binding.edtBounty.addTextChangedListener(object : TextWatcher {
@@ -870,6 +910,16 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             // Auto-size handles long TEXT, multi-line handles wide SPACING
             // Write to local variable instead of ViewModel
             tempNameSpacing = spacing
+
+            // Log textSize after spacing change
+            tvName?.post {
+                val currentSize = tvName?.textSize ?: 0f
+                val currentSizeSp = currentSize / resources.displayMetrics.scaledDensity
+                android.util.Log.d("AutoResize", "───────────────────────────────")
+                android.util.Log.d("AutoResize", "SPACING CHANGED: $spacing")
+                android.util.Log.d("AutoResize", "TextSize after spacing: ${currentSizeSp.toInt()}sp")
+                android.util.Log.d("AutoResize", "───────────────────────────────")
+            }
         }
 
         // Bounty Size

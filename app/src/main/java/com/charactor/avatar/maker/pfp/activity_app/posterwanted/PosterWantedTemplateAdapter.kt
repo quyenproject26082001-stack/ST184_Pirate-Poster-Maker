@@ -2,6 +2,7 @@ package com.charactor.avatar.maker.pfp.activity_app.posterwanted
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.charactor.avatar.maker.pfp.R
+import com.charactor.avatar.maker.pfp.data.model.TemplateConfigProvider
 import com.charactor.avatar.maker.pfp.databinding.ItemPosterWantedTemplateBinding
 import kotlinx.coroutines.*
 
@@ -100,10 +102,29 @@ class PosterWantedTemplateAdapter(
                 val tvName = templateView.findViewById<TextView>(R.id.tvName)
                 val tvBounty = templateView.findViewById<TextView>(R.id.tvBounty)
 
-                // Set texts
-                tvName.text = item.name
-                // Use full bounty text with prefix and suffix
-                tvBounty.text = item.getFullBountyText()
+                // Get template config for text sizes
+                val config = TemplateConfigProvider.getConfig(item.templateId)
+
+                // Define render size
+                val width = 1200  // Increased for better quality
+                val height = 1600
+
+                // Calculate scale factor based on standard design width (1080px)
+                // This ensures text size is consistent across all screen densities
+                val designWidth = 1080f
+                val scaleFactor = width / designWidth
+
+                // Set text sizes in PX (density-independent) instead of SP
+                // This ensures the text size is always proportional to the view size
+                if (tvName != null) {
+                    tvName.text = item.name
+                    tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.nameSize * scaleFactor * context.resources.displayMetrics.density)
+                }
+
+                if (tvBounty != null) {
+                    tvBounty.text = item.getFullBountyText()
+                    tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.bountySize * scaleFactor * context.resources.displayMetrics.density)
+                }
 
                 // Load images synchronously
                 val templateBitmap = withContext(Dispatchers.IO) {
@@ -126,11 +147,7 @@ class PosterWantedTemplateAdapter(
                 imgTemplate.setImageBitmap(templateBitmap)
                 imgAvatar.setImageBitmap(avatarBitmap)
 
-                // Measure and layout the view
-                // Use 3:4 aspect ratio, width = 600px (reasonable for thumbnail)
-                val width = 600
-                val height = 800
-
+                // Measure and layout the view with the same dimensions
                 val widthSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
                 val heightSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
 
