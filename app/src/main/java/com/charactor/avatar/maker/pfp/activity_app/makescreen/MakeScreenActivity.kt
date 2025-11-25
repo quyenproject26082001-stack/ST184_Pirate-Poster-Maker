@@ -98,10 +98,11 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 // Update bounty text with new prefix/suffix (keep the number)
                 viewModel.setBountyText("${newConfig.bountyPrefix}${bountyNumber}${newConfig.bountySuffix}")
 
-                // Mark editing started so Save button appears
-                viewModel.markEditingStarted()
-                // Show Save button
-                showSaveButton()
+                // Only show Save button if already editing (imported image or made edits)
+                // Don't mark editing started just for changing template - keep avatar.webp preview
+                if (viewModel.isEditingStarted.value) {
+                    showSaveButton()
+                }
 
                 updatePreviewWithCurrentState()
             }
@@ -117,8 +118,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         val selectedTemplateFromIntent = intent.getIntExtra("selectedTemplateId", -1)
         if (selectedTemplateFromIntent != -1) {
             // User selected a specific template from another screen
+            // Don't mark editing - just selecting template shows avatar.webp preview
             viewModel.setSelectedTemplate(selectedTemplateFromIntent)
-            viewModel.markEditingStarted()
         }
 
         // Load template layout and background from assets
@@ -181,7 +182,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             // Action bar
             actionBar.apply {
                 btnActionBarLeft.setOnSingleClick { handleBack() }
-                btnActionBarRightText.setOnSingleClick { handleSave() }
+                btnActionBarRightText.setOnSingleClick(2000) { handleSave() }
             }
 
             // Templates button - Navigate to Template Selection Screen
@@ -276,7 +277,9 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * Handle back button with "Discard changes?" dialog if edited
      */
     private fun handleBack() {
-        if (viewModel.hasChanges.value) {
+        // Check isEditingStarted instead of hasChanges to avoid showing dialog
+        // when user only changed template without importing image or editing
+        if (viewModel.isEditingStarted.value) {
             // TODO: Show dialog "Discard changes?"
             // For now, just finish
             finishAfterTransition()

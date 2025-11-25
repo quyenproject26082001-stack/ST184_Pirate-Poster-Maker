@@ -38,9 +38,7 @@ class YesNoDialog(
             flBottom.btnBottomRight.setOnSingleClick {
                 onYesClick.invoke()
             }
-            flOutSide.setOnSingleClick {
-                onDismissClick.invoke()
-            }
+            // Removed flOutSide click listener - dialog should only close via Yes/No buttons
         }
     }
 

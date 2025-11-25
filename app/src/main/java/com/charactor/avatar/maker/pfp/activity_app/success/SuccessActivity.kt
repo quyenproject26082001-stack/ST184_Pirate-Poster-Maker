@@ -70,7 +70,7 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
             }
 
             // Share button
-            btnShare.setOnSingleClick {
+            btnShare.setOnSingleClick(2000) {
                 shareImage()
             }
 

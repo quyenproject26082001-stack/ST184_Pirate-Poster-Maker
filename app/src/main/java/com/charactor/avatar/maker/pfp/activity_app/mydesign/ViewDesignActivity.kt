@@ -67,7 +67,7 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
             }
 
             // Share button
-            btnShare.setOnSingleClick {
+            btnShare.setOnSingleClick(2000) {
                 shareImage()
             }
 
@@ -93,9 +93,6 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
             dialog.dismiss()
         }
         dialog.onNoClick = {
-            dialog.dismiss()
-        }
-        dialog.onDismissClick = {
             dialog.dismiss()
         }
         dialog.show()

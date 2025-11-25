@@ -1,21 +1,30 @@
 package com.charactor.avatar.maker.pfp.activity_app.wanted
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.graphics.Rect
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.net.Uri
 import android.os.Build
 import android.text.Editable
+import android.text.InputFilter
+import android.text.Spanned
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import java.text.BreakIterator
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -32,9 +41,11 @@ import com.charactor.avatar.maker.pfp.core.helper.BitmapHelper
 import com.charactor.avatar.maker.pfp.core.helper.ShadowTransformation
 import com.charactor.avatar.maker.pfp.core.viewmodel.PosterEditorSharedViewModel
 import com.charactor.avatar.maker.pfp.databinding.ActivityWantedEditorBinding
+import com.charactor.avatar.maker.pfp.dialog.YesNoDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.text.toInt
 
 class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
@@ -139,6 +150,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // IMPORTANT: Setup listeners FIRST before restoring values
         // This ensures that when we restore values, listeners are already attached
         // and will trigger to update the preview (tvName, tvBounty, filters, etc.)
+
+        // Apply grapheme cluster filter to edtName to prevent combining character issues
+        applyGraphemeClusterFilter()
+
         setupFontSelector()
         setupSeekBars()
         setupEditTexts()
@@ -216,17 +231,51 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         tvBounty = posterView.findViewById(R.id.tvBounty)
 
         // Enable auto-resize for tvName to handle long text + high spacing
-        // Higher minTextSize (18sp) makes it PREFER wrapping over shrinking
-        tvName?.setAutoSizeTextTypeUniformWithConfiguration(
-            18,     // minTextSize: 18sp (prefer wrapping to multiple lines)
-            28,     // maxTextSize: 28sp
-            1,      // granularity: 1sp step
-            android.util.TypedValue.COMPLEX_UNIT_SP
-        )
+        // SINGLE LINE ONLY - auto-shrink when text is too long
+        tvName?.apply {
+            maxLines = 1
+            // Note: Do NOT use setSingleLine(true) - it conflicts with autoSize
+            // Use TextViewCompat for API 24+ compatibility
+            TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                this,
+                8,      // minTextSize: 8sp (allow more shrinking for long text)
+                28,     // maxTextSize: 28sp
+                1,      // granularity: 1sp step
+                android.util.TypedValue.COMPLEX_UNIT_SP
+            )
+        }
 
         // Load template background
         loadTemplateBackground()
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            currentFocus?.let { view ->
+                if (view is EditText && !isTouchInsideView(view, ev)) {
+                    view.clearFocus()
+                    hideKeyboard(view)
+                    binding.root.requestFocus() // ← Quan trọng!
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun isTouchInsideView(view: View, event: MotionEvent): Boolean {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val touchX = event.rawX.toInt()
+        val touchY = event.rawY.toInt()
+        return touchX in location[0]..(location[0] + view.width) &&
+                touchY in location[1]..(location[1] + view.height)
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
 
     override fun viewListener() {
         binding.apply {
@@ -234,7 +283,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             actionBar.apply {
                 btnActionBarLeft.setOnSingleClick { handleBack() }
                 btnActionBarRight.setOnSingleClick { handleSave() }
-                btnActionBarReset.setOnSingleClick { handleReset() }
+                btnActionBarReset.setOnSingleClick { showResetConfirmation() }
             }
 
             // Import photo button
@@ -373,6 +422,25 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // ViewModel now has all saved data - MakeScreenActivity will automatically have access
         setResult(RESULT_OK)
         finish()
+    }
+
+    /**
+     * Show confirmation dialog before resetting
+     */
+    private fun showResetConfirmation() {
+        val dialog = YesNoDialog(
+            context = this,
+            title = R.string.reset,
+            description = R.string.change_your_whole_design_are_you_sure
+        )
+        dialog.onYesClick = {
+            handleReset()
+            dialog.dismiss()
+        }
+        dialog.onNoClick = {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     /**
@@ -641,6 +709,121 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
     }
 
+    /**
+     * Apply InputFilter to count grapheme clusters (visible characters) instead of code units
+     * This prevents issues with combining diacritical marks (Vietnamese accents), emojis, etc.
+     */
+    private fun applyGraphemeClusterFilter() {
+        val maxGraphemeClusters = 15
+
+        val graphemeFilter = InputFilter { source, start, end, dest, dstart, dend ->
+            val existingText = dest.toString()
+            val sourceText = source.subSequence(start, end).toString()
+
+            // DEBUG LOGGING
+            android.util.Log.d("InputFilter", "=== InputFilter called ===")
+            android.util.Log.d("InputFilter", "dest: '$existingText' (length=${existingText.length})")
+            android.util.Log.d("InputFilter", "source: '$sourceText'")
+            android.util.Log.d("InputFilter", "dstart=$dstart, dend=$dend")
+            android.util.Log.d("InputFilter", "start=$start, end=$end")
+
+            // Build the result string to see what will happen
+            val resultText = existingText.substring(0, dstart) +
+                           sourceText +
+                           existingText.substring(dend)
+            val resultCount = countGraphemeClusters(resultText)
+
+            android.util.Log.d("InputFilter", "resultText would be: '$resultText' (count=$resultCount)")
+
+            if (resultCount <= maxGraphemeClusters) {
+                // Accept the input - result fits within limit
+                android.util.Log.d("InputFilter", "ACCEPT: resultCount ($resultCount) <= max ($maxGraphemeClusters)")
+                null
+            } else {
+                // Result would exceed limit - need to truncate or reject
+                val currentCount = countGraphemeClusters(existingText)
+                android.util.Log.d("InputFilter", "EXCEED: currentCount=$currentCount, resultCount=$resultCount")
+
+                if (dstart == dend) {
+                    // Insertion - try to fit what we can
+                    val availableSpace = maxGraphemeClusters - currentCount
+                    if (availableSpace > 0) {
+                        val truncated = truncateToGraphemeClusters(sourceText, availableSpace)
+                        android.util.Log.d("InputFilter", "TRUNCATE: Accepting '$truncated' (available=$availableSpace)")
+                        truncated
+                    } else {
+                        // No space - reject
+                        android.util.Log.d("InputFilter", "REJECT: No space available")
+                        ""
+                    }
+                } else {
+                    // Replacement would exceed limit
+                    // Try to truncate the source to fit
+                    val textBeingReplaced = existingText.substring(dstart, dend)
+                    val textBeforeReplacement = existingText.substring(0, dstart) + existingText.substring(dend)
+                    val availableSpace = maxGraphemeClusters - countGraphemeClusters(textBeforeReplacement)
+
+                    if (availableSpace > 0) {
+                        // Can fit some of the replacement
+                        val truncated = truncateToGraphemeClusters(sourceText, availableSpace)
+                        android.util.Log.d("InputFilter", "TRUNCATE replacement: '$truncated' (available=$availableSpace)")
+                        truncated
+                    } else {
+                        // Cannot fit any - keep the original text being replaced
+                        android.util.Log.d("InputFilter", "REJECT replacement: Keeping original '$textBeingReplaced'")
+                        textBeingReplaced
+                    }
+                }
+            }
+        }
+
+        binding.edtName.filters = arrayOf(graphemeFilter)
+    }
+
+    /**
+     * Truncate text to a specific number of grapheme clusters
+     */
+    private fun truncateToGraphemeClusters(text: String, maxClusters: Int): String {
+        if (text.isEmpty() || maxClusters <= 0) return ""
+
+        val breakIterator = BreakIterator.getCharacterInstance()
+        breakIterator.setText(text)
+
+        var count = 0
+        var boundary = breakIterator.first()
+
+        while (count < maxClusters && boundary != BreakIterator.DONE) {
+            boundary = breakIterator.next()
+            count++
+        }
+
+        // If we completed all clusters or ran out of text, return up to current boundary
+        return if (boundary != BreakIterator.DONE) {
+            text.substring(0, boundary)
+        } else {
+            text  // All text fits
+        }
+    }
+
+    /**
+     * Count grapheme clusters (visible characters) in a string
+     * Properly handles combining characters, emojis, etc.
+     */
+    private fun countGraphemeClusters(text: String): Int {
+        if (text.isEmpty()) return 0
+
+        val breakIterator = BreakIterator.getCharacterInstance()
+        breakIterator.setText(text)
+
+        var count = 0
+        var start = breakIterator.first()
+        while (breakIterator.next() != BreakIterator.DONE) {
+            count++
+        }
+
+        return count
+    }
+
     private fun setupEditTexts() {
         binding.edtName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -654,6 +837,19 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 tvName?.text = text
                 // Write to local variable instead of ViewModel
                 tempNameText = text
+
+                // Clear composing text when at max length to prevent composing buffer issue
+                s?.let { editable ->
+                    if (countGraphemeClusters(text) >= 15) {
+                        // Remove composing spans to prevent "ghost typing"
+                        val spans = editable.getSpans(0, editable.length, Any::class.java)
+                        for (span in spans) {
+                            if (span.javaClass.name.contains("Composing", ignoreCase = true)) {
+                                editable.removeSpan(span)
+                            }
+                        }
+                    }
+                }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
