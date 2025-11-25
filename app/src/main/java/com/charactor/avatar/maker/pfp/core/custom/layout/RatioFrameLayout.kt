@@ -92,7 +92,6 @@ class RatioFrameLayout @JvmOverloads constructor(
 
         val smallButton = ImageView(context).apply {
             id = generateViewId()
-            setImageResource(R.drawable.ic_edit)
             setBackgroundColor(Color.TRANSPARENT)
             scaleType = ImageView.ScaleType.CENTER_INSIDE
         }

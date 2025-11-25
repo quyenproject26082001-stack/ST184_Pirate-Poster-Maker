@@ -47,7 +47,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:fontFamily="@font/kurale_regular"
+                android:fontFamily="@font/londrina_solid_regular"
                 android:gravity="start"
                 android:textColor="#C4561B"
                 android:textSize="16sp"

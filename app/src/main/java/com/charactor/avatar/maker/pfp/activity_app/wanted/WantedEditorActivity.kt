@@ -81,12 +81,51 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private val fontList = listOf(
+        // Basic fonts
         FontItem("Roboto Bold", R.font.roboto_bold),
         FontItem("Roboto Medium", R.font.roboto_medium),
         FontItem("Roboto Regular", R.font.roboto_regular),
         FontItem("Londrina Solid", R.font.londrina_solid_regular),
         FontItem("Montserrat Bold", R.font.montserrat_bold),
-        FontItem("Montserrat Medium", R.font.montserrat_medium)
+        FontItem("Montserrat Medium", R.font.montserrat_medium),
+
+        // Script/Handwriting (9 fonts)
+        FontItem("Script Elegant 1", R.font.script_elegant_01),
+        FontItem("Script Elegant 2", R.font.script_elegant_02),
+        FontItem("Handwriting 1", R.font.script_handwriting_01),
+        FontItem("Handwriting 2", R.font.script_handwriting_02),
+        FontItem("Script Casual", R.font.script_casual),
+        FontItem("Script Bold", R.font.script_bold_01),
+        FontItem("Script Swash", R.font.script_swash_01),
+        FontItem("Script Swirl", R.font.script_swirl),
+        FontItem("Brush Style", R.font.brush_01),
+
+        // Horror/Gothic/Halloween (8 fonts)
+        FontItem("Horror Style 1", R.font.display_horror_01),
+        FontItem("Horror Style 2", R.font.display_horror_02),
+        FontItem("Horror Style 3", R.font.display_horror_04),
+        FontItem("Horror Style 4", R.font.display_horror_06),
+        FontItem("Spooky", R.font.display_spooky),
+        FontItem("Halloween", R.font.display_halloween),
+        FontItem("Gothic", R.font.display_gothic_01),
+        FontItem("Horror Style 5", R.font.display_horror_11),
+
+        // Display/Decorative (8 fonts)
+        FontItem("Tech", R.font.display_tech),
+        FontItem("Tech 3D", R.font.display_tech_3d),
+        FontItem("Tech Outline", R.font.display_tech_outline),
+        FontItem("Tech Gradient", R.font.display_tech_gradient),
+        FontItem("Creative 1", R.font.display_creative_01),
+        FontItem("Creative 2", R.font.display_creative_02),
+        FontItem("Rounded", R.font.display_rounded),
+        FontItem("Decorative", R.font.decorative_01),
+
+        // Serif Elegant (5 fonts)
+        FontItem("Serif Elegant", R.font.serif_elegant_01),
+        FontItem("Serif Elegant Italic", R.font.serif_elegant_01_italic),
+        FontItem("Serif Classic", R.font.serif_02),
+        FontItem("Signature", R.font.serif_signature),
+        FontItem("Halloween Decorative", R.font.decorative_halloween_01)
     )
 
     override fun setViewBinding(): ActivityWantedEditorBinding {

@@ -200,7 +200,7 @@ object AssetHelper {
      * @return: "file:///android_asset/template/{templateId}/item.png"
      */
     fun getTemplateItemPath(templateId: Int): String {
-        return "file:///android_asset/template/$templateId/item.png"
+        return "file:///android_asset/template/$templateId/item.webp"
     }
 
     /**
@@ -209,6 +209,6 @@ object AssetHelper {
      * @return: "file:///android_asset/template/{templateId}/avatar.png"
      */
     fun getTemplateAvatarPath(templateId: Int): String {
-        return "file:///android_asset/template/$templateId/avatar.png"
+        return "file:///android_asset/template/$templateId/avatar.webp"
     }
 }
