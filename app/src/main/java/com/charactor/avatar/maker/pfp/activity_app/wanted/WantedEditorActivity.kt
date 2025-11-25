@@ -752,8 +752,13 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                         android.util.Log.d("InputFilter", "TRUNCATE: Accepting '$truncated' (available=$availableSpace)")
                         truncated
                     } else {
-                        // No space - reject
+                        // No space - reject and clear composition buffer
                         android.util.Log.d("InputFilter", "REJECT: No space available")
+                        // Clear IME composition buffer to prevent backspace bug
+                        binding.edtName.post {
+                            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.restartInput(binding.edtName)
+                        }
                         ""
                     }
                 } else {
@@ -837,19 +842,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 tvName?.text = text
                 // Write to local variable instead of ViewModel
                 tempNameText = text
-
-                // Clear composing text when at max length to prevent composing buffer issue
-                s?.let { editable ->
-                    if (countGraphemeClusters(text) >= 15) {
-                        // Remove composing spans to prevent "ghost typing"
-                        val spans = editable.getSpans(0, editable.length, Any::class.java)
-                        for (span in spans) {
-                            if (span.javaClass.name.contains("Composing", ignoreCase = true)) {
-                                editable.removeSpan(span)
-                            }
-                        }
-                    }
-                }
             }
             override fun afterTextChanged(s: Editable?) {}
         })
