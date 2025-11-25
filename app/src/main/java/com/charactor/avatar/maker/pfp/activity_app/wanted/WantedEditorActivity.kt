@@ -897,7 +897,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                     post {
                         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                             this,
-                            8,      // minTextSize: 8sp
+                            6,      // minTextSize: 8sp
                             config.nameSize.toInt(),     // maxTextSize from config
                             1,      // granularity: 1sp step
                             android.util.TypedValue.COMPLEX_UNIT_SP
@@ -946,20 +946,45 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Name Spacing (0-0.2 for text spacing)
         binding.seekBarNameSpacing.onProgressChanged { progress ->
             val spacing = progress / 500f  // 0-100 → 0-0.2
-            tvName?.letterSpacing = spacing
-            // Auto-size handles long TEXT, multi-line handles wide SPACING
+            tvName?.apply {
+                letterSpacing = spacing
+
+                // Force TextView to recalculate auto-size when spacing changes
+                // SAME PATTERN as TextWatcher: Disable → Reset to max → Re-enable
+                val config = viewModel.getConfig()
+
+                // Step 1: Disable auto-size
+                TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                    this,
+                    TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+                )
+
+                // Step 2: Force expand to max size (KEY STEP - same as TextWatcher!)
+                textSize = config.nameSize
+
+                // Step 3: Re-enable auto-size after TextView has expanded
+                post {
+                    TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                        this,
+                        6,      // minTextSize
+                        config.nameSize.toInt(),     // maxTextSize from config
+                        1,      // granularity: 1sp step
+                        android.util.TypedValue.COMPLEX_UNIT_SP
+                    )
+
+                    // Log textSize after recalculation
+                    post {
+                        val currentSize = tvName?.textSize ?: 0f
+                        val currentSizeSp = currentSize / resources.displayMetrics.scaledDensity
+                        android.util.Log.d("AutoResize", "───────────────────────────────")
+                        android.util.Log.d("AutoResize", "SPACING CHANGED: $spacing")
+                        android.util.Log.d("AutoResize", "TextSize after spacing: ${currentSizeSp.toInt()}sp")
+                        android.util.Log.d("AutoResize", "───────────────────────────────")
+                    }
+                }
+            }
             // Write to local variable instead of ViewModel
             tempNameSpacing = spacing
-
-            // Log textSize after spacing change
-            tvName?.post {
-                val currentSize = tvName?.textSize ?: 0f
-                val currentSizeSp = currentSize / resources.displayMetrics.scaledDensity
-                android.util.Log.d("AutoResize", "───────────────────────────────")
-                android.util.Log.d("AutoResize", "SPACING CHANGED: $spacing")
-                android.util.Log.d("AutoResize", "TextSize after spacing: ${currentSizeSp.toInt()}sp")
-                android.util.Log.d("AutoResize", "───────────────────────────────")
-            }
         }
 
         // Bounty Size
