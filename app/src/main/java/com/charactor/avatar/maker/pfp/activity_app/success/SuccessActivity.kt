@@ -86,6 +86,9 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
     }
 
     private fun goToHome() {
+        // Reset all ViewModel data so when creating new poster, it starts fresh
+        viewModel.clearAll()
+
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
