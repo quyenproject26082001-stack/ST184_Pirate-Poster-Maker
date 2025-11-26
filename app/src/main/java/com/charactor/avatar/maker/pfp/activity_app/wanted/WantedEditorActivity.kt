@@ -415,6 +415,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      */
     private fun handleSave() {
         // Copy ALL local variables to ViewModel (19 properties)
+        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+        android.util.Log.d("SaveDebug", "WANTED EDITOR - handleSave()")
+        android.util.Log.d("SaveDebug", "tempNameText: '$tempNameText'")
+        android.util.Log.d("SaveDebug", "tempBountyText: '$tempBountyText'")
+        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
         tempSelectedImageUri?.let { viewModel.setSelectedImageUri(it) }
         viewModel.setNameText(tempNameText)
         viewModel.setBountyText(tempBountyText)
@@ -681,7 +686,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         applyShadowEffect(0f)
         applyTemplateShadow(0f)
 
-        showToast(R.string.reset_to_default_values)
+       // showToast(R.string.reset_to_default_values)
     }
 
     /**

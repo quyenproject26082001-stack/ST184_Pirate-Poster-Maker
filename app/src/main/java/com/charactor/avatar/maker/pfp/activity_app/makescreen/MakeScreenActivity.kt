@@ -62,6 +62,12 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     // Request code for Edit button (data is shared via ViewModel)
     private val editActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
+            android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+            android.util.Log.d("SaveDebug", "MAKE SCREEN - editActivityLauncher")
+            android.util.Log.d("SaveDebug", "viewModel.nameText: '${viewModel.nameText.value}'")
+            android.util.Log.d("SaveDebug", "viewModel.bountyText: '${viewModel.bountyText.value}'")
+            android.util.Log.d("SaveDebug", "viewModel.isEditingStarted: ${viewModel.isEditingStarted.value}")
+            android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
             // Data is already updated in shared ViewModel, just refresh UI
             // Make sure Save button is visible after editing
             if (viewModel.isEditingStarted.value) {
@@ -172,6 +178,29 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         imgAvatarShadow = posterView.findViewById(R.id.imgAvatarShadow)
         tvName = posterView.findViewById(R.id.tvName)
         tvBounty = posterView.findViewById(R.id.tvBounty)
+
+        // Setup autoSize for tvName to handle long text (SAME AS WantedEditor)
+        tvName?.apply {
+            maxLines = 1
+            val config = viewModel.getConfig()
+
+            // Disable autoSize first to clear any XML configuration
+            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                this,
+                androidx.core.widget.TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+            )
+
+            // Enable autoSize with same config as WantedEditor
+            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                this,
+                6,      // minTextSize: 6sp (allow more shrinking for very long text)
+                config.nameSize.toInt(),     // maxTextSize from template config
+                1,      // granularity: 1sp step
+                android.util.TypedValue.COMPLEX_UNIT_SP
+            )
+
+            android.util.Log.d("MakeScreenAutoSize", "Setup autoSize for tvName: min=6sp, max=${config.nameSize.toInt()}sp")
+        }
 
         // Load template background
         loadTemplateBackground()
@@ -437,17 +466,29 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         // Show/hide editable elements based on editing state
         if (isEditing) {
+            android.util.Log.d("SaveDebug", "───────────────────────────────────────")
+            android.util.Log.d("SaveDebug", "MAKE SCREEN - updatePreviewWithCurrentState()")
+            android.util.Log.d("SaveDebug", "isEditing: $isEditing")
+            android.util.Log.d("SaveDebug", "config.hasName: ${config.hasName}")
+            android.util.Log.d("SaveDebug", "Setting tvName.text to: '${viewModel.nameText.value}'")
+            android.util.Log.d("SaveDebug", "Setting tvBounty.text to: '${viewModel.bountyText.value}'")
+            android.util.Log.d("SaveDebug", "tvName is null: ${tvName == null}")
+            android.util.Log.d("SaveDebug", "tvBounty is null: ${tvBounty == null}")
+
             // Show name only if template has name field (XML already sets visibility)
             // Just update text values
             if (config.hasName) {
                 tvName?.visibility = View.VISIBLE
                 tvName?.text = viewModel.nameText.value
+                android.util.Log.d("SaveDebug", "After set - tvName.text: '${tvName?.text}'")
             } else {
                 tvName?.visibility = View.GONE
             }
 
             tvBounty?.visibility = View.VISIBLE
             tvBounty?.text = viewModel.bountyText.value
+            android.util.Log.d("SaveDebug", "After set - tvBounty.text: '${tvBounty?.text}'")
+            android.util.Log.d("SaveDebug", "───────────────────────────────────────")
 
             imgAvatar?.visibility = View.VISIBLE
             imgAvatarShadow?.visibility = View.VISIBLE
@@ -480,7 +521,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         try {
             if (config.hasName) {
                 tvName?.setTextColor(Color.parseColor(config.nameColor))
-                tvName?.textSize = config.nameSize
+                // NOTE: Do NOT set textSize here - autoSize is already configured in inflateTemplateLayout()
+                // Setting textSize manually will disable autoSize and cause text clipping
             }
             tvBounty?.setTextColor(Color.parseColor(config.bountyColor))
             // Note: bounty size is overridden below by user's custom size
@@ -490,7 +532,33 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         }
 
         // Name effects
-        tvName?.letterSpacing = viewModel.nameSpacing.value
+        tvName?.apply {
+            letterSpacing = viewModel.nameSpacing.value
+
+            // Force TextView to recalculate auto-size when spacing changes
+            // SAME PATTERN as WantedEditor: Disable → Reset to max → Re-enable
+            if (config.hasName) {
+                // Step 1: Disable auto-size
+                androidx.core.widget.TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                    this,
+                    androidx.core.widget.TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+                )
+
+                // Step 2: Force expand to max size
+                textSize = config.nameSize
+
+                // Step 3: Re-enable auto-size after TextView has expanded
+                post {
+                    androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                        this,
+                        6,      // minTextSize
+                        config.nameSize.toInt(),     // maxTextSize from config
+                        1,      // granularity: 1sp step
+                        android.util.TypedValue.COMPLEX_UNIT_SP
+                    )
+                }
+            }
+        }
         // TODO: Apply font typeface (need to map font name to resource)
 
         // Bounty effects (override config values with user's customization)
