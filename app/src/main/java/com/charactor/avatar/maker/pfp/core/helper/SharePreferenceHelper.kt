@@ -78,6 +78,15 @@ class SharePreferenceHelper(val context: Context) {
         return preferences.getInt(STORAGE_KEY, 0)
     }
 
+    // ✅ THÊM MỚI: Counter riêng cho SuccessActivity
+    fun getStoragePermissionSuccess(): Int {
+        return preferences.getInt("storage_permission_success_count", 0)
+    }
+
+    fun setStoragePermissionSuccess(count: Int) {
+        preferences.edit().putInt("storage_permission_success_count", count).apply()
+    }
+
     fun setStoragePermission(count: Int) {
         val editor = preferences.edit()
         editor.putInt(STORAGE_KEY, count)

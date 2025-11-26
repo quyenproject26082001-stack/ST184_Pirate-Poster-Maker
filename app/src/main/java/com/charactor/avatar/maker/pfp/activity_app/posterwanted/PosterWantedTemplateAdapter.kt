@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.data.model.TemplateConfigProvider
 import com.charactor.avatar.maker.pfp.databinding.ItemPosterWantedTemplateBinding
+import com.facebook.shimmer.ShimmerFrameLayout
 import kotlinx.coroutines.*
 
 class PosterWantedTemplateAdapter(
@@ -58,11 +60,22 @@ class PosterWantedTemplateAdapter(
             // Cancel previous job if any
             currentJob?.cancel()
 
-            // Clear previous image
+            // Show shimmer and hide image while loading
+            binding.shimmerLayout.isVisible = true
+            binding.shimmerLayout.startShimmer()
+            binding.imgRenderedPoster.isVisible = false
             binding.imgRenderedPoster.setImageBitmap(null)
+
+            // Log initial state
+            android.util.Log.d("TemplateAdapter", "Item ${item.templateId} - LOADING: rootContainer height=${binding.rootContainer.height}, shimmer height=${binding.shimmerLayout.height}")
 
             // Click listener
             binding.rootContainer.setOnClickListener {
+                android.util.Log.d("ThumbnailClick", "=========================================")
+                android.util.Log.d("ThumbnailClick", "Template ${item.templateId} CLICKED!")
+                android.util.Log.d("ThumbnailClick", "Thumbnail size: ${binding.imgRenderedPoster.width}x${binding.imgRenderedPoster.height}")
+                android.util.Log.d("ThumbnailClick", "Opening MakeScreen...")
+                android.util.Log.d("ThumbnailClick", "=========================================")
                 onItemClick(item)
             }
 
@@ -73,16 +86,58 @@ class PosterWantedTemplateAdapter(
                         renderTemplateToBitmap(context, item)
                     }
                     if (isActive) {
+                        // Hide shimmer and show image when loaded
+                        binding.shimmerLayout.stopShimmer()
+                        binding.shimmerLayout.isVisible = false
                         binding.imgRenderedPoster.setImageBitmap(bitmap)
+                        binding.imgRenderedPoster.isVisible = true
+
+                        // Wait for layout to update then log
+                        binding.imgRenderedPoster.post {
+                            android.util.Log.d("TemplateAdapter", "Item ${item.templateId} - LOADED: rootContainer height=${binding.rootContainer.height}, image height=${binding.imgRenderedPoster.height}")
+
+                            // Calculate actual displayed text size on screen
+                            val bitmapWidth = 1200f
+                            val displayWidth = binding.imgRenderedPoster.width.toFloat()
+                            val scaleRatio = displayWidth / bitmapWidth
+
+                            val config = TemplateConfigProvider.getConfig(item.templateId)
+                            val scaleFactor = 2.0f
+                            val density = context.resources.displayMetrics.density
+
+                            // Calculate text sizes in bitmap (multiplier ONLY for tvName)
+                            val nameTextSizeInBitmap = config.nameSize * scaleFactor * density * config.thumbnailTextSizeMultiplier
+                            val bountyTextSizeInBitmap = config.bountySize * scaleFactor * density  // NO multiplier for bounty
+
+                            // Calculate actual displayed text sizes on screen
+                            val actualNameSize = nameTextSizeInBitmap * scaleRatio
+                            val actualBountySize = bountyTextSizeInBitmap * scaleRatio
+
+                            android.util.Log.d("ActualTextSize", "========================================")
+                            android.util.Log.d("ActualTextSize", "Template ${item.templateId} - ACTUAL SIZE ON SCREEN:")
+                            android.util.Log.d("ActualTextSize", "  Bitmap size: ${bitmapWidth.toInt()}px → Display size: ${displayWidth.toInt()}px (scale: ${String.format("%.2f", scaleRatio * 100)}%)")
+                            if (config.hasName) {
+                                android.util.Log.d("ActualTextSize", "  tvName: ${nameTextSizeInBitmap.toInt()}px → ${actualNameSize.toInt()}px (multiplier: ${config.thumbnailTextSizeMultiplier}x)")
+                            }
+                            android.util.Log.d("ActualTextSize", "  tvBounty: ${bountyTextSizeInBitmap.toInt()}px → ${actualBountySize.toInt()}px (no multiplier)")
+                            android.util.Log.d("ActualTextSize", "========================================")
+
+                            // Force RecyclerView to recalculate layout
+                            binding.rootContainer.requestLayout()
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    // Hide shimmer even if error
+                    binding.shimmerLayout.stopShimmer()
+                    binding.shimmerLayout.isVisible = false
                 }
             }
         }
 
         fun cancelJob() {
             currentJob?.cancel()
+            binding.shimmerLayout.stopShimmer()
         }
 
         private suspend fun renderTemplateToBitmap(
@@ -106,24 +161,29 @@ class PosterWantedTemplateAdapter(
                 val config = TemplateConfigProvider.getConfig(item.templateId)
 
                 // Define render size
-                val width = 1200  // Increased for better quality
-                val height = 1600
+                val width = 1200  // Increased for better quality (was 600)
+                val height = 1600 // (was 800)
 
-                // Calculate scale factor based on standard design width (1080px)
-                // This ensures text size is consistent across all screen densities
-                val designWidth = 1080f
-                val scaleFactor = width / designWidth
+                // Calculate scale factor based on ORIGINAL render size (600x800)
+                // When we doubled the render size, text size must also double
+                val originalWidth = 600f
+                val scaleFactor = width / originalWidth  // = 2.0 (doubled)
 
                 // Set text sizes in PX (density-independent) instead of SP
                 // This ensures the text size is always proportional to the view size
+                // Apply thumbnailTextSizeMultiplier ONLY for tvName (not tvBounty)
                 if (tvName != null) {
                     tvName.text = item.name
-                    tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.nameSize * scaleFactor * context.resources.displayMetrics.density)
+                    val nameTextSize = config.nameSize * scaleFactor * context.resources.displayMetrics.density * config.thumbnailTextSizeMultiplier
+                    tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, nameTextSize)
+                    android.util.Log.d("ThumbnailSize", "Template ${item.templateId} - THUMBNAIL tvName: configSize=${config.nameSize}f, scaleFactor=$scaleFactor, density=${context.resources.displayMetrics.density}, multiplier=${config.thumbnailTextSizeMultiplier}x, finalSize=${nameTextSize}px")
                 }
 
                 if (tvBounty != null) {
                     tvBounty.text = item.getFullBountyText()
-                    tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.bountySize * scaleFactor * context.resources.displayMetrics.density)
+                    val bountyTextSize = config.bountySize * scaleFactor * context.resources.displayMetrics.density  // NO multiplier for bounty
+                    tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, bountyTextSize)
+                    android.util.Log.d("ThumbnailSize", "Template ${item.templateId} - THUMBNAIL tvBounty: configSize=${config.bountySize}f, scaleFactor=$scaleFactor, density=${context.resources.displayMetrics.density}, finalSize=${bountyTextSize}px")
                 }
 
                 // Load images synchronously

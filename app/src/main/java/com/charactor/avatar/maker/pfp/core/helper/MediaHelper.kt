@@ -371,53 +371,138 @@ object MediaHelper {
 
         val state = withContext(Dispatchers.IO) {
             try {
-                val resolver = activity.contentResolver
-                val imageCollection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // Android 10+: MUST use MediaStore (Scoped Storage)
+                    saveBitmapViaMediaStore(activity, bitmap)
                 } else {
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                }
-
-                val contentValues = ContentValues().apply {
-                    put(
-                        MediaStore.Images.Media.DISPLAY_NAME,
-                        "image_${System.currentTimeMillis()}.png"
-                    )
-                    put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        put(
-                            MediaStore.Images.Media.RELATIVE_PATH,
-                            "Pictures/${ValueKey.DOWNLOAD_ALBUM}"
-                        )
-                    } else {
-                        val directory = File(
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                            ValueKey.DOWNLOAD_ALBUM
-                        )
-                        if (!directory.exists()) {
-                            directory.mkdirs()
-                        }
-                        val filePath =
-                            File(directory, "image_${System.currentTimeMillis()}.png").absolutePath
-                        put(MediaStore.Images.Media.DATA, filePath)
+                    // Android 8-9: Try MediaStore first, fallback to FileOutputStream for buggy OEMs
+                    try {
+                        saveBitmapViaMediaStore(activity, bitmap)
+                    } catch (e: Exception) {
+                        Log.e("MediaHelper", "MediaStore failed on Android ${Build.VERSION.SDK_INT}, trying FileOutputStream fallback", e)
+                        // Fallback for Oppo/Vivo ColorOS that blocks MediaStore.DATA
+                        saveBitmapViaFileOutputStream(activity, bitmap)
                     }
                 }
-
-                val imageUri = resolver.insert(imageCollection, contentValues)
-                    ?: return@withContext HandleState.FAIL
-
-                resolver.openOutputStream(imageUri)?.use { outputStream ->
-                    val isSaved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                    if (isSaved) HandleState.SUCCESS else HandleState.FAIL
-                } ?: HandleState.FAIL
-
             } catch (e: Exception) {
+                Log.e("MediaHelper", "saveBitmapToExternal failed", e)
                 e.printStackTrace()
                 HandleState.FAIL
             }
         }
 
         emit(state)
+    }
+
+    /**
+     * Save bitmap using MediaStore API (works on all Android versions)
+     */
+    private fun saveBitmapViaMediaStore(activity: Activity, bitmap: Bitmap): HandleState {
+        return try {
+            val resolver = activity.contentResolver
+            val imageCollection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            } else {
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            }
+
+            val contentValues = ContentValues().apply {
+                put(
+                    MediaStore.Images.Media.DISPLAY_NAME,
+                    "image_${System.currentTimeMillis()}.png"
+                )
+                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(
+                        MediaStore.Images.Media.RELATIVE_PATH,
+                        "Pictures/${ValueKey.DOWNLOAD_ALBUM}"
+                    )
+                } else {
+                    val directory = File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                        ValueKey.DOWNLOAD_ALBUM
+                    )
+                    if (!directory.exists()) {
+                        val created = directory.mkdirs()
+                        if (!created) {
+                            Log.e("MediaHelper", "Failed to create directory: ${directory.absolutePath}")
+                            throw Exception("Failed to create directory")
+                        }
+                    }
+                    val filePath =
+                        File(directory, "image_${System.currentTimeMillis()}.png").absolutePath
+                    put(MediaStore.Images.Media.DATA, filePath)
+                }
+            }
+
+            val imageUri = resolver.insert(imageCollection, contentValues)
+                ?: throw Exception("Failed to insert into MediaStore")
+
+            resolver.openOutputStream(imageUri)?.use { outputStream ->
+                val isSaved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                if (isSaved) {
+                    Log.d("MediaHelper", "Image saved via MediaStore: $imageUri")
+                    HandleState.SUCCESS
+                } else {
+                    throw Exception("Bitmap compress failed")
+                }
+            } ?: throw Exception("Failed to open output stream")
+
+        } catch (e: Exception) {
+            Log.e("MediaHelper", "saveBitmapViaMediaStore failed", e)
+            throw e
+        }
+    }
+
+    /**
+     * Fallback method using direct FileOutputStream for Android 8-9
+     * Used when MediaStore fails on buggy OEMs (Oppo/Vivo ColorOS)
+     * Note: This does NOT work on Android 10+ due to Scoped Storage
+     */
+    private fun saveBitmapViaFileOutputStream(activity: Activity, bitmap: Bitmap): HandleState {
+        return try {
+            val directory = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                ValueKey.DOWNLOAD_ALBUM
+            )
+
+            // Check if directory exists or can be created
+            if (!directory.exists()) {
+                val created = directory.mkdirs()
+                if (!created) {
+                    Log.e("MediaHelper", "Failed to create directory: ${directory.absolutePath}")
+                    return HandleState.FAIL
+                }
+                Log.d("MediaHelper", "Created directory: ${directory.absolutePath}")
+            }
+
+            val file = File(directory, "image_${System.currentTimeMillis()}.png")
+
+            // Save file directly using FileOutputStream
+            FileOutputStream(file).use { output ->
+                val success = bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)
+                if (!success) {
+                    Log.e("MediaHelper", "Bitmap compress failed")
+                    return HandleState.FAIL
+                }
+            }
+
+            Log.d("MediaHelper", "Image saved via FileOutputStream: ${file.absolutePath}")
+
+            // IMPORTANT: Scan file into Gallery so it appears immediately
+            android.media.MediaScannerConnection.scanFile(
+                activity,
+                arrayOf(file.absolutePath),
+                arrayOf("image/png"),
+                null
+            )
+
+            HandleState.SUCCESS
+        } catch (e: Exception) {
+            Log.e("MediaHelper", "saveBitmapViaFileOutputStream failed", e)
+            e.printStackTrace()
+            HandleState.FAIL
+        }
     }
 
     // get image external storage

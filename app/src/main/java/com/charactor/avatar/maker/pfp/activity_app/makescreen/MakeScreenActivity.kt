@@ -248,6 +248,11 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         lifecycleScope.launch {
             viewModel.nameText.collect { text ->
                 tvName?.text = text
+                // Log text size after layout
+                tvName?.post {
+                    val config = viewModel.getConfig()
+                    android.util.Log.d("MakeScreenSize", "Template ${viewModel.selectedTemplate.value} - MAKESCREEN tvName: configMaxSize=${config.nameSize}f, actualTextSize=${tvName?.textSize}px, text='$text'")
+                }
             }
         }
 
@@ -255,6 +260,11 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         lifecycleScope.launch {
             viewModel.bountyText.collect { text ->
                 tvBounty?.text = text
+                // Log text size after layout
+                tvBounty?.post {
+                    val config = viewModel.getConfig()
+                    android.util.Log.d("MakeScreenSize", "Template ${viewModel.selectedTemplate.value} - MAKESCREEN tvBounty: configSize=${config.bountySize}f, actualTextSize=${tvBounty?.textSize}px, text='$text'")
+                }
             }
         }
 
@@ -311,8 +321,12 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         if (viewModel.isEditingStarted.value) {
             // TODO: Show dialog "Discard changes?"
             // For now, just finish
+            // Clear all data so when coming back, it shows default state (avatar.webp)
+            viewModel.clearAll()
             finishAfterTransition()
         } else {
+            // No edits made, just clear and finish
+            viewModel.clearAll()
             finishAfterTransition()
         }
     }

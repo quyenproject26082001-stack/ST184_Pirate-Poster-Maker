@@ -1,22 +1,29 @@
 package com.charactor.avatar.maker.pfp.activity_app.success
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.activity_app.main.MainActivity
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
+import com.charactor.avatar.maker.pfp.core.extensions.checkPermissions
 import com.charactor.avatar.maker.pfp.core.extensions.gone
+import com.charactor.avatar.maker.pfp.core.extensions.goToSettings
 import com.charactor.avatar.maker.pfp.core.extensions.setOnSingleClick
 import com.charactor.avatar.maker.pfp.core.extensions.shareImagesPaths
 import com.charactor.avatar.maker.pfp.core.extensions.strings
 import com.charactor.avatar.maker.pfp.core.extensions.visible
 import com.charactor.avatar.maker.pfp.core.helper.MediaHelper
+import com.charactor.avatar.maker.pfp.core.helper.PermissionHelper
 import com.charactor.avatar.maker.pfp.core.utils.state.HandleState
 import com.charactor.avatar.maker.pfp.core.viewmodel.PosterEditorSharedViewModel
 import com.charactor.avatar.maker.pfp.databinding.ActivitySuccessBinding
+import com.charactor.avatar.maker.pfp.dialog.YesNoDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
@@ -25,6 +32,31 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
 
     private val viewModel = PosterEditorSharedViewModel.getInstance()
     private var savedImagePath: String? = null
+
+    // Permission launcher for Android 8-9
+    // ✅ Permission launcher - SỬ DỤNG COUNTER RIÊNG
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.all { it.value }
+
+        if (allGranted) {
+            // ✅ Granted: Reset counter SUCCESS về 0
+            sharePreference.setStoragePermissionSuccess(0)
+            proceedDownload()
+        } else {
+            // ✅ Denied: Tăng counter SUCCESS
+            val denyCount = sharePreference.getStoragePermissionSuccess() + 1
+            sharePreference.setStoragePermissionSuccess(denyCount)
+
+            Toast.makeText(
+                this,
+                strings(R.string.download_failed_please_try_again_later),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
 
     override fun setViewBinding(): ActivitySuccessBinding {
         return ActivitySuccessBinding.inflate(LayoutInflater.from(this))
@@ -102,7 +134,37 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
         }
     }
 
-    private fun downloadImage() {
+    // ✅ FIXED: Sử dụng counter riêng và logic >= 2
+    fun downloadImage() {
+        // Android 10+: No permission needed
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            proceedDownload()
+            return
+        }
+
+        // Android 8-9: Need permission
+        val storagePermissions = PermissionHelper.storagePermission
+        val denyCount = sharePreference.getStoragePermissionSuccess()  // ✅ Counter SUCCESS
+
+        if (checkPermissions(storagePermissions)) {
+            // Đã có quyền
+            proceedDownload()
+        } else if (denyCount >= 2) {  // ✅ FIXED: >= 2 (không phải > 2)
+            // ✅ SuccessActivity: Từ chối >= 2 lần → Mở Settings
+            goToSettings()
+        } else {
+            // ✅ SuccessActivity: Lần 1, 2 → Hỏi quyền từ hệ thống
+            permissionLauncher.launch(storagePermissions)
+        }
+    }
+
+    // ✅ THÊM MỚI
+
+
+    /**
+     * Proceed with download after permission check
+     */
+    private fun proceedDownload() {
         savedImagePath?.let { path ->
             lifecycleScope.launch {
                 MediaHelper.downloadPartsToExternal(this@SuccessActivity, listOf(path))

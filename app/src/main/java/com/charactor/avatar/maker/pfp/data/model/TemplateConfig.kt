@@ -29,6 +29,9 @@ data class TemplateConfig(
     val bountySize: Float = 20f,
     val maxBountyLength: Int? = null,  // Max bounty text length for random generation (null = no limit)
 
+    // Thumbnail display configuration
+    val thumbnailTextSizeMultiplier: Float = 1.0f,  // Multiplier for text size in thumbnail (1.0 = normal, >1.0 = larger)
+
     // Photo area configuration (relative coordinates 0-1)
     val photoLeft: Float = 0.15f,
     val photoTop: Float = 0.25f,
@@ -128,6 +131,7 @@ object TemplateConfigProvider {
             bountyPositionY = 0.92f,
             bountyColor = "#3D3D3D",
             bountySize = 20f,
+            thumbnailTextSizeMultiplier = 1.3f,  // Increase text size in thumbnail by 30%
             photoLeft = 0.20f,
             photoTop = 0.22f,
             photoRight = 0.80f,
@@ -152,6 +156,7 @@ object TemplateConfigProvider {
             bountyPositionY = 0.88f,
             bountyColor = "#3D3D3D",
             bountySize = 20f,
+            thumbnailTextSizeMultiplier = 1.9f,  // Increase text size in thumbnail by 40%
             photoLeft = 0.18f,
             photoTop = 0.15f,  // Adjusted from 0.18f
             photoRight = 0.82f,
@@ -176,6 +181,7 @@ object TemplateConfigProvider {
             bountyPositionY = 0.84f,  // Adjusted from 0.82f
             bountyColor = "#000000",
             bountySize = 20f,
+            thumbnailTextSizeMultiplier = 1.3f,  // Increase text size in thumbnail by 30%
             photoLeft = 0.15f,
             photoTop = 0.18f,  // Adjusted from 0.20f
             photoRight = 0.85f,
@@ -340,6 +346,7 @@ object TemplateConfigProvider {
             bountyPositionY = 0.92f,  // Adjusted from 0.88f
             bountyColor = "#3D3D3D",
             bountySize = 24f,
+            thumbnailTextSizeMultiplier = 1.3f,  // Increase text size in thumbnail by 30%
             photoLeft = 0.15f,
             photoTop = 0.18f,  // Adjusted from 0.22f
             photoRight = 0.85f,

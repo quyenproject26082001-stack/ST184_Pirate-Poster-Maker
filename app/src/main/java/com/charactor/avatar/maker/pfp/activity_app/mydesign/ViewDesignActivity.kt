@@ -1,13 +1,16 @@
 package com.charactor.avatar.maker.pfp.activity_app.mydesign
 
+import android.os.Build
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.core.base.BaseActivity
 import com.charactor.avatar.maker.pfp.core.extensions.*
 import com.charactor.avatar.maker.pfp.core.helper.MediaHelper
+import com.charactor.avatar.maker.pfp.core.helper.PermissionHelper
 import com.charactor.avatar.maker.pfp.core.utils.state.HandleState
 import com.charactor.avatar.maker.pfp.databinding.ActivityViewBinding
 import com.charactor.avatar.maker.pfp.dialog.YesNoDialog
@@ -19,6 +22,28 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
 
     private var imagePath: String? = null
 
+    // Permission launcher for Android 8-9
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.all { it.value }
+
+        if (allGranted) {
+            // ✅ Granted: Reset counter SUCCESS về 0
+            sharePreference.setStoragePermissionSuccess(0)
+            proceedDownload()
+        } else {
+            // ✅ Denied: Tăng counter SUCCESS
+            val denyCount = sharePreference.getStoragePermissionSuccess() + 1
+            sharePreference.setStoragePermissionSuccess(denyCount)
+
+            Toast.makeText(
+                this,
+                strings(R.string.download_failed_please_try_again_later),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
     override fun setViewBinding(): ActivityViewBinding {
         return ActivityViewBinding.inflate(LayoutInflater.from(this))
     }
@@ -117,7 +142,33 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
         }
     }
 
-    private fun downloadImage() {
+    fun downloadImage() {
+        // Android 10+: No permission needed
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            proceedDownload()
+            return
+        }
+
+        // Android 8-9: Need permission
+        val storagePermissions = PermissionHelper.storagePermission
+        val denyCount = sharePreference.getStoragePermissionSuccess()  // ✅ Counter SUCCESS
+
+        if (checkPermissions(storagePermissions)) {
+            // Đã có quyền
+            proceedDownload()
+        } else if (denyCount >= 2) {  // ✅ FIXED: >= 2 (không phải > 2)
+            // ✅ SuccessActivity: Từ chối >= 2 lần → Mở Settings
+            goToSettings()
+        } else {
+            // ✅ SuccessActivity: Lần 1, 2 → Hỏi quyền từ hệ thống
+            permissionLauncher.launch(storagePermissions)
+        }
+    }
+
+    /**
+     * Proceed with download after permission check
+     */
+    private fun proceedDownload() {
         imagePath?.let { path ->
             lifecycleScope.launch {
                 MediaHelper.downloadPartsToExternal(this@ViewDesignActivity, listOf(path))
@@ -143,4 +194,5 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
             }
         }
     }
+
 }
