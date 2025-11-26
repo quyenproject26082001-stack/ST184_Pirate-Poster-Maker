@@ -106,7 +106,7 @@ class PosterWantedTemplateAdapter(
                             val density = context.resources.displayMetrics.density
 
                             // Calculate text sizes in bitmap (multiplier ONLY for tvName)
-                            val nameTextSizeInBitmap = config.nameSize * scaleFactor * density * config.thumbnailTextSizeMultiplier
+                            val nameTextSizeInBitmap = config.nameSize * scaleFactor * density
                             val bountyTextSizeInBitmap = config.bountySize * scaleFactor * density  // NO multiplier for bounty
 
                             // Calculate actual displayed text sizes on screen
@@ -117,7 +117,7 @@ class PosterWantedTemplateAdapter(
                             android.util.Log.d("ActualTextSize", "Template ${item.templateId} - ACTUAL SIZE ON SCREEN:")
                             android.util.Log.d("ActualTextSize", "  Bitmap size: ${bitmapWidth.toInt()}px → Display size: ${displayWidth.toInt()}px (scale: ${String.format("%.2f", scaleRatio * 100)}%)")
                             if (config.hasName) {
-                                android.util.Log.d("ActualTextSize", "  tvName: ${nameTextSizeInBitmap.toInt()}px → ${actualNameSize.toInt()}px (multiplier: ${config.thumbnailTextSizeMultiplier}x)")
+                                android.util.Log.d("ActualTextSize", "  tvName: ${nameTextSizeInBitmap.toInt()}px → ${actualNameSize.toInt()}px")
                             }
                             android.util.Log.d("ActualTextSize", "  tvBounty: ${bountyTextSizeInBitmap.toInt()}px → ${actualBountySize.toInt()}px (no multiplier)")
                             android.util.Log.d("ActualTextSize", "========================================")
@@ -161,29 +161,24 @@ class PosterWantedTemplateAdapter(
                 val config = TemplateConfigProvider.getConfig(item.templateId)
 
                 // Define render size
-                val width = 1200  // Increased for better quality (was 600)
-                val height = 1600 // (was 800)
+                val width = 1200  // Increased for better quality
+                val height = 1600
 
-                // Calculate scale factor based on ORIGINAL render size (600x800)
-                // When we doubled the render size, text size must also double
-                val originalWidth = 600f
-                val scaleFactor = width / originalWidth  // = 2.0 (doubled)
+                // Calculate scale factor based on standard design width (1080px)
+                // This ensures text size is consistent across all screen densities
+                val designWidth = 1080f
+                val scaleFactor = width / designWidth
 
                 // Set text sizes in PX (density-independent) instead of SP
                 // This ensures the text size is always proportional to the view size
-                // Apply thumbnailTextSizeMultiplier ONLY for tvName (not tvBounty)
                 if (tvName != null) {
                     tvName.text = item.name
-                    val nameTextSize = config.nameSize * scaleFactor * context.resources.displayMetrics.density * config.thumbnailTextSizeMultiplier
-                    tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, nameTextSize)
-                    android.util.Log.d("ThumbnailSize", "Template ${item.templateId} - THUMBNAIL tvName: configSize=${config.nameSize}f, scaleFactor=$scaleFactor, density=${context.resources.displayMetrics.density}, multiplier=${config.thumbnailTextSizeMultiplier}x, finalSize=${nameTextSize}px")
+                    tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.nameSize * scaleFactor * context.resources.displayMetrics.density)
                 }
 
                 if (tvBounty != null) {
                     tvBounty.text = item.getFullBountyText()
-                    val bountyTextSize = config.bountySize * scaleFactor * context.resources.displayMetrics.density  // NO multiplier for bounty
-                    tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, bountyTextSize)
-                    android.util.Log.d("ThumbnailSize", "Template ${item.templateId} - THUMBNAIL tvBounty: configSize=${config.bountySize}f, scaleFactor=$scaleFactor, density=${context.resources.displayMetrics.density}, finalSize=${bountyTextSize}px")
+                    tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.bountySize * scaleFactor * context.resources.displayMetrics.density)
                 }
 
                 // Load images synchronously
