@@ -184,6 +184,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             // Image loading is now handled inside restoreUIFromViewModel()
             restoreUIFromViewModel()
         }
+
+        // Setup listener to auto-hide navigation bar when keyboard closes
+        setupKeyboardListener()
     }
 
     /**
@@ -296,6 +299,50 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     private fun hideKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    /**
+     * Setup listener to detect keyboard open/close and hide navigation bar when keyboard closes
+     * This fixes the issue where some older devices don't auto-hide navigation bar with keyboard
+     */
+    private fun setupKeyboardListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11+ (API 30+): Use modern WindowInsets API
+            window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+                val imeVisible = insets.isVisible(android.view.WindowInsets.Type.ime())
+
+                if (!imeVisible) {
+                    // Keyboard is closed - hide navigation bar
+                    window.insetsController?.let { controller ->
+                        controller.hide(android.view.WindowInsets.Type.navigationBars())
+                        controller.systemBarsBehavior = android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    }
+                }
+
+                view.onApplyWindowInsets(insets)
+            }
+        } else {
+            // Android 10 and below: Use legacy ViewTreeObserver approach
+            val contentView = findViewById<View>(android.R.id.content)
+            contentView.viewTreeObserver.addOnGlobalLayoutListener {
+                val rect = Rect()
+                contentView.getWindowVisibleDisplayFrame(rect)
+                val screenHeight = contentView.rootView.height
+                val keypadHeight = screenHeight - rect.bottom
+
+                // If keyboard height is less than 15% of screen, keyboard is closed
+                if (keypadHeight < screenHeight * 0.15) {
+                    // Keyboard is closed - hide navigation bar using legacy method
+                    @Suppress("DEPRECATION")
+                    window.decorView.systemUiVisibility = (
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
+                }
+            }
+        }
     }
 
 
