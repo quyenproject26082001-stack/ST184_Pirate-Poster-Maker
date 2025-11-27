@@ -327,11 +327,11 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         // Check: Name must be changed and not empty (for templates that have name)
         if (config.hasName) {
             if (currentNameText.isBlank()) {
-                showToast("Vui lòng nhập tên trước khi lưu")
+                showToast(getString(R.string.vui_l_ng_nh_p_t_n_tr_c_khi_l_u))
                 return
             }
             if (currentNameText == config.nameDefaultText) {
-                showToast("Vui lòng nhập tên trước khi lưu")
+                showToast(getString(R.string.vui_l_ng_nh_p_t_n_tr_c_khi_l_u))
                 return
             }
         }
@@ -440,31 +440,63 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * Load image into preview
      */
     private fun loadImageToPreview(uri: Uri) {
+        android.util.Log.d("AvatarDebug", "═══════════════════════════════════════")
+        android.util.Log.d("AvatarDebug", "loadImageToPreview() called")
+        android.util.Log.d("AvatarDebug", "URI: $uri")
+        android.util.Log.d("AvatarDebug", "imgAvatar: ${imgAvatar != null}")
+        android.util.Log.d("AvatarDebug", "imgAvatarShadow: ${imgAvatarShadow != null}")
+
         // NOTE: Use Glide BlurTransformation for ALL Android versions (consistent with WantedEditor)
         // Apply blur via Glide transformation regardless of Android version
         val blur = viewModel.filterBlur.value
+        android.util.Log.d("AvatarDebug", "blur value: $blur")
+
         if (blur > 0) {
+            android.util.Log.d("AvatarDebug", "Loading with blur to imgAvatar")
             reloadImageWithBlur(uri, blur)
         } else {
             // Load into main avatar without blur
+            android.util.Log.d("AvatarDebug", "Loading without blur to imgAvatar")
             imgAvatar?.let { imageView ->
+                android.util.Log.d("AvatarDebug", "imgAvatar visibility BEFORE load: ${imageView.visibility}")
                 Glide.with(this)
                     .load(uri)
                     .centerCrop()
                     .into(imageView)
+                android.util.Log.d("AvatarDebug", "Glide load started for imgAvatar")
             }
         }
 
         // Load into shadow layer with ShadowTransformation (contour shadow)
-        val shadowRadius = viewModel.filterShadow.value / 100f * 15f
-        val shadowAlpha = 0.8f
+        // Only load if shadow is enabled (> 0) to avoid duplicate avatar display
+        val shadowValue = viewModel.filterShadow.value
+        android.util.Log.d("AvatarDebug", "shadowValue: $shadowValue")
 
-        imgAvatarShadow?.let { imageView ->
-            Glide.with(this)
-                .load(uri)
-                .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-                .into(imageView)
+        if (shadowValue > 0) {
+            val shadowRadius = shadowValue / 100f * 15f
+            val shadowAlpha = 0.8f
+            android.util.Log.d("AvatarDebug", "Loading shadow: radius=$shadowRadius, alpha=$shadowAlpha")
+
+            imgAvatarShadow?.let { imageView ->
+                android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility BEFORE load: ${imageView.visibility}")
+                imageView.visibility = View.VISIBLE
+                Glide.with(this)
+                    .load(uri)
+                    .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                    .into(imageView)
+                android.util.Log.d("AvatarDebug", "Glide load started for imgAvatarShadow")
+            }
+        } else {
+            android.util.Log.d("AvatarDebug", "Shadow disabled - Hiding imgAvatarShadow")
+            imgAvatarShadow?.let { imageView ->
+                android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility BEFORE hide: ${imageView.visibility}")
+                imageView.visibility = View.GONE
+                // Clear any existing image to prevent lingering
+                imageView.setImageDrawable(null)
+                android.util.Log.d("AvatarDebug", "imgAvatarShadow set to GONE and cleared")
+            }
         }
+        android.util.Log.d("AvatarDebug", "═══════════════════════════════════════")
     }
 
     /**
@@ -472,12 +504,22 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * Called after receiving edited data from WantedEditorActivity
      */
     private fun updatePreviewWithCurrentState() {
+        android.util.Log.d("AvatarDebug", "")
+        android.util.Log.d("AvatarDebug", "╔═══════════════════════════════════════╗")
+        android.util.Log.d("AvatarDebug", "║   updatePreviewWithCurrentState()    ║")
+        android.util.Log.d("AvatarDebug", "╚═══════════════════════════════════════╝")
+
         // Reload template layout if template changed
         val currentTemplateId = viewModel.selectedTemplate.value
         inflateTemplateLayout(currentTemplateId)
 
         val isEditing = viewModel.isEditingStarted.value
+        val selectedImageUri = viewModel.selectedImageUri.value
         val config = viewModel.getConfig()
+
+        android.util.Log.d("AvatarDebug", "isEditing: $isEditing")
+        android.util.Log.d("AvatarDebug", "selectedImageUri: $selectedImageUri")
+        android.util.Log.d("AvatarDebug", "filterShadow: ${viewModel.filterShadow.value}")
 
         // Show/hide editable elements based on editing state
         if (isEditing) {
@@ -508,14 +550,25 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             imgAvatar?.visibility = View.VISIBLE
             imgAvatarShadow?.visibility = View.VISIBLE
 
+            android.util.Log.d("AvatarDebug", "Set imgAvatar VISIBLE")
+            android.util.Log.d("AvatarDebug", "Set imgAvatarShadow VISIBLE")
+
             // Update image if exists, otherwise show default avatar
             viewModel.selectedImageUri.value?.let { uri ->
+                android.util.Log.d("AvatarDebug", "Loading image from URI: $uri")
                 loadImageToPreview(uri)
-            } ?: loadDefaultAvatar()
+            } ?: run {
+                android.util.Log.d("AvatarDebug", "No URI - loading default avatar")
+                loadDefaultAvatar()
+            }
 
             // Apply ALL effects from ViewModel to match Editor
+            android.util.Log.d("AvatarDebug", "Calling applyAllEffectsFromViewModel()")
             applyAllEffectsFromViewModel()
+            android.util.Log.d("AvatarDebug", "After effects - imgAvatar visibility: ${imgAvatar?.visibility}")
+            android.util.Log.d("AvatarDebug", "After effects - imgAvatarShadow visibility: ${imgAvatarShadow?.visibility}")
         } else {
+            android.util.Log.d("AvatarDebug", "isEditing = false - hiding all elements")
             // Hide all editable elements - show only avatar.png preview
             tvName?.visibility = View.GONE
             tvBounty?.visibility = View.GONE
@@ -523,6 +576,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             imgAvatarShadow?.visibility = View.GONE
             imgTemplateShadow?.visibility = View.GONE
         }
+        android.util.Log.d("AvatarDebug", "╚═══════════════════════════════════════╝")
     }
 
     /**
@@ -765,17 +819,31 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * EXACTLY LIKE WantedEditorActivity.applyShadowEffect()
      */
     private fun applyPhotoShadow(shadowValue: Float) {
-        val shadowView = imgAvatarShadow ?: return
+        android.util.Log.d("AvatarDebug", "───────────────────────────────────────")
+        android.util.Log.d("AvatarDebug", "applyPhotoShadow() called")
+        android.util.Log.d("AvatarDebug", "shadowValue: $shadowValue")
+
+        val shadowView = imgAvatarShadow
+        android.util.Log.d("AvatarDebug", "imgAvatarShadow is null: ${shadowView == null}")
+
+        if (shadowView == null) return
+
+        android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility BEFORE: ${shadowView.visibility}")
 
         if (shadowValue <= 0) {
+            android.util.Log.d("AvatarDebug", "Shadow <= 0 → Setting imgAvatarShadow to GONE")
             shadowView.visibility = View.GONE
+            android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility AFTER set GONE: ${shadowView.visibility}")
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 shadowView.setRenderEffect(null)
             }
+            android.util.Log.d("AvatarDebug", "───────────────────────────────────────")
             return
         }
 
+        android.util.Log.d("AvatarDebug", "Shadow > 0 → Setting imgAvatarShadow to VISIBLE")
         shadowView.visibility = View.VISIBLE
+        android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility AFTER set VISIBLE: ${shadowView.visibility}")
 
         // Remap: seekbar 0-100 → effective shadow 35-100
         val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)

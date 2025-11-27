@@ -117,4 +117,5 @@
     <string name="enter_name">Enter name</string>
     <string name="enter_bounty">Enter bounty</string>
     <string name="edit">Edit</string>
+    <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Please enter a name before save</string>
 </resources>

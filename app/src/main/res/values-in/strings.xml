@@ -117,4 +117,5 @@
     <string name="enter_name">Masukkan nama</string>
     <string name="enter_bounty">Masukkan hadiah</string>
     <string name="edit">Edit</string>
+    <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Harap masukkan nama sebelum menyimpan</string>
 </resources>

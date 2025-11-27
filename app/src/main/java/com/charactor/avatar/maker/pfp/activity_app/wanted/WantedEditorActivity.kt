@@ -165,7 +165,16 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         val isFirstTime = !viewModel.isEditingStarted.value
         val config = viewModel.getConfig()
 
+        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+        android.util.Log.d("SaveDebug", "EDITOR initView()")
+        android.util.Log.d("SaveDebug", "isFirstTime: $isFirstTime")
+        android.util.Log.d("SaveDebug", "viewModel.isEditingStarted: ${viewModel.isEditingStarted.value}")
+        android.util.Log.d("SaveDebug", "viewModel.selectedImageUri: ${viewModel.selectedImageUri.value}")
+
         if (isFirstTime) {
+            loadDefaultAvatarWebp()
+
+            android.util.Log.d("SaveDebug", "First time - loading default avatar.webp")
             // First time: Load default avatar.webp from drawable
             // Show all elements with default avatar preview
             tvName?.visibility = if (config.hasName) View.VISIBLE else View.GONE
@@ -175,17 +184,20 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             imgTemplateShadow?.visibility = View.GONE
 
             // Load default avatar.webp from drawable
-            loadDefaultAvatarWebp()
         } else {
+            android.util.Log.d("SaveDebug", "Already editing - showing current values")
             // Already editing: Show elements with current values
             tvName?.visibility = if (config.hasName) View.VISIBLE else View.GONE
             tvBounty?.visibility = View.VISIBLE
             imgAvatar?.visibility = View.VISIBLE
         }
 
+        android.util.Log.d("SaveDebug", "Calling restoreUIFromViewModel()")
         // IMPORTANT: Always restore UI values from ViewModel to initialize temp variables
         // This ensures temp variables have correct default values even on first time
         restoreUIFromViewModel()
+        android.util.Log.d("SaveDebug", "After restore - tempSelectedImageUri: $tempSelectedImageUri")
+        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
 
         // Setup listener to auto-hide navigation bar when keyboard closes
         setupKeyboardListener()
@@ -468,8 +480,16 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         android.util.Log.d("SaveDebug", "WANTED EDITOR - handleSave()")
         android.util.Log.d("SaveDebug", "tempNameText: '$tempNameText'")
         android.util.Log.d("SaveDebug", "tempBountyText: '$tempBountyText'")
+        android.util.Log.d("SaveDebug", "tempSelectedImageUri: $tempSelectedImageUri")
+        android.util.Log.d("SaveDebug", "hasChanges BEFORE save: ${viewModel.hasChanges.value}")
+        android.util.Log.d("SaveDebug", "isEditingStarted BEFORE save: ${viewModel.isEditingStarted.value}")
         android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
-        tempSelectedImageUri?.let { viewModel.setSelectedImageUri(it) }
+
+        tempSelectedImageUri?.let {
+            android.util.Log.d("SaveDebug", "Setting selectedImageUri: $it")
+            viewModel.setSelectedImageUri(it)
+        } ?: android.util.Log.d("SaveDebug", "tempSelectedImageUri is NULL - NOT setting to ViewModel")
+
         viewModel.setNameText(tempNameText)
         viewModel.setBountyText(tempBountyText)
         viewModel.setNameFont(tempNameFont)
@@ -489,11 +509,21 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         viewModel.setFilterSepia(tempFilterSepia)
         viewModel.setPosterShadow(tempPosterShadow)
 
+        android.util.Log.d("SaveDebug", "hasChanges AFTER all setters: ${viewModel.hasChanges.value}")
+        android.util.Log.d("SaveDebug", "isEditingStarted BEFORE mark: ${viewModel.isEditingStarted.value}")
+
         // Mark editing as started if user made any changes
         // This will switch MakeScreen from avatar.png to item.png display
         if (viewModel.hasChanges.value) {
+            android.util.Log.d("SaveDebug", "hasChanges = true → Calling markEditingStarted()")
             viewModel.markEditingStarted()
+        } else {
+            android.util.Log.d("SaveDebug", "hasChanges = false → NOT marking editing started")
         }
+
+        android.util.Log.d("SaveDebug", "isEditingStarted AFTER mark: ${viewModel.isEditingStarted.value}")
+        android.util.Log.d("SaveDebug", "selectedImageUri in ViewModel: ${viewModel.selectedImageUri.value}")
+        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
 
         // ViewModel now has all saved data - MakeScreenActivity will automatically have access
         setResult(RESULT_OK)
@@ -570,8 +600,20 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * so that listeners are already attached and will trigger when values are set
      */
     private fun restoreUIFromViewModel() {
+        android.util.Log.d("SaveDebug", "restoreUIFromViewModel() - START")
+        android.util.Log.d("SaveDebug", "tempSelectedImageUri BEFORE restore: $tempSelectedImageUri")
+        android.util.Log.d("SaveDebug", "viewModel.selectedImageUri: ${viewModel.selectedImageUri.value}")
+
         // STEP 1: Load all ViewModel values into local variables
-        tempSelectedImageUri = viewModel.selectedImageUri.value
+        // IMPORTANT: Only restore tempSelectedImageUri if ViewModel has a value
+        // Don't override default avatar loaded in loadDefaultAvatarWebp()
+        if (tempSelectedImageUri == null) {
+            tempSelectedImageUri = viewModel.selectedImageUri.value
+            android.util.Log.d("SaveDebug", "tempSelectedImageUri was null - restored from ViewModel: $tempSelectedImageUri")
+        } else {
+            android.util.Log.d("SaveDebug", "tempSelectedImageUri already has value - keeping it: $tempSelectedImageUri")
+        }
+
         tempNameText = viewModel.nameText.value
         tempBountyText = viewModel.bountyText.value
         tempNameFont = viewModel.nameFont.value
@@ -1216,17 +1258,22 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 .into(imageView)
         }
 
-        // Load into shadow layer with ShadowTransformation
-        // This creates shadow that follows the alpha channel/contour of the image like icon shadow
-        // Read from local variable instead of ViewModel
-        val shadowRadius = tempFilterShadow / 100f * 15f
-        val shadowAlpha = 0.8f
+        // ✅ CHỈ load shadow khi shadow được bật
+        if (tempFilterShadow > 0) {
+            val shadowRadius = tempFilterShadow / 100f * 15f
+            val shadowAlpha = 0.8f
 
-        imgAvatarShadow?.let { imageView ->
-            Glide.with(this)
-                .load(uri)
-                .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-                .into(imageView)
+            imgAvatarShadow?.let { imageView ->
+                Glide.with(this)
+                    .load(uri)
+                    .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                    .into(imageView)
+            }
+
+            imgAvatarShadow?.visibility = View.VISIBLE
+        } else {
+            // ✅ Ẩn shadow layer khi shadow = 0
+            imgAvatarShadow?.visibility = View.GONE
         }
 
         // Re-enable shadow seekbar when loading new image
@@ -1238,16 +1285,22 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Creates URI from drawable resource and saves it to tempSelectedImageUri
      */
     private fun loadDefaultAvatarWebp() {
+        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+        android.util.Log.d("SaveDebug", "loadDefaultAvatarWebp() called")
+
         // Create URI from drawable resource
         val defaultAvatarUri = Uri.parse("android.resource://${packageName}/${R.drawable.avatar}")
+        android.util.Log.d("SaveDebug", "Created URI: $defaultAvatarUri")
 
         // Save to local variable
         tempSelectedImageUri = defaultAvatarUri
+        android.util.Log.d("SaveDebug", "Set tempSelectedImageUri: $tempSelectedImageUri")
 
         // Load into imgAvatar and imgAvatarShadow
         loadImageToAvatars(defaultAvatarUri)
 
-        android.util.Log.d("DefaultAvatar", "Loaded default avatar.webp from drawable: $defaultAvatarUri")
+        android.util.Log.d("SaveDebug", "Loaded default avatar.webp from drawable")
+        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
     }
 
     /**
