@@ -967,6 +967,38 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     }
 
     private fun setupEditTexts() {
+
+        // ✅ Thêm listener để ẩn bàn phím khi ấn Enter
+        binding.edtName.setOnEditorActionListener { view, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                actionId == android.view.inputmethod.EditorInfo.IME_ACTION_NEXT ||
+                (event?.action == android.view.KeyEvent.ACTION_DOWN &&
+                        event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)) {
+
+                view.clearFocus()
+                hideKeyboard(view)
+                binding.root.requestFocus()
+                true  // Consume the event
+            } else {
+                false
+            }
+        }
+
+        binding.edtBounty.setOnEditorActionListener { view, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                actionId == android.view.inputmethod.EditorInfo.IME_ACTION_NEXT ||
+                (event?.action == android.view.KeyEvent.ACTION_DOWN &&
+                        event.keyCode == android.view.KeyEvent.KEYCODE_ENTER)) {
+
+                view.clearFocus()
+                hideKeyboard(view)
+                binding.root.requestFocus()
+                true  // Consume the event
+            } else {
+                false
+            }
+        }
+
         binding.edtName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
