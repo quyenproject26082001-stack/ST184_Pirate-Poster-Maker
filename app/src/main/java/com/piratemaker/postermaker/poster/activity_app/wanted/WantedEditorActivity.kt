@@ -637,6 +637,22 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Load image if exists (using tempSelectedImageUri)
         tempSelectedImageUri?.let { uri ->
             loadImageToAvatars(uri)
+        } ?: run {
+            // Load default avatar.webp from drawable if no Uri
+            imgAvatar?.let { imageView ->
+                Glide.with(this)
+                    .load(R.drawable.avatar)
+                    .centerCrop()
+                    .into(imageView)
+            }
+            imgAvatarShadow?.let { imageView ->
+                val shadowRadius = tempFilterShadow / 100f * 15f
+                val shadowAlpha = 0.8f
+                Glide.with(this)
+                    .load(R.drawable.avatar)
+                    .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                    .into(imageView)
+            }
         }
 
         // STEP 2: Restore EditText values
@@ -777,6 +793,27 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Reset shadow effects
         applyShadowEffect(0f)
         applyTemplateShadow(0f)
+
+        // Reload images after reset
+        tempSelectedImageUri?.let { uri ->
+            loadImageToAvatars(uri)
+        } ?: run {
+            // Load default avatar.webp from drawable
+            imgAvatar?.let { imageView ->
+                Glide.with(this)
+                    .load(R.drawable.avatar)
+                    .centerCrop()
+                    .into(imageView)
+            }
+            imgAvatarShadow?.let { imageView ->
+                val shadowRadius = tempFilterShadow / 100f * 15f
+                val shadowAlpha = 0.8f
+                Glide.with(this)
+                    .load(R.drawable.avatar)
+                    .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                    .into(imageView)
+            }
+        }
 
        // showToast(R.string.reset_to_default_values)
     }

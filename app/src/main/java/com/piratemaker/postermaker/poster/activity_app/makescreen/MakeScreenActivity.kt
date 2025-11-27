@@ -403,20 +403,6 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         }
     }
 
-    /**
-     * Load default avatar image from assets
-     */
-    private fun loadDefaultAvatar() {
-        val templateId = viewModel.selectedTemplate.value
-        val avatarPath = AssetHelper.getTemplateAvatarPath(templateId)
-
-        imgAvatar?.let { imageView ->
-            Glide.with(this)
-                .load(avatarPath)
-                .centerCrop()
-                .into(imageView)
-        }
-    }
 
     /**
      * Reload image with blur transformation (for Android 8-11)
@@ -560,8 +546,22 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 android.util.Log.d("AvatarDebug", "Loading image from URI: $uri")
                 loadImageToPreview(uri)
             } ?: run {
-                android.util.Log.d("AvatarDebug", "No URI - loading default avatar")
-                loadDefaultAvatar()
+                // Load default avatar.webp from drawable
+                android.util.Log.d("AvatarDebug", "No URI - loading default avatar.webp from drawable")
+                imgAvatar?.let { imageView ->
+                    Glide.with(this)
+                        .load(R.drawable.avatar)
+                        .centerCrop()
+                        .into(imageView)
+                }
+                imgAvatarShadow?.let { imageView ->
+                    val shadowRadius = viewModel.filterShadow.value / 100f * 15f
+                    val shadowAlpha = 0.8f
+                    Glide.with(this)
+                        .load(R.drawable.avatar)
+                        .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                        .into(imageView)
+                }
             }
 
             // Apply ALL effects from ViewModel to match Editor
