@@ -165,12 +165,18 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         val isFirstTime = !viewModel.isEditingStarted.value
 
         if (isFirstTime) {
-            // First time: Hide all editable elements, show only item.png template
-            tvName?.visibility = View.GONE
-            tvBounty?.visibility = View.GONE
-            imgAvatar?.visibility = View.GONE
-            imgAvatarShadow?.visibility = View.GONE
+            // First time: Load default avatar.webp from drawable
+            // Show all elements with default avatar preview
+            val config = viewModel.getConfig()
+
+            tvName?.visibility = if (config.hasName) View.VISIBLE else View.GONE
+            tvBounty?.visibility = View.VISIBLE
+            imgAvatar?.visibility = View.VISIBLE
+            imgAvatarShadow?.visibility = View.VISIBLE
             imgTemplateShadow?.visibility = View.GONE
+
+            // Load default avatar.webp from drawable
+            loadDefaultAvatarWebp()
         } else {
             // Already editing: Show elements with current values
             val config = viewModel.getConfig()
@@ -1229,6 +1235,23 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // Re-enable shadow seekbar when loading new image
         binding.seekBarFilterShadow.isEnabled = true
+    }
+
+    /**
+     * Load default avatar.webp from drawable when first entering Editor without imported image
+     * Creates URI from drawable resource and saves it to tempSelectedImageUri
+     */
+    private fun loadDefaultAvatarWebp() {
+        // Create URI from drawable resource
+        val defaultAvatarUri = Uri.parse("android.resource://${packageName}/${R.drawable.avatar}")
+
+        // Save to local variable
+        tempSelectedImageUri = defaultAvatarUri
+
+        // Load into imgAvatar and imgAvatarShadow
+        loadImageToAvatars(defaultAvatarUri)
+
+        android.util.Log.d("DefaultAvatar", "Loaded default avatar.webp from drawable: $defaultAvatarUri")
     }
 
     /**
