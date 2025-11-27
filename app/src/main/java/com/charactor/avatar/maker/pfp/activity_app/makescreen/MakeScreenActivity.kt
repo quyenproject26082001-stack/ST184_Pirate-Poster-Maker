@@ -52,8 +52,6 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             viewModel.setSelectedImageUri(it)
             // Mark editing started to switch from avatar.png to item.png
             viewModel.markEditingStarted()
-            // Show Save button
-            showSaveButton()
             // Refresh entire preview with item.png and all elements visible
             updatePreviewWithCurrentState()
         }
@@ -69,10 +67,6 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             android.util.Log.d("SaveDebug", "viewModel.isEditingStarted: ${viewModel.isEditingStarted.value}")
             android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
             // Data is already updated in shared ViewModel, just refresh UI
-            // Make sure Save button is visible after editing
-            if (viewModel.isEditingStarted.value) {
-                showSaveButton()
-            }
             updatePreviewWithCurrentState()
         }
     }
@@ -104,12 +98,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 // Update bounty text with new prefix/suffix (keep the number)
                 viewModel.setBountyText("${newConfig.bountyPrefix}${bountyNumber}${newConfig.bountySuffix}")
 
-                // Only show Save button if already editing (imported image or made edits)
-                // Don't mark editing started just for changing template - keep avatar.webp preview
-                if (viewModel.isEditingStarted.value) {
-                    showSaveButton()
-                }
-
+                // Refresh preview with new template
                 updatePreviewWithCurrentState()
             }
         }
@@ -287,14 +276,9 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         binding.actionBar.apply {
             btnActionBarLeft.setImageResource(R.drawable.ic_back)
             btnActionBarLeft.visible()
-            // Show/hide Save button based on editing state
-            if (viewModel.isEditingStarted.value) {
-                btnActionBarRightText.visible()
-                tvRightText.visible()
-            } else {
-                btnActionBarRightText.gone()
-                tvRightText.gone()
-            }
+            // Always show Save button (don't hide it)
+            btnActionBarRightText.visible()
+            tvRightText.visible()
             tvCenter.text = strings(R.string.wanted_poster_maker)
             tvCenter.visible()
             btnActionBarRight.gone()
@@ -333,8 +317,25 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
     /**
      * Handle save button - Save poster and navigate to SuccessActivity
+     * Only validates that user has entered a custom name (if template has name field)
      */
     private fun handleSave() {
+        // Validation: Check if user has customized the name
+        val config = viewModel.getConfig()
+        val currentNameText = viewModel.nameText.value
+
+        // Check: Name must be changed and not empty (for templates that have name)
+        if (config.hasName) {
+            if (currentNameText.isBlank()) {
+                showToast("Vui lòng nhập tên trước khi lưu")
+                return
+            }
+            if (currentNameText == config.nameDefaultText) {
+                showToast("Vui lòng nhập tên trước khi lưu")
+                return
+            }
+        }
+
         // Capture poster view as bitmap
         val posterView = binding.containerPoster
         if (posterView.width == 0 || posterView.height == 0) {

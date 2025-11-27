@@ -67,7 +67,7 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/avatar"
-        app:layout_constraintWidth_percent="0.71"
+        app:layout_constraintWidth_percent="0.68"
         app:layout_constraintHeight_percent="0.43"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"

@@ -163,12 +163,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         // Check if this is first time entering Editor (no edits yet)
         val isFirstTime = !viewModel.isEditingStarted.value
+        val config = viewModel.getConfig()
 
         if (isFirstTime) {
             // First time: Load default avatar.webp from drawable
             // Show all elements with default avatar preview
-            val config = viewModel.getConfig()
-
             tvName?.visibility = if (config.hasName) View.VISIBLE else View.GONE
             tvBounty?.visibility = View.VISIBLE
             imgAvatar?.visibility = View.VISIBLE
@@ -179,17 +178,14 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             loadDefaultAvatarWebp()
         } else {
             // Already editing: Show elements with current values
-            val config = viewModel.getConfig()
-
-            // Show name only if template has name field
             tvName?.visibility = if (config.hasName) View.VISIBLE else View.GONE
             tvBounty?.visibility = View.VISIBLE
             imgAvatar?.visibility = View.VISIBLE
-
-            // RESTORE UI VALUES FROM VIEWMODEL
-            // Image loading is now handled inside restoreUIFromViewModel()
-            restoreUIFromViewModel()
         }
+
+        // IMPORTANT: Always restore UI values from ViewModel to initialize temp variables
+        // This ensures temp variables have correct default values even on first time
+        restoreUIFromViewModel()
 
         // Setup listener to auto-hide navigation bar when keyboard closes
         setupKeyboardListener()

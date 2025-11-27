@@ -68,12 +68,12 @@
         android:scaleType="fitXY"
         android:src="@drawable/avatar"
         app:layout_constraintWidth_percent="0.6"
-        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintHeight_percent="0.39"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.40" />
+        app:layout_constraintVertical_bias="0.384" />
 
     <!-- Name: namePositionY=0.66, nameSize=22sp -->
     <TextView
