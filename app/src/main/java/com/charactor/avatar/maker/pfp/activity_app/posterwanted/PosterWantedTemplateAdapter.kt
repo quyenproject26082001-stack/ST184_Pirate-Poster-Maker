@@ -2,25 +2,17 @@ package com.charactor.avatar.maker.pfp.activity_app.posterwanted
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.LayerDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.graphics.toColorInt
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.data.model.TemplateConfigProvider
 import com.charactor.avatar.maker.pfp.databinding.ItemPosterWantedTemplateBinding
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerDrawable
 import kotlinx.coroutines.*
 
 class PosterWantedTemplateAdapter(
@@ -66,27 +58,9 @@ class PosterWantedTemplateAdapter(
             // Cancel previous job if any
             currentJob?.cancel()
 
-            // Create shimmer drawable for loading placeholder
-            val shimmer = Shimmer.ColorHighlightBuilder()
-                .setDuration(1200)
-                .setBaseColor(0x424242.toInt())
-                .setHighlightColor(0x80F5F5F5.toInt())
-                .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
-                .setAutoStart(true)
-                .build()
-
-            val shimmerDrawable = ShimmerDrawable().apply {
-                setShimmer(shimmer)
-            }
-
-// Nền trắng bắt buộc
-            val backgroundDrawable = ColorDrawable("#424242".toColorInt())
-
-// Gộp nền trắng + shimmer
-            val layer = LayerDrawable(arrayOf(backgroundDrawable, shimmerDrawable))
-
-            binding.imgRenderedPoster.setImageDrawable(layer)
-
+            // Show shimmer, hide rendered poster initially
+            binding.imgShimmer.visibility = View.VISIBLE
+            binding.imgRenderedPoster.visibility = View.INVISIBLE
 
             // Click listener
             binding.rootContainer.setOnClickListener {
@@ -105,7 +79,9 @@ class PosterWantedTemplateAdapter(
                         renderTemplateToBitmap(context, item)
                     }
                     if (isActive) {
-                        // Set bitmap when ready
+                        // Hide shimmer and show rendered poster
+                        binding.imgShimmer.visibility = View.GONE
+                        binding.imgRenderedPoster.visibility = View.VISIBLE
                         binding.imgRenderedPoster.setImageBitmap(bitmap)
 
                         // Wait for layout to update then log
