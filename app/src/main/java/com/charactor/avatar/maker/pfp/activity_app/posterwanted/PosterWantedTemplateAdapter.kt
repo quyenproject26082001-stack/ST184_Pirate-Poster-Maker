@@ -70,7 +70,7 @@ class PosterWantedTemplateAdapter(
             val shimmer = Shimmer.ColorHighlightBuilder()
                 .setDuration(1200)
                 .setBaseColor(0x424242.toInt())
-                .setHighlightColor(0xFFF5F5F5.toInt())
+                .setHighlightColor(0x80F5F5F5.toInt())
                 .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
                 .setAutoStart(true)
                 .build()

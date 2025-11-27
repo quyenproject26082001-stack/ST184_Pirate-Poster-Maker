@@ -14,21 +14,47 @@ class PermissionViewModel : ViewModel() {
     private val _notificationGranted = MutableStateFlow(false)
     val notificationGranted: StateFlow<Boolean> = _notificationGranted
 
+    // ✅ Session counter - Reset mỗi lần vào màn (không lưu SharedPreference)
+    private var storageSessionCounter = 0
+    private var notificationSessionCounter = 0
+
     fun updateStorageGranted(sharePrefer: SharePreferenceHelper, granted: Boolean) {
         _storageGranted.value = granted
-        sharePrefer.setStoragePermission(if (granted) 0 else sharePrefer.getStoragePermission() + 1)
+
+        if (granted) {
+            storageSessionCounter = 0  // Reset nếu granted
+        } else {
+            storageSessionCounter++  // Tăng counter trong session
+        }
     }
 
     fun updateNotificationGranted(sharePrefer: SharePreferenceHelper, granted: Boolean) {
         _notificationGranted.value = granted
-        sharePrefer.setNotificationPermission(if (granted) 0 else sharePrefer.getNotificationPermission() + 1)
+
+        if (granted) {
+            notificationSessionCounter = 0
+        } else {
+            notificationSessionCounter++
+        }
     }
 
     fun needGoToSettings(sharePrefer: SharePreferenceHelper, storage: Boolean): Boolean {
         return if (storage) {
-            sharePrefer.getStoragePermission() > 2 && !_storageGranted.value
+            // Check flag "dontAskAgain" HOẶC counter session > 2
+            sharePrefer.isDontAskAgainStorage() ||
+            (storageSessionCounter > 2 && !_storageGranted.value)
         } else {
-            sharePrefer.getNotificationPermission() > 2 && !_notificationGranted.value
+            sharePrefer.isDontAskAgainNotification() ||
+            (notificationSessionCounter > 2 && !_notificationGranted.value)
+        }
+    }
+
+    // ✅ Lưu flag "Don't ask again" vào SharedPreference
+    fun markDontAskAgain(sharePrefer: SharePreferenceHelper, storage: Boolean) {
+        if (storage) {
+            sharePrefer.setDontAskAgainStorage(true)
+        } else {
+            sharePrefer.setDontAskAgainNotification(true)
         }
     }
 

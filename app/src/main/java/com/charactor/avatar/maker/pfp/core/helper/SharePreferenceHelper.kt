@@ -128,4 +128,21 @@ class SharePreferenceHelper(val context: Context) {
         editor.putString(QUANTITY_UNZIPPED, json)
         editor.apply()
     }
+
+    // ✅ "Don't ask again" flags - Chỉ lưu khi user click "Don't ask again"
+    fun isDontAskAgainStorage(): Boolean {
+        return preferences.getBoolean("dont_ask_again_storage", false)
+    }
+
+    fun setDontAskAgainStorage(value: Boolean) {
+        preferences.edit().putBoolean("dont_ask_again_storage", value).apply()
+    }
+
+    fun isDontAskAgainNotification(): Boolean {
+        return preferences.getBoolean("dont_ask_again_notification", false)
+    }
+
+    fun setDontAskAgainNotification(value: Boolean) {
+        preferences.edit().putBoolean("dont_ask_again_notification", value).apply()
+    }
 }

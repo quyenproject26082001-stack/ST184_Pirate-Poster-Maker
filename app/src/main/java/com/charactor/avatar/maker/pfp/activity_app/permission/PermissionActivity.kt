@@ -108,18 +108,26 @@
                 RequestKey.STORAGE_PERMISSION_CODE -> {
                     viewModel.updateStorageGranted(sharePreference, granted)
 
-                    // 🔍 Check if "Don't ask again" was clicked
+                    // ✅ Detect "Don't ask again" - Chỉ lưu flag, KHÔNG set counter = 999
                     if (!granted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         val canAskAgain = shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         if (!canAskAgain) {
-                            // 🚫 User clicked "Don't ask again" → Set counter to 999
-                            //    → Next time in Success/View will go to Settings immediately
-                            sharePreference.setStoragePermissionSuccess(999)
+                            // User clicked "Don't ask again" → Lưu flag
+                            viewModel.markDontAskAgain(sharePreference, storage = true)
                         }
                     }
                 }
 
-                RequestKey.NOTIFICATION_PERMISSION_CODE -> viewModel.updateNotificationGranted(sharePreference, granted)
+                RequestKey.NOTIFICATION_PERMISSION_CODE -> {
+                    viewModel.updateNotificationGranted(sharePreference, granted)
+
+                    if (!granted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val canAskAgain = shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)
+                        if (!canAskAgain) {
+                            viewModel.markDontAskAgain(sharePreference, storage = false)
+                        }
+                    }
+                }
             }
             if (granted) {
                 showToast(if (requestCode == RequestKey.STORAGE_PERMISSION_CODE) R.string.granted_storage else R.string.granted_notification)
