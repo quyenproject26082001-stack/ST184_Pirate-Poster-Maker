@@ -999,6 +999,49 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             }
         }
 
+        // Auto scroll when EditText gets focus (for adjustNothing mode)
+        binding.edtName.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                view.post {
+                    val location = IntArray(2)
+                    view.getLocationOnScreen(location)
+                    val viewY = location[1]
+
+                    // Calculate keyboard height (approximate)
+                    val displayMetrics = resources.displayMetrics
+                    val keyboardHeight = (displayMetrics.heightPixels * 0.4).toInt()
+
+                    // If EditText is below keyboard position, scroll up
+                    val screenHeight = displayMetrics.heightPixels
+                    if (viewY + view.height > screenHeight - keyboardHeight) {
+                        val scrollY = viewY - (screenHeight - keyboardHeight) + view.height + 100
+                        binding.nestedScrollView.smoothScrollBy(0, scrollY)
+                    }
+                }
+            }
+        }
+
+        binding.edtBounty.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                view.post {
+                    val location = IntArray(2)
+                    view.getLocationOnScreen(location)
+                    val viewY = location[1]
+
+                    // Calculate keyboard height (approximate)
+                    val displayMetrics = resources.displayMetrics
+                    val keyboardHeight = (displayMetrics.heightPixels * 0.4).toInt()
+
+                    // If EditText is below keyboard position, scroll up
+                    val screenHeight = displayMetrics.heightPixels
+                    if (viewY + view.height > screenHeight - keyboardHeight) {
+                        val scrollY = viewY - (screenHeight - keyboardHeight) + view.height + 100
+                        binding.nestedScrollView.smoothScrollBy(0, scrollY)
+                    }
+                }
+            }
+        }
+
         binding.edtName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
