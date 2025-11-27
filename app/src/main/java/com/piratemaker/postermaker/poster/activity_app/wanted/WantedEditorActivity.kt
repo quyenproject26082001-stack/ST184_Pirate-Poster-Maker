@@ -158,7 +158,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         // Enable marquee for labels
         binding.tvFilterGrayscaleLabel.isSelected = true
         binding.tvFilterHueRotateLabel.isSelected = true
-
+        binding.tvSpacingLabel.isSelected = true
         // Apply text colors from template config
         applyTemplateColors()
 
