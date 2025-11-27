@@ -33,15 +33,31 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
             sharePreference.setStoragePermissionSuccess(0)
             proceedDownload()
         } else {
-            // ✅ Denied: Tăng counter SUCCESS
-            val denyCount = sharePreference.getStoragePermissionSuccess() + 1
-            sharePreference.setStoragePermissionSuccess(denyCount)
+            // ❌ Denied: Check if "Don't ask again" was clicked
+            val canAskAgain = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            } else {
+                true
+            }
 
-            Toast.makeText(
-                this,
-                strings(R.string.download_failed_please_try_again_later),
-                Toast.LENGTH_SHORT
-            ).show()
+            if (!canAskAgain) {
+                // 🚫 User clicked "Don't ask again" → Set counter to 999 (go to Settings next time)
+                sharePreference.setStoragePermissionSuccess(999)
+                Toast.makeText(
+                    this,
+                    strings(R.string.download_failed_please_try_again_later),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                // ⚠️ Normal deny → Increase counter normally
+                val denyCount = sharePreference.getStoragePermissionSuccess() + 1
+                sharePreference.setStoragePermissionSuccess(denyCount)
+                Toast.makeText(
+                    this,
+                    strings(R.string.download_failed_please_try_again_later),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
     override fun setViewBinding(): ActivityViewBinding {

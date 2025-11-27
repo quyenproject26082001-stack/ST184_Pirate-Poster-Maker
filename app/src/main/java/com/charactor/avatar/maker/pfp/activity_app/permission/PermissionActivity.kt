@@ -105,8 +105,20 @@
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             val granted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
             when (requestCode) {
-                RequestKey.STORAGE_PERMISSION_CODE -> viewModel.updateStorageGranted(sharePreference, granted)
-    
+                RequestKey.STORAGE_PERMISSION_CODE -> {
+                    viewModel.updateStorageGranted(sharePreference, granted)
+
+                    // 🔍 Check if "Don't ask again" was clicked
+                    if (!granted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        val canAskAgain = shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        if (!canAskAgain) {
+                            // 🚫 User clicked "Don't ask again" → Set counter to 999
+                            //    → Next time in Success/View will go to Settings immediately
+                            sharePreference.setStoragePermissionSuccess(999)
+                        }
+                    }
+                }
+
                 RequestKey.NOTIFICATION_PERMISSION_CODE -> viewModel.updateNotificationGranted(sharePreference, granted)
             }
             if (granted) {

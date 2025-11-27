@@ -2,6 +2,7 @@ package com.charactor.avatar.maker.pfp.activity_app.posterwanted
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.InsetDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,8 @@ import com.bumptech.glide.Glide
 import com.charactor.avatar.maker.pfp.R
 import com.charactor.avatar.maker.pfp.data.model.TemplateConfigProvider
 import com.charactor.avatar.maker.pfp.databinding.ItemPosterWantedTemplateBinding
-import com.facebook.shimmer.ShimmerFrameLayout
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
 import kotlinx.coroutines.*
 
 class PosterWantedTemplateAdapter(
@@ -60,14 +62,30 @@ class PosterWantedTemplateAdapter(
             // Cancel previous job if any
             currentJob?.cancel()
 
-            // Show shimmer and hide image while loading
-            binding.shimmerLayout.isVisible = true
-            binding.shimmerLayout.startShimmer()
-            binding.imgRenderedPoster.isVisible = false
-            binding.imgRenderedPoster.setImageBitmap(null)
+            // Create shimmer drawable for loading placeholder
+            val shimmer = Shimmer.ColorHighlightBuilder()
+                .setDuration(1200)
+                .setBaseColor(0xFFFAFAFA.toInt()) // màu nền đậm hơn (xám đậm)
+                .setHighlightColor(0xFFFFFFFF.toInt()) // màu highlight sáng (trắng)
+                .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
+                .setAutoStart(true)
+                .build()
 
-            // Log initial state
-            android.util.Log.d("TemplateAdapter", "Item ${item.templateId} - LOADING: rootContainer height=${binding.rootContainer.height}, shimmer height=${binding.shimmerLayout.height}")
+            val shimmerDrawable = ShimmerDrawable().apply {
+                setShimmer(shimmer)
+            }
+
+            // Convert 15dp to px for template margin (ĐỒNG ĐỀU mọi phía)
+            val marginPx = (6 * context.resources.displayMetrics.density).toInt()
+
+            // Wrap shimmer with inset to match template margin
+            val insetDrawable = InsetDrawable(
+                shimmerDrawable,
+                marginPx, marginPx, marginPx, marginPx  // 15dp đồng đều
+            )
+
+            // Set shimmer placeholder BEFORE rendering
+            binding.imgRenderedPoster.setImageDrawable(insetDrawable)
 
             // Click listener
             binding.rootContainer.setOnClickListener {
@@ -86,11 +104,8 @@ class PosterWantedTemplateAdapter(
                         renderTemplateToBitmap(context, item)
                     }
                     if (isActive) {
-                        // Hide shimmer and show image when loaded
-                        binding.shimmerLayout.stopShimmer()
-                        binding.shimmerLayout.isVisible = false
+                        // Set bitmap when ready
                         binding.imgRenderedPoster.setImageBitmap(bitmap)
-                        binding.imgRenderedPoster.isVisible = true
 
                         // Wait for layout to update then log
                         binding.imgRenderedPoster.post {
@@ -128,16 +143,12 @@ class PosterWantedTemplateAdapter(
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    // Hide shimmer even if error
-                    binding.shimmerLayout.stopShimmer()
-                    binding.shimmerLayout.isVisible = false
                 }
             }
         }
 
         fun cancelJob() {
             currentJob?.cancel()
-            binding.shimmerLayout.stopShimmer()
         }
 
         private suspend fun renderTemplateToBitmap(
