@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'com.charactor.avatar.maker.pfp'
+    namespace 'com.piratemaker.postermaker.poster'
     compileSdk 36
 
     defaultConfig {
-        applicationId "com.charactor.avatar.maker.pfp"
+        applicationId "com.piratemaker.postermaker.poster"
         minSdk 24
         targetSdk 36
         versionCode 1

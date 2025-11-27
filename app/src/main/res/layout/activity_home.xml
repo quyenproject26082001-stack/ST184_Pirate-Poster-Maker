@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <com.charactor.avatar.maker.pfp.core.custom.text.DoubleStrokeTextView
+                    <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tv1"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -113,7 +113,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <com.charactor.avatar.maker.pfp.core.custom.text.DoubleStrokeTextView
+                    <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tv2"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -156,7 +156,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <com.charactor.avatar.maker.pfp.core.custom.text.DoubleStrokeTextView
+                    <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tv3"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"

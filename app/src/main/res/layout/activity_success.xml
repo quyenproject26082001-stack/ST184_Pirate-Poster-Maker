@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:context="com.charactor.avatar.maker.pfp.activity_app.success.SuccessActivity"
+    tools:context="com.piratemaker.postermaker.poster.activity_app.success.SuccessActivity"
     android:layout_height="match_parent">
 
     <!-- Background -->

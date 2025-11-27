@@ -8,7 +8,7 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
-    tools:context="com.charactor.avatar.maker.pfp.activity_app.wanted.WantedEditorActivity">
+    tools:context="com.piratemaker.postermaker.poster.activity_app.wanted.WantedEditorActivity">
 
 
 
@@ -225,6 +225,7 @@
                             <!-- Current Font Display -->
                             <TextView
                                 android:id="@+id/tvCurrentNameFont"
+                                style="@style/single_marquee"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginEnd="28dp"
@@ -233,7 +234,9 @@
                                 android:paddingEnd="4dp"
                                 android:text="Old Town"
                                 android:textColor="@android:color/black"
-                                android:textSize="14sp" />
+                                android:textSize="14sp"
+                                android:clickable="false"
+                                android:focusable="false" />
 
                             <!-- Dropdown Arrow -->
                             <ImageView
@@ -674,7 +677,8 @@
                         <!-- Grayscale Label -->
                         <TextView
                             android:id="@+id/tvFilterGrayscaleLabel"
-                            android:layout_width="wrap_content"
+                            style="@style/single_marquee"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/kurale_regular"
@@ -682,6 +686,7 @@
                             android:textColor="@color/app"
                             android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/guidline"
                             app:layout_constraintTop_toBottomOf="@id/seekBarFilterContrast" />
 
                         <SeekBar
@@ -700,7 +705,9 @@
                         <!-- Hue Rotate Label -->
                         <TextView
                             android:id="@+id/tvFilterHueRotateLabel"
-                            android:layout_width="wrap_content"
+                            style="@style/single_marquee"
+                            android:paddingEnd="10dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/kurale_regular"
@@ -708,6 +715,7 @@
                             android:textColor="@color/app"
                             android:textSize="16sp"
                             app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/guidline"
                             app:layout_constraintTop_toBottomOf="@id/seekBarFilterGrayscale" />
 
                         <SeekBar
