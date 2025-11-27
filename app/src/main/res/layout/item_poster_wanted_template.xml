@@ -20,12 +20,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="fitCenter"
+            android:layerType="software"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="3:4"
-            tools:src="@drawable/template" />
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

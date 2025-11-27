@@ -2,13 +2,17 @@ package com.charactor.avatar.maker.pfp.activity_app.posterwanted
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
+import android.graphics.drawable.LayerDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -65,8 +69,8 @@ class PosterWantedTemplateAdapter(
             // Create shimmer drawable for loading placeholder
             val shimmer = Shimmer.ColorHighlightBuilder()
                 .setDuration(1200)
-                .setBaseColor(0xFFFAFAFA.toInt()) // màu nền đậm hơn (xám đậm)
-                .setHighlightColor(0xFFFFFFFF.toInt()) // màu highlight sáng (trắng)
+                .setBaseColor(0x424242.toInt())
+                .setHighlightColor(0xFFF5F5F5.toInt())
                 .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
                 .setAutoStart(true)
                 .build()
@@ -75,17 +79,14 @@ class PosterWantedTemplateAdapter(
                 setShimmer(shimmer)
             }
 
-            // Convert 15dp to px for template margin (ĐỒNG ĐỀU mọi phía)
-            val marginPx = (6 * context.resources.displayMetrics.density).toInt()
+// Nền trắng bắt buộc
+            val backgroundDrawable = ColorDrawable("#424242".toColorInt())
 
-            // Wrap shimmer with inset to match template margin
-            val insetDrawable = InsetDrawable(
-                shimmerDrawable,
-                marginPx, marginPx, marginPx, marginPx  // 15dp đồng đều
-            )
+// Gộp nền trắng + shimmer
+            val layer = LayerDrawable(arrayOf(backgroundDrawable, shimmerDrawable))
 
-            // Set shimmer placeholder BEFORE rendering
-            binding.imgRenderedPoster.setImageDrawable(insetDrawable)
+            binding.imgRenderedPoster.setImageDrawable(layer)
+
 
             // Click listener
             binding.rootContainer.setOnClickListener {
