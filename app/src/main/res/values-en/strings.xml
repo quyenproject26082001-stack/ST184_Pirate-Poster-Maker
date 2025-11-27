@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Character Avatar Creator</string>
+    <string name="app_name">Pirate Poster Maker</string>
     <string name="go_to_setting_message">The app needs this permission</string>
     <string name="settings">Settings</string>
     <string name="this_action_can_contain_ads">This action can contain ads</string>

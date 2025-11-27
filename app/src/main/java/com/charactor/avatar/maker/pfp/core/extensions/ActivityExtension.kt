@@ -17,7 +17,7 @@ fun Activity.shareApp() {
 }
 
 fun Activity.policy() {
-    val url = "https://sites.google.com/view/avatar-maker-character-creator/home"
+    val url = "https://sites.google.com/view/pirate-poster-maker/home"
     val i = Intent(Intent.ACTION_VIEW)
     i.data = url.toUri()
     startActivity(i)

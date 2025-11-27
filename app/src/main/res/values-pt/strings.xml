@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Criador de Avatar de Personagem</string>
+    <string name="app_name">Pirate Poster Maker</string>
     <string name="go_to_setting_message">O aplicativo precisa desta permissão</string>
     <string name="settings">Configurações</string>
     <string name="this_action_can_contain_ads">Esta ação pode conter anúncios</string>
