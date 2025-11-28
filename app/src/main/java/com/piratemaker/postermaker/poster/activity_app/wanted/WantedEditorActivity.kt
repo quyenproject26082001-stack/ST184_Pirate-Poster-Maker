@@ -1121,6 +1121,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 // Solution: Set to max size first to expand height, then re-enable auto-size
                 tvName?.apply {
                     val config = viewModel.getConfig()
+
+                    // Hide text to prevent flicker during recalculation
+                    alpha = 0f
+
                     // Step 1: Disable auto-size
                     TextViewCompat.setAutoSizeTextTypeWithDefaults(
                         this,
@@ -1139,6 +1143,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                             1,      // granularity: 1sp step
                             android.util.TypedValue.COMPLEX_UNIT_SP
                         )
+
+                        // Show text again after recalculation
+                        alpha = 1f
                     }
                 }
 
@@ -1186,6 +1193,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             tvName?.apply {
                 letterSpacing = spacing
 
+                // Hide text to prevent flicker during recalculation
+                alpha = 0f
+
                 // Force TextView to recalculate auto-size when spacing changes
                 // SAME PATTERN as TextWatcher: Disable → Reset to max → Re-enable
                 val config = viewModel.getConfig()
@@ -1208,6 +1218,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                         1,      // granularity: 1sp step
                         android.util.TypedValue.COMPLEX_UNIT_SP
                     )
+
+                    // Show text again after recalculation
+                    alpha = 1f
 
                     // Log textSize after recalculation
                     post {

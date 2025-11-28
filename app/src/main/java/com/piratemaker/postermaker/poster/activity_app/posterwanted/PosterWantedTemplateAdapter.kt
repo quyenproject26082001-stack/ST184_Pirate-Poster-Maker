@@ -58,7 +58,17 @@ class PosterWantedTemplateAdapter(
 
             // Cancel previous job if any
             currentJob?.cancel()
+            // ✅ Set margin cho shimmer
+            val marginInDp = 6 // margin 16dp
+            val marginInPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                marginInDp.toFloat(),
+                context.resources.displayMetrics
+            ).toInt()
 
+            val params = binding.imgShimmer.layoutParams as ViewGroup.MarginLayoutParams
+            params.setMargins(marginInPx, marginInPx, marginInPx, marginInPx)
+            binding.imgShimmer.layoutParams = params
             // Show shimmer, hide rendered poster initially
             binding.imgShimmer.visibility = View.VISIBLE
             binding.imgRenderedPoster.visibility = View.INVISIBLE

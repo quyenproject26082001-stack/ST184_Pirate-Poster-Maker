@@ -617,6 +617,9 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             // Force TextView to recalculate auto-size when spacing changes
             // SAME PATTERN as WantedEditor: Disable → Reset to max → Re-enable
             if (config.hasName) {
+                // Hide text to prevent flicker during recalculation
+                alpha = 0f
+
                 // Step 1: Disable auto-size
                 androidx.core.widget.TextViewCompat.setAutoSizeTextTypeWithDefaults(
                     this,
@@ -635,6 +638,9 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                         1,      // granularity: 1sp step
                         android.util.TypedValue.COMPLEX_UNIT_SP
                     )
+
+                    // Show text again after recalculation
+                    alpha = 1f
                 }
             }
         }
