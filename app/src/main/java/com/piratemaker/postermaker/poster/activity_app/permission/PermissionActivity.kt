@@ -102,8 +102,17 @@
         override fun onRequestPermissionsResult(
             requestCode: Int, permissions: Array<String>, grantResults: IntArray
         ) {
+
+
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-            val granted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+
+            // ✅ CHECK: Nếu user dismiss dialog → grantResults sẽ EMPTY
+            if (grantResults.isEmpty()) {
+                // User dismissed the dialog, không làm gì cả
+                return
+            }
+
+           val granted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
             when (requestCode) {
                 RequestKey.STORAGE_PERMISSION_CODE -> {
                     viewModel.updateStorageGranted(sharePreference, granted)
