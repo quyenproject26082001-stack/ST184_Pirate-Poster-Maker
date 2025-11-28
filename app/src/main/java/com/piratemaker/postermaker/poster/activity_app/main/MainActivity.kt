@@ -39,6 +39,21 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
     override fun initView() {
         deleteTempFolder()
         currentLanguage = sharePreference.getPreLanguage()
+
+        // Disable window transitions để tránh flicker
+        with(window) {
+            enterTransition = null
+            exitTransition = null
+            reenterTransition = null
+            returnTransition = null
+        }
+
+        // Enable hardware layer cho TextViews để giảm redraw
+        binding.apply {
+            tv1.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+            tv2.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+            tv3.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+        }
     }
 
     override fun viewListener() {
@@ -115,22 +130,12 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         }
     }
 
-    private fun updateText() {
-        binding.apply {
-            tv1.text = strings(R.string.posterwantedmaker)
-            tv2.text = strings(R.string.posterwantedtemplates)
-            tv3.text = strings(R.string.my_design)
-
-        }
-    }
+    // updateText() đã bị remove - không cần update text mỗi lần restart
+    // Text được load từ XML layout, tự động update khi language thay đổi
 
     override fun onRestart() {
         super.onRestart()
-        val newLanguage = sharePreference.getPreLanguage()
-        if (currentLanguage != newLanguage) {
-            LanguageHelper.setLocale(this)
-            updateText()
-            currentLanguage = newLanguage
-        }
+        // Không làm gì cả - tránh redraw gây flicker
+        // Language đã được set trong onCreate/initView
     }
 }

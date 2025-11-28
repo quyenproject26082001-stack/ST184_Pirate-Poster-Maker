@@ -48,6 +48,8 @@
             android:name=".activity_app.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Transparent"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity_app.SettingsActivity"
