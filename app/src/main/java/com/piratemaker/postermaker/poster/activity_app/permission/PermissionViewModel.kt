@@ -14,38 +14,24 @@ class PermissionViewModel : ViewModel() {
     private val _notificationGranted = MutableStateFlow(false)
     val notificationGranted: StateFlow<Boolean> = _notificationGranted
 
-    // ✅ Session counter - Reset mỗi lần vào màn (không lưu SharedPreference)
-    private var storageSessionCounter = 0
-    private var notificationSessionCounter = 0
+    // ✅ BỎ SESSION COUNTER - Luôn hỏi quyền cho đến khi "Don't ask again"
 
     fun updateStorageGranted(sharePrefer: SharePreferenceHelper, granted: Boolean) {
         _storageGranted.value = granted
-
-        if (granted) {
-            storageSessionCounter = 0  // Reset nếu granted
-        } else {
-            storageSessionCounter++  // Tăng counter trong session
-        }
+        // Không còn counter nữa
     }
 
     fun updateNotificationGranted(sharePrefer: SharePreferenceHelper, granted: Boolean) {
         _notificationGranted.value = granted
-
-        if (granted) {
-            notificationSessionCounter = 0
-        } else {
-            notificationSessionCounter++
-        }
+        // Không còn counter nữa
     }
 
     fun needGoToSettings(sharePrefer: SharePreferenceHelper, storage: Boolean): Boolean {
+        // ✅ CHỈ check flag "Don't ask again", KHÔNG check counter
         return if (storage) {
-            // Check flag "dontAskAgain" HOẶC counter session > 2
-            sharePrefer.isDontAskAgainStorage() ||
-            (storageSessionCounter > 2 && !_storageGranted.value)
+            sharePrefer.isDontAskAgainStorage()
         } else {
-            sharePrefer.isDontAskAgainNotification() ||
-            (notificationSessionCounter > 2 && !_notificationGranted.value)
+            sharePrefer.isDontAskAgainNotification()
         }
     }
 

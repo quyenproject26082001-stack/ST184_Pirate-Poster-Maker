@@ -23,14 +23,14 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
     private var imagePath: String? = null
 
     // Permission launcher for Android 8-9
+    // ✅ BỎ COUNTER - Luôn hỏi quyền cho đến khi "Don't ask again"
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val allGranted = permissions.all { it.value }
 
         if (allGranted) {
-            // ✅ Granted: Reset counter SUCCESS về 0
-            sharePreference.setStoragePermissionSuccess(0)
+            // ✅ Granted: Proceed download
             proceedDownload()
         } else {
             // ❌ Denied: Check if "Don't ask again" was clicked
@@ -41,23 +41,16 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
             }
 
             if (!canAskAgain) {
-                // 🚫 User clicked "Don't ask again" → Set counter to 999 (go to Settings next time)
-                sharePreference.setStoragePermissionSuccess(999)
-                Toast.makeText(
-                    this,
-                    strings(R.string.download_failed_please_try_again_later),
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                // ⚠️ Normal deny → Increase counter normally
-                val denyCount = sharePreference.getStoragePermissionSuccess() + 1
-                sharePreference.setStoragePermissionSuccess(denyCount)
-                Toast.makeText(
-                    this,
-                    strings(R.string.download_failed_please_try_again_later),
-                    Toast.LENGTH_SHORT
-                ).show()
+                // 🚫 User clicked "Don't ask again" → Mark flag để lần sau vào Settings
+                sharePreference.setDontAskAgainStorage(true)
             }
+
+            // Show error toast
+            Toast.makeText(
+                this,
+                strings(R.string.download_failed_please_try_again_later),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
     override fun setViewBinding(): ActivityViewBinding {
@@ -158,6 +151,7 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
         }
     }
 
+    // ✅ BỎ COUNTER - Luôn hỏi quyền cho đến khi "Don't ask again"
     fun downloadImage() {
         // Android 10+: No permission needed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -167,16 +161,15 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
 
         // Android 8-9: Need permission
         val storagePermissions = PermissionHelper.storagePermission
-        val denyCount = sharePreference.getStoragePermissionSuccess()  // ✅ Counter SUCCESS
 
         if (checkPermissions(storagePermissions)) {
-            // Đã có quyền
+            // Đã có quyền → Download
             proceedDownload()
-        } else if (denyCount >= 2) {  // ✅ FIXED: >= 2 (không phải > 2)
-            // ✅ SuccessActivity: Từ chối >= 2 lần → Mở Settings
+        } else if (sharePreference.isDontAskAgainStorage()) {
+            // User đã ấn "Don't ask again" → Mở Settings
             goToSettings()
         } else {
-            // ✅ SuccessActivity: Lần 1, 2 → Hỏi quyền từ hệ thống
+            // Hỏi quyền (hỏi mãi cho đến khi user ấn "Don't ask again")
             permissionLauncher.launch(storagePermissions)
         }
     }
