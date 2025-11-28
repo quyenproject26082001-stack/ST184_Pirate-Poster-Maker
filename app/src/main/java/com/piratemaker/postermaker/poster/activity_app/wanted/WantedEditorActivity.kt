@@ -79,6 +79,9 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     private var tempFilterSepia: Float = 0f
     private var tempPosterShadow: Float = 0f
 
+    // Font selector adapter - need to keep reference to update selection on reset
+    private var fontAdapter: FontSelectorAdapter? = null
+
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             // Write to local variable instead of ViewModel
@@ -752,6 +755,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             tvCurrentNameFont.typeface = initialTypeface
             seekBarNameSpacing.progress = 0
 
+            // Update font adapter to select first font and scroll to it
+            fontAdapter?.setSelectedPosition(0)
+            rvFontList.scrollToPosition(0)
+
             // Reset Bounty section
             // Calculate progress from config bounty size (12-60sp range)
             val bountySizeProgress = ((viewModel.bountySize.value - 12f) / 48f * 100f).toInt()
@@ -850,7 +857,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         tempNameFont = initialFont.name
 
         // Setup RecyclerView with adapter
-        val adapter = FontSelectorAdapter(fontList, selectedIndex) { fontItem, _ ->
+        fontAdapter = FontSelectorAdapter(fontList, selectedIndex) { fontItem, _ ->
             // Update current font display
             binding.tvCurrentNameFont.text = fontItem.name
             val typeface = ResourcesCompat.getFont(this, fontItem.fontResId)
@@ -867,7 +874,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
         binding.rvFontList.apply {
             layoutManager = LinearLayoutManager(this@WantedEditorActivity)
-            this.adapter = adapter
+            this.adapter = fontAdapter
         }
 
         // Toggle expand/collapse on click

@@ -122,10 +122,10 @@
         <TextView
             android:id="@+id/tvRightText"
             style="@style/single_marquee"
-            android:paddingHorizontal="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:paddingHorizontal="5dp"
             android:fontFamily="@font/kurale_regular"
             android:gravity="center"
             android:text="@string/save"

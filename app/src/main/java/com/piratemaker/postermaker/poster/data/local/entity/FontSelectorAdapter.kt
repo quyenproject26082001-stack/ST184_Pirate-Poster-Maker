@@ -61,4 +61,16 @@ class FontSelectorAdapter(
     override fun getItemCount() = fonts.size
 
     fun getSelectedPosition() = selectedPosition
+
+    /**
+     * Update selected position and notify adapter to refresh UI
+     */
+    fun setSelectedPosition(newPosition: Int) {
+        if (newPosition in 0 until fonts.size && newPosition != selectedPosition) {
+            val previousPosition = selectedPosition
+            selectedPosition = newPosition
+            notifyItemChanged(previousPosition)
+            notifyItemChanged(selectedPosition)
+        }
+    }
 }

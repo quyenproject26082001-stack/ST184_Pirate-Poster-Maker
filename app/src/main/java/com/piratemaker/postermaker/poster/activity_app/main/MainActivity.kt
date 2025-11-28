@@ -30,12 +30,15 @@ import kotlin.system.exitProcess
 
 class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
+    private var currentLanguage: String = ""
+
     override fun setViewBinding(): ActivityHomeBinding {
         return ActivityHomeBinding.inflate(LayoutInflater.from(this))
     }
 
     override fun initView() {
         deleteTempFolder()
+        currentLanguage = sharePreference.getPreLanguage()
     }
 
     override fun viewListener() {
@@ -123,7 +126,11 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
     override fun onRestart() {
         super.onRestart()
-        LanguageHelper.setLocale(this)
-        updateText()
+        val newLanguage = sharePreference.getPreLanguage()
+        if (currentLanguage != newLanguage) {
+            LanguageHelper.setLocale(this)
+            updateText()
+            currentLanguage = newLanguage
+        }
     }
 }
