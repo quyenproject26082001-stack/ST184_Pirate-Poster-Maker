@@ -25,6 +25,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import jp.wasabeef.glide.transformations.BlurTransformation
@@ -875,18 +876,36 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.rvFontList.apply {
             layoutManager = LinearLayoutManager(this@WantedEditorActivity)
             this.adapter = fontAdapter
+
+            // Disable nested scrolling to prevent conflict with parent
+            isNestedScrollingEnabled = false
+
+            // Add custom touch handling
+            addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    when (e.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            // Disable parent scrolling when touching RecyclerView
+                            rv.parent.requestDisallowInterceptTouchEvent(true)
+                        }
+                    }
+                    return false
+                }
+            })
         }
 
         // Toggle expand/collapse on click
         binding.layoutFontSelector.setOnClickListener {
             if (binding.rvFontList.visibility == View.GONE) {
-                // Expand
+                // Expand - disable parent scroll
                 binding.rvFontList.visibility = View.VISIBLE
                 binding.imgFontArrow.rotation = 180f
+                binding.nestedScrollView.isNestedScrollingEnabled = false
             } else {
-                // Collapse
+                // Collapse - enable parent scroll
                 binding.rvFontList.visibility = View.GONE
                 binding.imgFontArrow.rotation = 0f
+                binding.nestedScrollView.isNestedScrollingEnabled = true
             }
         }
     }
