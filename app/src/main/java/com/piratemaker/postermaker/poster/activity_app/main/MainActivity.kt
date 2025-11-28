@@ -130,12 +130,44 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         }
     }
 
-    // updateText() đã bị remove - không cần update text mỗi lần restart
-    // Text được load từ XML layout, tự động update khi language thay đổi
+    private fun updateText() {
+        // Sử dụng View.post để update sau khi view đã stable → tránh flicker
+        binding.root.post {
+            binding.apply {
+                // Fade out nhanh → update text → fade in
+                // Điều này tạo smooth transition thay vì sudden change
+                listOf(tv1, tv2, tv3).forEach { textView ->
+                    textView.animate()
+                        .alpha(0f)
+                        .setDuration(50)
+                        .withEndAction {
+                            // Update text khi đã invisible
+                            when (textView) {
+                                tv1 -> textView.text = strings(R.string.posterwantedmaker)
+                                tv2 -> textView.text = strings(R.string.posterwantedtemplates)
+                                tv3 -> textView.text = strings(R.string.my_design)
+                            }
+                            // Fade in lại
+                            textView.animate()
+                                .alpha(1f)
+                                .setDuration(100)
+                                .start()
+                        }
+                        .start()
+                }
+            }
+        }
+    }
 
     override fun onRestart() {
         super.onRestart()
-        // Không làm gì cả - tránh redraw gây flicker
-        // Language đã được set trong onCreate/initView
+        // Chỉ update text khi language thực sự thay đổi
+        val newLanguage = sharePreference.getPreLanguage()
+        if (currentLanguage != newLanguage) {
+            LanguageHelper.setLocale(this)
+            currentLanguage = newLanguage
+            // Delay update để view đã được render xong
+            updateText()
+        }
     }
 }
