@@ -7,7 +7,6 @@
     android:background="@drawable/img_bg_edit"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:fitsSystemWindows="true"
     tools:context="com.piratemaker.postermaker.poster.activity_app.wanted.WantedEditorActivity">
 
 
