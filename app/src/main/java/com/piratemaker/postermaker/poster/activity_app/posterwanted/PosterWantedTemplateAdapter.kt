@@ -95,12 +95,12 @@ class PosterWantedTemplateAdapter(
                             val scaleRatio = displayWidth / bitmapWidth
 
                             val config = TemplateConfigProvider.getConfig(item.templateId)
-                            val scaleFactor = 2.0f
-                            val density = context.resources.displayMetrics.density
+                            val scaleFactor = 1200f / 1080f  // Same as render code
+                            val fixedDensity = 3.5f  // Same as render code
 
-                            // Calculate text sizes in bitmap (multiplier ONLY for tvName)
-                            val nameTextSizeInBitmap = config.nameSize * scaleFactor * density
-                            val bountyTextSizeInBitmap = config.bountySize * scaleFactor * density  // NO multiplier for bounty
+                            // Calculate text sizes in bitmap
+                            val nameTextSizeInBitmap = config.nameSize * scaleFactor * fixedDensity
+                            val bountyTextSizeInBitmap = config.bountySize * scaleFactor * fixedDensity
 
                             // Calculate actual displayed text sizes on screen
                             val actualNameSize = nameTextSizeInBitmap * scaleRatio
@@ -112,7 +112,7 @@ class PosterWantedTemplateAdapter(
                             if (config.hasName) {
                                 android.util.Log.d("ActualTextSize", "  tvName: ${nameTextSizeInBitmap.toInt()}px → ${actualNameSize.toInt()}px")
                             }
-                            android.util.Log.d("ActualTextSize", "  tvBounty: ${bountyTextSizeInBitmap.toInt()}px → ${actualBountySize.toInt()}px (no multiplier)")
+                            android.util.Log.d("ActualTextSize", "  tvBounty: ${bountyTextSizeInBitmap.toInt()}px → ${actualBountySize.toInt()}px")
                             android.util.Log.d("ActualTextSize", "========================================")
 
                             // Force RecyclerView to recalculate layout
@@ -158,16 +158,20 @@ class PosterWantedTemplateAdapter(
                 val designWidth = 1080f
                 val scaleFactor = width / designWidth
 
+                // ✅ FIX: Use FIXED density for consistent text size across all devices
+                // Bitmap size is fixed (1200x1600), so text size should also be fixed
+                val fixedDensity = 3.5f  // Standard density for bitmap rendering
+
                 // Set text sizes in PX (density-independent) instead of SP
                 // This ensures the text size is always proportional to the view size
                 if (tvName != null) {
                     tvName.text = item.name
-                    tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.nameSize * scaleFactor * context.resources.displayMetrics.density)
+                    tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.nameSize * scaleFactor * fixedDensity)
                 }
 
                 if (tvBounty != null) {
                     tvBounty.text = item.getFullBountyText()
-                    tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.bountySize * scaleFactor * context.resources.displayMetrics.density)
+                    tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.bountySize * scaleFactor * fixedDensity)
                 }
 
                 // Load images synchronously
