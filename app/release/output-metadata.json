@@ -13,7 +13,7 @@
       "attributes": [],
       "versionCode": 1,
       "versionName": "1.0.0",
-      "outputFile": "ST186_Character_maker_2_v1.0.0_10.24.2025-release.apk"
+      "outputFile": "ST184_Pirate_Poster_Maker_v1.0.0_11.28.2025-release.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/ST186_Character_maker_2_v1.0.0_10.24.2025-release.dm"
+        "baselineProfiles/1/ST184_Pirate_Poster_Maker_v1.0.0_11.28.2025-release.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/ST186_Character_maker_2_v1.0.0_10.24.2025-release.dm"
+        "baselineProfiles/0/ST184_Pirate_Poster_Maker_v1.0.0_11.28.2025-release.dm"
       ]
     }
   ],

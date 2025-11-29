@@ -35,7 +35,6 @@ import com.piratemaker.postermaker.poster.data.local.entity.FontSelectorAdapter
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
 import com.piratemaker.postermaker.poster.core.helper.AssetHelper
-import com.piratemaker.postermaker.poster.core.helper.BackgroundRemovalHelper
 import com.piratemaker.postermaker.poster.core.helper.BitmapHelper
 import com.piratemaker.postermaker.poster.core.helper.ShadowTransformation
 import com.piratemaker.postermaker.poster.core.viewmodel.PosterEditorSharedViewModel
@@ -380,10 +379,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 pickImageLauncher.launch("image/*")
             }
 
-            // Remove background button
-            btnRemoveBackground.setOnSingleClick {
-                handleRemoveBackground()
-            }
 
             // Name section toggle
             layoutNameHeader.setOnSingleClick {
@@ -1628,88 +1623,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
     }
 
-    /**
-     * Handle remove background from current image
-     */
-    private fun handleRemoveBackground() {
-        val currentUri = viewModel.selectedImageUri.value
-
-        if (currentUri == null) {
-            showToast(R.string.please_import_a_photo_first)
-            return
-        }
-
-        lifecycleScope.launch {
-            try {
-                // Show loading
-                super.showLoading()
-                setRemoveBackgroundButtonEnabled(false)
-
-                // Convert URI to Bitmap
-                val originalBitmap = withContext(Dispatchers.IO) {
-                    BitmapHelper.uriToBitmap(this@WantedEditorActivity, currentUri)
-                }
-
-                if (originalBitmap == null) {
-                    dismissLoading()
-                    setRemoveBackgroundButtonEnabled(true)
-                    showToast(R.string.failed_to_load_image)
-                    return@launch
-                }
-
-                // Remove background using ML Kit
-                val resultBitmap = withContext(Dispatchers.IO) {
-                    BackgroundRemovalHelper.removeBackground(
-                        this@WantedEditorActivity,
-                        originalBitmap,
-                        confidence = 0.5f
-                    )
-                }
-
-                dismissLoading()
-                setRemoveBackgroundButtonEnabled(true)
-
-                if (resultBitmap != null) {
-                    // Display result in avatar
-                    imgAvatar?.let { imageView ->
-                        Glide.with(this@WantedEditorActivity)
-                            .load(resultBitmap)
-                            .centerCrop()
-                            .into(imageView)
-                    }
-
-                    // Load into shadow layer with ShadowTransformation
-                    // Shadow will follow the contour of the person (no background)
-                    val shadowRadius = 15f
-                    val shadowAlpha = 0.8f
-                    imgAvatarShadow?.let { imageView ->
-                        Glide.with(this@WantedEditorActivity)
-                            .load(resultBitmap)
-                            .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-                            .into(imageView)
-                    }
-
-                    // Keep shadow enabled - it will follow the contour of the person!
-                    binding.seekBarFilterShadow.isEnabled = true
-                    imgAvatarShadow?.visibility = View.VISIBLE
-
-                    showToast(R.string.background_removed_success)
-                } else {
-                    showToast(R.string.failed_to_remove_background)
-                }
-
-            } catch (e: Exception) {
-                dismissLoading()
-                setRemoveBackgroundButtonEnabled(true)
-                e.printStackTrace()
-                showToast("${getString(R.string.error_message)}: ${e.message ?: "Unknown"}")
-            }
-        }
-    }
-
-    private fun setRemoveBackgroundButtonEnabled(enabled: Boolean) {
-        binding.btnRemoveBackground.isEnabled = enabled
-    }
 
     private fun showToast(message: String) {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
