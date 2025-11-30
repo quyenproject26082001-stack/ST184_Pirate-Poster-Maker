@@ -11,7 +11,9 @@ data class PosterWantedItem(
     val templateId: Int,        // 1-16
     val avatarId: Int,          // 1-25
     val name: String,
-    val bounty: String
+    val bounty: String,
+    val nameFont: String,      // ← THÊM
+    val bountyFont: String,
 ) {
     /**
      * Get avatar asset path for Glide
@@ -37,6 +39,35 @@ data class PosterWantedItem(
     }
 
     companion object {
+
+        // ✅ THÊM: Danh sách font (COPY CHÍNH XÁC từ WantedEditorActivity.fontList)
+        private val AVAILABLE_FONTS = listOf(
+            "Roboto Bold",
+            "Roboto Medium",
+            "Roboto Regular",
+            "Londrina Solid",
+            "Montserrat Bold",
+            "Montserrat Medium",
+            "Script Elegant 1",
+            "Script Elegant 2",
+            "Handwriting 1",
+            "Script Casual",
+            "Brush Style",
+            "Horror Style 1",
+            "Horror Style 2",
+            "Horror Style 3",
+            "Horror Style 4",
+            "Spooky",
+            "Halloween",
+            "Gothic",
+            "Horror Style 5",
+            "Tech 3D",
+            "Creative 1",
+            "Creative 2",
+            "Rounded",
+            "Serif Classic",
+            "Signature",
+        )
         // Random pirate names
         private val PIRATE_NAMES = listOf(
             "THE BUTCHER",
@@ -270,13 +301,18 @@ data class PosterWantedItem(
                     PIRATE_NAMES.minByOrNull { it.length } ?: PIRATE_NAMES[0]
                 }
 
+                // ✅ THÊM: Random fonts
+                val nameFont = AVAILABLE_FONTS[random.nextInt(AVAILABLE_FONTS.size)]
+                val bountyFont = AVAILABLE_FONTS[random.nextInt(AVAILABLE_FONTS.size)]
                 items.add(
                     PosterWantedItem(
                         id = i,
                         templateId = templateId,
                         avatarId = random.nextInt(25) + 1,        // 1-25
                         name = selectedName,  // Use filtered name
-                        bounty = selectedBounty
+                        bounty = selectedBounty,
+                        nameFont = nameFont,      // ← THÊM
+                        bountyFont = bountyFont   // ← THÊM
                     )
                 )
             }

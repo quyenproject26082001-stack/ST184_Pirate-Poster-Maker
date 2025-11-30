@@ -63,6 +63,8 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     private var tempNameText: String = ""
     private var tempBountyText: String = ""
     private var tempNameFont: String = "Roboto Bold"
+
+    private var tempBountyFont: String = "Roboto Bold"
     private var tempNameSpacing: Float = 0f
     private var tempBountySize: Float = 24f
     private var tempBountyWeight: Float = 0f
@@ -81,6 +83,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
     // Font selector adapter - need to keep reference to update selection on reset
     private var fontAdapter: FontSelectorAdapter? = null
+    private var bountyFontAdapter: FontSelectorAdapter? = null
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -104,39 +107,29 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         FontItem("Script Elegant 1", R.font.script_elegant_01),
         FontItem("Script Elegant 2", R.font.script_elegant_02),
         FontItem("Handwriting 1", R.font.script_handwriting_01),
-        FontItem("Handwriting 2", R.font.script_handwriting_02),
         FontItem("Script Casual", R.font.script_casual),
-        FontItem("Script Bold", R.font.script_bold_01),
-        FontItem("Script Swash", R.font.script_swash_01),
-        FontItem("Script Swirl", R.font.script_swirl),
         FontItem("Brush Style", R.font.brush_01),
 
         // Horror/Gothic/Halloween (8 fonts)
-        FontItem("Horror Style 1", R.font.display_horror_01),
-        FontItem("Horror Style 2", R.font.display_horror_02),
-        FontItem("Horror Style 3", R.font.display_horror_04),
-        FontItem("Horror Style 4", R.font.display_horror_06),
-        FontItem("Spooky", R.font.display_spooky),
+        FontItem("Horror Style 1", R.font.display_horror_02),
+        FontItem("Horror Style 2", R.font.display_horror_04),
         FontItem("Halloween", R.font.display_halloween),
         FontItem("Gothic", R.font.display_gothic_01),
         FontItem("Horror Style 5", R.font.display_horror_11),
 
         // Display/Decorative (8 fonts)
-        FontItem("Tech", R.font.display_tech),
-        FontItem("Tech 3D", R.font.display_tech_3d),
-        FontItem("Tech Outline", R.font.display_tech_outline),
-        FontItem("Tech Gradient", R.font.display_tech_gradient),
         FontItem("Creative 1", R.font.display_creative_01),
-        FontItem("Creative 2", R.font.display_creative_02),
         FontItem("Rounded", R.font.display_rounded),
-        FontItem("Decorative", R.font.decorative_01),
-
         // Serif Elegant (5 fonts)
-        FontItem("Serif Elegant", R.font.serif_elegant_01),
-        FontItem("Serif Elegant Italic", R.font.serif_elegant_01_italic),
         FontItem("Serif Classic", R.font.serif_02),
         FontItem("Signature", R.font.serif_signature),
-        FontItem("Halloween Decorative", R.font.decorative_halloween_01)
+
+        FontItem("Display Cultural Style", R.font.display_cultural),
+        FontItem("Display Festive Style", R.font.display_festive),
+        FontItem("Tream Style", R.font.treamd),
+        FontItem("Ocean Style", R.font.ocen),
+
+
     )
 
     override fun setViewBinding(): ActivityWantedEditorBinding {
@@ -155,6 +148,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         applyGraphemeClusterFilter()
 
         setupFontSelector()
+        setupBountyFontSelector()
         setupSeekBars()
         setupEditTexts()
 
@@ -492,8 +486,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         } ?: android.util.Log.d("SaveDebug", "tempSelectedImageUri is NULL - NOT setting to ViewModel")
 
         viewModel.setNameText(tempNameText)
+        viewModel.setBountyFont(tempBountyFont)
         viewModel.setBountyText(tempBountyText)
         viewModel.setNameFont(tempNameFont)
+        viewModel.setBountyFont(tempBountyFont)  // ← THÊM DÒNG NÀY
         viewModel.setNameSpacing(tempNameSpacing)
         viewModel.setBountySize(tempBountySize)
         viewModel.setBountyWeight(tempBountyWeight)
@@ -618,6 +614,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         tempNameText = viewModel.nameText.value
         tempBountyText = viewModel.bountyText.value
         tempNameFont = viewModel.nameFont.value
+        tempBountyFont = viewModel.bountyFont.value
         tempNameSpacing = viewModel.nameSpacing.value
         tempBountySize = viewModel.bountySize.value
         tempBountyWeight = viewModel.bountyWeight.value
@@ -722,6 +719,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         tempNameText = viewModel.nameText.value
         tempBountyText = viewModel.bountyText.value
         tempNameFont = viewModel.nameFont.value
+        tempBountyFont = viewModel.bountyFont.value
         tempNameSpacing = viewModel.nameSpacing.value
         tempBountySize = viewModel.bountySize.value
         tempBountyWeight = viewModel.bountyWeight.value
@@ -754,6 +752,17 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             // Update font adapter to select first font and scroll to it
             fontAdapter?.setSelectedPosition(0)
             rvFontList.scrollToPosition(0)
+
+
+            //Reset Bounty Font
+            binding.tvCurrentNameFontBounty.text = fontList[0].name
+            val bountyTypeface = ResourcesCompat.getFont(this@WantedEditorActivity, fontList[0].fontResId)
+            tvBounty?.typeface = bountyTypeface
+            binding.tvCurrentNameFontBounty.typeface = bountyTypeface
+
+            // Update bounty font adapter
+            bountyFontAdapter?.setSelectedPosition(0)
+            binding.rvFontBountyList.scrollToPosition(0)
 
             // Reset Bounty section
             // Calculate progress from config bounty size (12-60sp range)
@@ -863,6 +872,43 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             // Write to local variable instead of ViewModel
             tempNameFont = fontItem.name
 
+            tvName?.apply {
+                val config = viewModel.getConfig()
+
+                // Hide text to prevent flicker
+                alpha = 0f
+
+                // Step 1: Disable auto-size
+                TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                    this,
+                    TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+                )
+
+                // Step 2: Force expand to max size
+                textSize = config.nameSize
+
+                // Step 3: Re-enable auto-size
+                post {
+                    TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                        this,
+                        6,      // minTextSize
+                        config.nameSize.toInt(),
+                        1,      // granularity
+                        android.util.TypedValue.COMPLEX_UNIT_SP
+                    )
+
+                    // Show text again
+                    alpha = 1f
+
+                    // Log new size
+                    post {
+                        val newSize = tvName?.textSize ?: 0f
+                        val newSizeSp = newSize / resources.displayMetrics.scaledDensity
+                        android.util.Log.d("FontChange", "Font changed to '${fontItem.name}' → New textSize: ${newSizeSp.toInt()}sp")
+                    }
+                }
+            }
+
             // Collapse the font list after selection
             binding.rvFontList.visibility = View.GONE
             binding.imgFontArrow.rotation = 0f
@@ -905,6 +951,73 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
     }
 
+    private fun setupBountyFontSelector() {
+        // Find font index from ViewModel (for restoring state)
+        val savedFontName = viewModel.bountyFont.value  // ← CẦN THÊM bountyFont vào ViewModel
+        val selectedIndex = fontList.indexOfFirst { it.name == savedFontName }.takeIf { it >= 0 } ?: 0
+        val initialFont = fontList[selectedIndex]
+
+        // Set initial/restored font name and apply font
+        binding.tvCurrentNameFontBounty.text = initialFont.name
+        binding.tvCurrentNameFontBounty.isSelected = true  // Activate marquee
+        val initialTypeface = ResourcesCompat.getFont(this, initialFont.fontResId)
+        tvBounty?.typeface = initialTypeface
+        binding.tvCurrentNameFontBounty.typeface = initialTypeface
+
+        // Initialize local variable with current font
+        tempBountyFont = initialFont.name
+
+        // Setup RecyclerView with adapter
+        bountyFontAdapter = FontSelectorAdapter(fontList, selectedIndex) { fontItem, _ ->
+            // Update current font display
+            binding.tvCurrentNameFontBounty.text = fontItem.name
+            val typeface = ResourcesCompat.getFont(this, fontItem.fontResId)
+            tvBounty?.typeface = typeface
+            binding.tvCurrentNameFontBounty.typeface = typeface
+
+            // Write to local variable instead of ViewModel
+            tempBountyFont = fontItem.name
+
+            // Collapse the font list after selection
+            binding.rvFontBountyList.visibility = View.GONE
+            binding.imgFontBountyArrow.rotation = 0f
+        }
+
+        binding.rvFontBountyList.apply {
+            layoutManager = LinearLayoutManager(this@WantedEditorActivity)
+            this.adapter = bountyFontAdapter
+
+            // Disable nested scrolling to prevent conflict with parent
+            isNestedScrollingEnabled = false
+
+            // Add custom touch handling
+            addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    when (e.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            rv.parent.requestDisallowInterceptTouchEvent(true)
+                        }
+                    }
+                    return false
+                }
+            })
+        }
+
+        // Toggle expand/collapse on click
+        binding.layoutFontBountySelector.setOnClickListener {
+            if (binding.rvFontBountyList.visibility == View.GONE) {
+                // Expand
+                binding.rvFontBountyList.visibility = View.VISIBLE
+                binding.imgFontBountyArrow.rotation = 180f
+                binding.nestedScrollView.isNestedScrollingEnabled = false
+            } else {
+                // Collapse
+                binding.rvFontBountyList.visibility = View.GONE
+                binding.imgFontBountyArrow.rotation = 0f
+                binding.nestedScrollView.isNestedScrollingEnabled = true
+            }
+        }
+    }
     /**
      * Apply InputFilter to count grapheme clusters (visible characters) instead of code units
      * This prevents issues with combining diacritical marks (Vietnamese accents), emojis, etc.

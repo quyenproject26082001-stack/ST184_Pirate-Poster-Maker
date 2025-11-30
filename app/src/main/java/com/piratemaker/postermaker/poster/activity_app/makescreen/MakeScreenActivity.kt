@@ -25,6 +25,7 @@ import com.piratemaker.postermaker.poster.core.helper.MediaHelper
 import com.piratemaker.postermaker.poster.core.helper.ShadowTransformation
 import com.piratemaker.postermaker.poster.core.utils.state.SaveState
 import com.piratemaker.postermaker.poster.core.viewmodel.PosterEditorSharedViewModel
+import com.piratemaker.postermaker.poster.data.local.entity.FontItem
 import com.piratemaker.postermaker.poster.databinding.ActivityMakeScreenBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -47,62 +48,71 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     private var tvName: TextView? = null
     private var tvBounty: TextView? = null
 
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            viewModel.setSelectedImageUri(it)
-            // Mark editing started to switch from avatar.png to item.png
-            viewModel.markEditingStarted()
-            // Refresh entire preview with item.png and all elements visible
-            updatePreviewWithCurrentState()
-        }
-    }
-
-    // Request code for Edit button (data is shared via ViewModel)
-    private val editActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
-            android.util.Log.d("SaveDebug", "MAKE SCREEN - editActivityLauncher")
-            android.util.Log.d("SaveDebug", "viewModel.nameText: '${viewModel.nameText.value}'")
-            android.util.Log.d("SaveDebug", "viewModel.bountyText: '${viewModel.bountyText.value}'")
-            android.util.Log.d("SaveDebug", "viewModel.isEditingStarted: ${viewModel.isEditingStarted.value}")
-            android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
-            // Data is already updated in shared ViewModel, just refresh UI
-            updatePreviewWithCurrentState()
-        }
-    }
-
-    // Request code for Template selection
-    private val templateSelectionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            result.data?.let { data ->
-                val selectedTemplateId = data.getIntExtra("selectedTemplateId", 1)
-
-                // Get old config before changing template
-                val oldConfig = viewModel.getConfig()
-
-                // Extract bounty number by removing old prefix/suffix
-                val currentBountyText = viewModel.bountyText.value
-                val bountyNumber = currentBountyText
-                    .removePrefix(oldConfig.bountyPrefix)
-                    .removeSuffix(oldConfig.bountySuffix)
-
-                // Change template
-                viewModel.setSelectedTemplate(selectedTemplateId)
-
-                // Get new config
-                val newConfig = viewModel.getConfig()
-
-                // Update bountySize to new template's default size
-                viewModel.setBountySize(newConfig.bountySize)
-
-                // Update bounty text with new prefix/suffix (keep the number)
-                viewModel.setBountyText("${newConfig.bountyPrefix}${bountyNumber}${newConfig.bountySuffix}")
-
-                // Refresh preview with new template
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                viewModel.setSelectedImageUri(it)
+                // Mark editing started to switch from avatar.png to item.png
+                viewModel.markEditingStarted()
+                // Refresh entire preview with item.png and all elements visible
                 updatePreviewWithCurrentState()
             }
         }
-    }
+
+    // Request code for Edit button (data is shared via ViewModel)
+    private val editActivityLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+                android.util.Log.d("SaveDebug", "MAKE SCREEN - editActivityLauncher")
+                android.util.Log.d("SaveDebug", "viewModel.nameText: '${viewModel.nameText.value}'")
+                android.util.Log.d(
+                    "SaveDebug",
+                    "viewModel.bountyText: '${viewModel.bountyText.value}'"
+                )
+                android.util.Log.d(
+                    "SaveDebug",
+                    "viewModel.isEditingStarted: ${viewModel.isEditingStarted.value}"
+                )
+                android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+                // Data is already updated in shared ViewModel, just refresh UI
+                updatePreviewWithCurrentState()
+            }
+        }
+
+    // Request code for Template selection
+    private val templateSelectionLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.let { data ->
+                    val selectedTemplateId = data.getIntExtra("selectedTemplateId", 1)
+
+                    // Get old config before changing template
+                    val oldConfig = viewModel.getConfig()
+
+                    // Extract bounty number by removing old prefix/suffix
+                    val currentBountyText = viewModel.bountyText.value
+                    val bountyNumber = currentBountyText
+                        .removePrefix(oldConfig.bountyPrefix)
+                        .removeSuffix(oldConfig.bountySuffix)
+
+                    // Change template
+                    viewModel.setSelectedTemplate(selectedTemplateId)
+
+                    // Get new config
+                    val newConfig = viewModel.getConfig()
+
+                    // Update bountySize to new template's default size
+                    viewModel.setBountySize(newConfig.bountySize)
+
+                    // Update bounty text with new prefix/suffix (keep the number)
+                    viewModel.setBountyText("${newConfig.bountyPrefix}${bountyNumber}${newConfig.bountySuffix}")
+
+                    // Refresh preview with new template
+                    updatePreviewWithCurrentState()
+                }
+            }
+        }
 
     override fun setViewBinding(): ActivityMakeScreenBinding {
         return ActivityMakeScreenBinding.inflate(LayoutInflater.from(this))
@@ -188,7 +198,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 android.util.TypedValue.COMPLEX_UNIT_SP
             )
 
-            android.util.Log.d("MakeScreenAutoSize", "Setup autoSize for tvName: min=6sp, max=${config.nameSize.toInt()}sp")
+            android.util.Log.d(
+                "MakeScreenAutoSize",
+                "Setup autoSize for tvName: min=6sp, max=${config.nameSize.toInt()}sp"
+            )
         }
 
         // Load template background
@@ -205,9 +218,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
             // Templates button - Navigate to Template Selection Screen
             cvTemplates.setOnSingleClick {
-                val intent = Intent(this@MakeScreenActivity, TemplateListActivity::class.java).apply {
-                    putExtra("currentTemplateId", viewModel.selectedTemplate.value)
-                }
+                val intent =
+                    Intent(this@MakeScreenActivity, TemplateListActivity::class.java).apply {
+                        putExtra("currentTemplateId", viewModel.selectedTemplate.value)
+                    }
                 templateSelectionLauncher.launch(intent)
             }
 
@@ -240,7 +254,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 // Log text size after layout
                 tvName?.post {
                     val config = viewModel.getConfig()
-                    android.util.Log.d("MakeScreenSize", "Template ${viewModel.selectedTemplate.value} - MAKESCREEN tvName: configMaxSize=${config.nameSize}f, actualTextSize=${tvName?.textSize}px, text='$text'")
+                    android.util.Log.d(
+                        "MakeScreenSize",
+                        "Template ${viewModel.selectedTemplate.value} - MAKESCREEN tvName: configMaxSize=${config.nameSize}f, actualTextSize=${tvName?.textSize}px, text='$text'"
+                    )
                 }
             }
         }
@@ -252,7 +269,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 // Log text size after layout
                 tvBounty?.post {
                     val config = viewModel.getConfig()
-                    android.util.Log.d("MakeScreenSize", "Template ${viewModel.selectedTemplate.value} - MAKESCREEN tvBounty: configSize=${config.bountySize}f, actualTextSize=${tvBounty?.textSize}px, text='$text'")
+                    android.util.Log.d(
+                        "MakeScreenSize",
+                        "Template ${viewModel.selectedTemplate.value} - MAKESCREEN tvBounty: configSize=${config.bountySize}f, actualTextSize=${tvBounty?.textSize}px, text='$text'"
+                    )
                 }
             }
         }
@@ -345,7 +365,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             return
         }
 
-        val bitmap = Bitmap.createBitmap(posterView.width, posterView.height, Bitmap.Config.ARGB_8888)
+        val bitmap =
+            Bitmap.createBitmap(posterView.width, posterView.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         posterView.draw(canvas)
 
@@ -357,12 +378,15 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                         is SaveState.Success -> {
                             // Set path in ViewModel and navigate to SuccessActivity
                             viewModel.setSavedImagePath(state.path)
-                            val intent = Intent(this@MakeScreenActivity, SuccessActivity::class.java)
+                            val intent =
+                                Intent(this@MakeScreenActivity, SuccessActivity::class.java)
                             startActivity(intent)
                         }
+
                         is SaveState.Error -> {
                             showToast(strings(R.string.download_failed_please_try_again_later))
                         }
+
                         SaveState.Loading -> {
                             // Show loading indicator if needed
                         }
@@ -446,7 +470,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             // Load into main avatar without blur
             android.util.Log.d("AvatarDebug", "Loading without blur to imgAvatar")
             imgAvatar?.let { imageView ->
-                android.util.Log.d("AvatarDebug", "imgAvatar visibility BEFORE load: ${imageView.visibility}")
+                android.util.Log.d(
+                    "AvatarDebug",
+                    "imgAvatar visibility BEFORE load: ${imageView.visibility}"
+                )
                 Glide.with(this)
                     .load(uri)
                     .centerCrop()
@@ -463,10 +490,16 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         if (shadowValue > 0) {
             val shadowRadius = shadowValue / 100f * 15f
             val shadowAlpha = 0.8f
-            android.util.Log.d("AvatarDebug", "Loading shadow: radius=$shadowRadius, alpha=$shadowAlpha")
+            android.util.Log.d(
+                "AvatarDebug",
+                "Loading shadow: radius=$shadowRadius, alpha=$shadowAlpha"
+            )
 
             imgAvatarShadow?.let { imageView ->
-                android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility BEFORE load: ${imageView.visibility}")
+                android.util.Log.d(
+                    "AvatarDebug",
+                    "imgAvatarShadow visibility BEFORE load: ${imageView.visibility}"
+                )
                 imageView.visibility = View.VISIBLE
                 Glide.with(this)
                     .load(uri)
@@ -477,7 +510,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         } else {
             android.util.Log.d("AvatarDebug", "Shadow disabled - Hiding imgAvatarShadow")
             imgAvatarShadow?.let { imageView ->
-                android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility BEFORE hide: ${imageView.visibility}")
+                android.util.Log.d(
+                    "AvatarDebug",
+                    "imgAvatarShadow visibility BEFORE hide: ${imageView.visibility}"
+                )
                 imageView.visibility = View.GONE
                 // Clear any existing image to prevent lingering
                 imageView.setImageDrawable(null)
@@ -516,7 +552,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             android.util.Log.d("SaveDebug", "isEditing: $isEditing")
             android.util.Log.d("SaveDebug", "config.hasName: ${config.hasName}")
             android.util.Log.d("SaveDebug", "Setting tvName.text to: '${viewModel.nameText.value}'")
-            android.util.Log.d("SaveDebug", "Setting tvBounty.text to: '${viewModel.bountyText.value}'")
+            android.util.Log.d(
+                "SaveDebug",
+                "Setting tvBounty.text to: '${viewModel.bountyText.value}'"
+            )
             android.util.Log.d("SaveDebug", "tvName is null: ${tvName == null}")
             android.util.Log.d("SaveDebug", "tvBounty is null: ${tvBounty == null}")
 
@@ -547,7 +586,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                 loadImageToPreview(uri)
             } ?: run {
                 // Load default avatar.webp from drawable
-                android.util.Log.d("AvatarDebug", "No URI - loading default avatar.webp from drawable")
+                android.util.Log.d(
+                    "AvatarDebug",
+                    "No URI - loading default avatar.webp from drawable"
+                )
                 imgAvatar?.let { imageView ->
                     Glide.with(this)
                         .load(R.drawable.avatar)
@@ -567,8 +609,14 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             // Apply ALL effects from ViewModel to match Editor
             android.util.Log.d("AvatarDebug", "Calling applyAllEffectsFromViewModel()")
             applyAllEffectsFromViewModel()
-            android.util.Log.d("AvatarDebug", "After effects - imgAvatar visibility: ${imgAvatar?.visibility}")
-            android.util.Log.d("AvatarDebug", "After effects - imgAvatarShadow visibility: ${imgAvatarShadow?.visibility}")
+            android.util.Log.d(
+                "AvatarDebug",
+                "After effects - imgAvatar visibility: ${imgAvatar?.visibility}"
+            )
+            android.util.Log.d(
+                "AvatarDebug",
+                "After effects - imgAvatarShadow visibility: ${imgAvatarShadow?.visibility}"
+            )
         } else {
             android.util.Log.d("AvatarDebug", "isEditing = false - hiding all elements")
             // Hide all editable elements - show only avatar.png preview
@@ -608,6 +656,15 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         if (fontResId != null) {
             val typeface = androidx.core.content.res.ResourcesCompat.getFont(this, fontResId)
             tvName?.typeface = typeface
+        }
+
+        // ✅ THÊM ĐOẠN NÀY - Apply font typeface to tvBounty
+        val bountyFontName = viewModel.bountyFont.value
+        val bountyFontResId = mapFontNameToResource(bountyFontName)
+        if (bountyFontResId != null) {
+            val bountyTypeface =
+                androidx.core.content.res.ResourcesCompat.getFont(this, bountyFontResId)
+            tvBounty?.typeface = bountyTypeface
         }
 
         // Name effects
@@ -658,12 +715,21 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             android.util.Log.d("TextSizeDebug", "═══════════════════════════════════════")
             android.util.Log.d("TextSizeDebug", "MAKE SCREEN - applyAllEffectsFromViewModel()")
             android.util.Log.d("TextSizeDebug", "Template: ${config.id}")
-            android.util.Log.d("TextSizeDebug", "tvName textSize: ${nameTextSizeSp.toInt()}sp (${nameTextSizePx}px)")
+            android.util.Log.d(
+                "TextSizeDebug",
+                "tvName textSize: ${nameTextSizeSp.toInt()}sp (${nameTextSizePx}px)"
+            )
             android.util.Log.d("TextSizeDebug", "config.nameSize: ${config.nameSize}sp")
             val bountyTextSizePx = tvBounty?.textSize ?: 0f
             val bountyTextSizeSp = bountyTextSizePx / resources.displayMetrics.scaledDensity
-            android.util.Log.d("TextSizeDebug", "tvBounty textSize: ${bountyTextSizeSp.toInt()}sp (${bountyTextSizePx}px)")
-            android.util.Log.d("TextSizeDebug", "viewModel.bountySize: ${viewModel.bountySize.value}sp")
+            android.util.Log.d(
+                "TextSizeDebug",
+                "tvBounty textSize: ${bountyTextSizeSp.toInt()}sp (${bountyTextSizePx}px)"
+            )
+            android.util.Log.d(
+                "TextSizeDebug",
+                "viewModel.bountySize: ${viewModel.bountySize.value}sp"
+            )
             android.util.Log.d("TextSizeDebug", "═══════════════════════════════════════")
         }
 
@@ -691,23 +757,27 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         val colorMatrix = android.graphics.ColorMatrix()
 
         // Brightness
-        val brightnessMatrix = android.graphics.ColorMatrix(floatArrayOf(
-            brightness, 0f, 0f, 0f, 0f,
-            0f, brightness, 0f, 0f, 0f,
-            0f, 0f, brightness, 0f, 0f,
-            0f, 0f, 0f, 1f, 0f
-        ))
+        val brightnessMatrix = android.graphics.ColorMatrix(
+            floatArrayOf(
+                brightness, 0f, 0f, 0f, 0f,
+                0f, brightness, 0f, 0f, 0f,
+                0f, 0f, brightness, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            )
+        )
         colorMatrix.postConcat(brightnessMatrix)
 
         // Contrast
         val scale = contrast
         val translate = (1f - contrast) / 2f * 255f
-        val contrastMatrix = android.graphics.ColorMatrix(floatArrayOf(
-            scale, 0f, 0f, 0f, translate,
-            0f, scale, 0f, 0f, translate,
-            0f, 0f, scale, 0f, translate,
-            0f, 0f, 0f, 1f, 0f
-        ))
+        val contrastMatrix = android.graphics.ColorMatrix(
+            floatArrayOf(
+                scale, 0f, 0f, 0f, translate,
+                0f, scale, 0f, 0f, translate,
+                0f, 0f, scale, 0f, translate,
+                0f, 0f, 0f, 1f, 0f
+            )
+        )
         colorMatrix.postConcat(contrastMatrix)
 
         // Saturation
@@ -718,12 +788,30 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         // Grayscale
         if (grayscale > 0) {
             val invGrayscale = 1 - grayscale
-            val grayscaleMatrix = android.graphics.ColorMatrix(floatArrayOf(
-                invGrayscale + grayscale * 0.299f, grayscale * 0.587f, grayscale * 0.114f, 0f, 0f,
-                grayscale * 0.299f, invGrayscale + grayscale * 0.587f, grayscale * 0.114f, 0f, 0f,
-                grayscale * 0.299f, grayscale * 0.587f, invGrayscale + grayscale * 0.114f, 0f, 0f,
-                0f, 0f, 0f, 1f, 0f
-            ))
+            val grayscaleMatrix = android.graphics.ColorMatrix(
+                floatArrayOf(
+                    invGrayscale + grayscale * 0.299f,
+                    grayscale * 0.587f,
+                    grayscale * 0.114f,
+                    0f,
+                    0f,
+                    grayscale * 0.299f,
+                    invGrayscale + grayscale * 0.587f,
+                    grayscale * 0.114f,
+                    0f,
+                    0f,
+                    grayscale * 0.299f,
+                    grayscale * 0.587f,
+                    invGrayscale + grayscale * 0.114f,
+                    0f,
+                    0f,
+                    0f,
+                    0f,
+                    0f,
+                    1f,
+                    0f
+                )
+            )
             colorMatrix.postConcat(grayscaleMatrix)
         }
 
@@ -733,24 +821,44 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             val cosA = kotlin.math.cos(angle.toDouble()).toFloat()
             val sinA = kotlin.math.sin(angle.toDouble()).toFloat()
 
-            val hueRotateMatrix = android.graphics.ColorMatrix(floatArrayOf(
-                0.213f + cosA * 0.787f - sinA * 0.213f, 0.715f - cosA * 0.715f - sinA * 0.715f, 0.072f - cosA * 0.072f + sinA * 0.928f, 0f, 0f,
-                0.213f - cosA * 0.213f + sinA * 0.143f, 0.715f + cosA * 0.285f + sinA * 0.140f, 0.072f - cosA * 0.072f - sinA * 0.283f, 0f, 0f,
-                0.213f - cosA * 0.213f - sinA * 0.787f, 0.715f - cosA * 0.715f + sinA * 0.715f, 0.072f + cosA * 0.928f + sinA * 0.072f, 0f, 0f,
-                0f, 0f, 0f, 1f, 0f
-            ))
+            val hueRotateMatrix = android.graphics.ColorMatrix(
+                floatArrayOf(
+                    0.213f + cosA * 0.787f - sinA * 0.213f,
+                    0.715f - cosA * 0.715f - sinA * 0.715f,
+                    0.072f - cosA * 0.072f + sinA * 0.928f,
+                    0f,
+                    0f,
+                    0.213f - cosA * 0.213f + sinA * 0.143f,
+                    0.715f + cosA * 0.285f + sinA * 0.140f,
+                    0.072f - cosA * 0.072f - sinA * 0.283f,
+                    0f,
+                    0f,
+                    0.213f - cosA * 0.213f - sinA * 0.787f,
+                    0.715f - cosA * 0.715f + sinA * 0.715f,
+                    0.072f + cosA * 0.928f + sinA * 0.072f,
+                    0f,
+                    0f,
+                    0f,
+                    0f,
+                    0f,
+                    1f,
+                    0f
+                )
+            )
             colorMatrix.postConcat(hueRotateMatrix)
         }
 
         // Sepia
         if (sepia > 0) {
             val invSepia = 1 - sepia
-            val sepiaMatrix = android.graphics.ColorMatrix(floatArrayOf(
-                invSepia + sepia * 0.393f, sepia * 0.769f, sepia * 0.189f, 0f, 0f,
-                sepia * 0.349f, invSepia + sepia * 0.686f, sepia * 0.168f, 0f, 0f,
-                sepia * 0.272f, sepia * 0.534f, invSepia + sepia * 0.131f, 0f, 0f,
-                0f, 0f, 0f, 1f, 0f
-            ))
+            val sepiaMatrix = android.graphics.ColorMatrix(
+                floatArrayOf(
+                    invSepia + sepia * 0.393f, sepia * 0.769f, sepia * 0.189f, 0f, 0f,
+                    sepia * 0.349f, invSepia + sepia * 0.686f, sepia * 0.168f, 0f, 0f,
+                    sepia * 0.272f, sepia * 0.534f, invSepia + sepia * 0.131f, 0f, 0f,
+                    0f, 0f, 0f, 1f, 0f
+                )
+            )
             colorMatrix.postConcat(sepiaMatrix)
         }
 
@@ -817,7 +925,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         // Additional blur (API 31+)
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            val additionalBlur = shadowValue / 100f * 10f  // 0-10px additional blur (SAME as Photo Filter)
+            val additionalBlur =
+                shadowValue / 100f * 10f  // 0-10px additional blur (SAME as Photo Filter)
             if (additionalBlur > 0) {
                 val blurEffect = android.graphics.RenderEffect.createBlurEffect(
                     additionalBlur, additionalBlur, android.graphics.Shader.TileMode.CLAMP
@@ -843,12 +952,18 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         if (shadowView == null) return
 
-        android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility BEFORE: ${shadowView.visibility}")
+        android.util.Log.d(
+            "AvatarDebug",
+            "imgAvatarShadow visibility BEFORE: ${shadowView.visibility}"
+        )
 
         if (shadowValue <= 0) {
             android.util.Log.d("AvatarDebug", "Shadow <= 0 → Setting imgAvatarShadow to GONE")
             shadowView.visibility = View.GONE
-            android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility AFTER set GONE: ${shadowView.visibility}")
+            android.util.Log.d(
+                "AvatarDebug",
+                "imgAvatarShadow visibility AFTER set GONE: ${shadowView.visibility}"
+            )
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 shadowView.setRenderEffect(null)
             }
@@ -858,7 +973,10 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
         android.util.Log.d("AvatarDebug", "Shadow > 0 → Setting imgAvatarShadow to VISIBLE")
         shadowView.visibility = View.VISIBLE
-        android.util.Log.d("AvatarDebug", "imgAvatarShadow visibility AFTER set VISIBLE: ${shadowView.visibility}")
+        android.util.Log.d(
+            "AvatarDebug",
+            "imgAvatarShadow visibility AFTER set VISIBLE: ${shadowView.visibility}"
+        )
 
         // Remap: seekbar 0-100 → effective shadow 35-100
         val effectiveShadowValue = 35f + (shadowValue / 100f * 65f)
@@ -884,7 +1002,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         shadowView.translationX = offsetX
         shadowView.translationY = offsetY
 
-        val scale = 1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
+        val scale =
+            1f + (effectiveShadowValue / 100f * 0.15f)  // 35-100 → 1.0525-1.15 (~10% difference)
         shadowView.scaleX = scale
         shadowView.scaleY = scale
 
@@ -924,40 +1043,28 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             "Script Elegant 1" -> R.font.script_elegant_01
             "Script Elegant 2" -> R.font.script_elegant_02
             "Handwriting 1" -> R.font.script_handwriting_01
-            "Handwriting 2" -> R.font.script_handwriting_02
             "Script Casual" -> R.font.script_casual
-            "Script Bold" -> R.font.script_bold_01
-            "Script Swash" -> R.font.script_swash_01
-            "Script Swirl" -> R.font.script_swirl
             "Brush Style" -> R.font.brush_01
 
             // Horror/Gothic/Halloween (8 fonts)
-            "Horror Style 1" -> R.font.display_horror_01
-            "Horror Style 2" -> R.font.display_horror_02
-            "Horror Style 3" -> R.font.display_horror_04
-            "Horror Style 4" -> R.font.display_horror_06
-            "Spooky" -> R.font.display_spooky
+            "Horror Style 1" -> R.font.display_horror_02
+            "Horror Style 2" -> R.font.display_horror_04
             "Halloween" -> R.font.display_halloween
             "Gothic" -> R.font.display_gothic_01
             "Horror Style 5" -> R.font.display_horror_11
 
             // Display/Decorative (8 fonts)
-            "Tech" -> R.font.display_tech
-            "Tech 3D" -> R.font.display_tech_3d
-            "Tech Outline" -> R.font.display_tech_outline
-            "Tech Gradient" -> R.font.display_tech_gradient
             "Creative 1" -> R.font.display_creative_01
-            "Creative 2" -> R.font.display_creative_02
             "Rounded" -> R.font.display_rounded
-            "Decorative" -> R.font.decorative_01
 
             // Serif Elegant (5 fonts)
-            "Serif Elegant" -> R.font.serif_elegant_01
-            "Serif Elegant Italic" -> R.font.serif_elegant_01_italic
             "Serif Classic" -> R.font.serif_02
             "Signature" -> R.font.serif_signature
-            "Halloween Decorative" -> R.font.decorative_halloween_01
 
+            "Display Cultural Style" -> R.font.display_cultural
+            "Display Festive Style" -> R.font.display_festive
+            "Tream Style" -> R.font.treamd
+            "Ocean Style" -> R.font.ocen
             else -> null  // Return null for unknown fonts
         }
     }

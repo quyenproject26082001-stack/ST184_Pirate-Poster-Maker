@@ -127,7 +127,7 @@ object TemplateConfigProvider {
             bountyPositionX = 0.5f,
             bountyPositionY = 0.92f,
             bountyColor = "#3D3D3D",
-            bountySize = 20f,
+            bountySize = 17f,
             photoLeft = 0.20f,
             photoTop = 0.22f,
             photoRight = 0.80f,
@@ -331,7 +331,7 @@ object TemplateConfigProvider {
             namePositionX = 0.5f,
             namePositionY = 0.64f,  // Adjusted from 0.62f
             nameColor = "#3D3D3D",
-            nameSize = 26f,
+            nameSize = 28f,
             hasBounty = true,
             bountyDefaultText = "2,000,000",
             bountyPrefix = "$ ",

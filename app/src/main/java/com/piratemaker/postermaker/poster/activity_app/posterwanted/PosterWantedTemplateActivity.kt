@@ -106,6 +106,11 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         // (fixes issue where ViewModel persists old bountySize from previous session)
         viewModel.setBountySize(viewModel.getConfig().bountySize)
 
+
+        // ✅ THÊM: Set random fonts
+        viewModel.setNameFont(item.nameFont)
+        viewModel.setBountyFont(item.bountyFont)
+
         // Set avatar URI from assets
         val avatarUri = Uri.parse(item.getAvatarPath())
         viewModel.setSelectedImageUri(avatarUri)

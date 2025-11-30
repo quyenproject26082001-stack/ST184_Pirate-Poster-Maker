@@ -64,6 +64,8 @@ class PosterEditorSharedViewModel : ViewModel() {
     private val _bountyFont = MutableStateFlow("Old Town")
     val bountyFont: StateFlow<String> = _bountyFont.asStateFlow()
 
+
+
     private val _bountySize = MutableStateFlow(24f)
     val bountySize: StateFlow<Float> = _bountySize.asStateFlow()
 
@@ -171,6 +173,8 @@ class PosterEditorSharedViewModel : ViewModel() {
         _hasChanges.value = true
     }
 
+
+
     fun setNameSpacing(spacing: Float) {
         _nameSpacing.value = spacing
         _hasChanges.value = true
@@ -273,6 +277,7 @@ class PosterEditorSharedViewModel : ViewModel() {
         // Reset to config defaults
         _nameText.value = config.nameDefaultText
         _nameFont.value = "Old Town"
+        _bountyFont.value = "Roboto Bold"
         _nameSpacing.value = 0f
         _bountyText.value = "${config.bountyPrefix}${config.bountyDefaultText}${config.bountySuffix}"
         _bountyFont.value = "Old Town"

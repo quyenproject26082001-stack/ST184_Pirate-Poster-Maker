@@ -18,31 +18,26 @@ class PermissionViewModel : ViewModel() {
 
     fun updateStorageGranted(sharePrefer: SharePreferenceHelper, granted: Boolean) {
         _storageGranted.value = granted
+        sharePrefer.setStoragePermission(if (granted) 0 else sharePrefer.getStoragePermission() + 1)
+
         // Không còn counter nữa
     }
 
     fun updateNotificationGranted(sharePrefer: SharePreferenceHelper, granted: Boolean) {
         _notificationGranted.value = granted
-        // Không còn counter nữa
+        sharePrefer.setNotificationPermission(if (granted) 0 else sharePrefer.getNotificationPermission() + 1)
     }
 
+    // ✅ CHECK COUNTER THAY VÌ FLAG "Don't ask again"
     fun needGoToSettings(sharePrefer: SharePreferenceHelper, storage: Boolean): Boolean {
-        // ✅ CHỈ check flag "Don't ask again", KHÔNG check counter
         return if (storage) {
-            sharePrefer.isDontAskAgainStorage()
+            sharePrefer.getStoragePermission() > 2 && !_storageGranted.value
         } else {
-            sharePrefer.isDontAskAgainNotification()
+            sharePrefer.getNotificationPermission() > 2 && !_notificationGranted.value
         }
     }
+    // ✅ THÊM LẠI COUNTER
 
-    // ✅ Lưu flag "Don't ask again" vào SharedPreference
-    fun markDontAskAgain(sharePrefer: SharePreferenceHelper, storage: Boolean) {
-        if (storage) {
-            sharePrefer.setDontAskAgainStorage(true)
-        } else {
-            sharePrefer.setDontAskAgainNotification(true)
-        }
-    }
 
     fun getStoragePermissions() = PermissionHelper.storagePermission
     fun getNotificationPermissions() = PermissionHelper.notificationPermission

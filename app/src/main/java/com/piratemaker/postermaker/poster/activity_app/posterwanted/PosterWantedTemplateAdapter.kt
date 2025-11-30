@@ -177,11 +177,23 @@ class PosterWantedTemplateAdapter(
                 if (tvName != null) {
                     tvName.text = item.name
                     tvName.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.nameSize * scaleFactor * fixedDensity)
+
+                    val nameFontResId = mapFontNameToResource(item.nameFont)
+                    if (nameFontResId != null) {
+                        val typeface = androidx.core.content.res.ResourcesCompat.getFont(context, nameFontResId)
+                        tvName.typeface = typeface
+                    }
                 }
+                // ✅ THÊM: Map font name to resource (COPY từ MakeScreenActivity)
 
                 if (tvBounty != null) {
                     tvBounty.text = item.getFullBountyText()
                     tvBounty.setTextSize(TypedValue.COMPLEX_UNIT_PX, config.bountySize * scaleFactor * fixedDensity)
+                    val bountyFontResId = mapFontNameToResource(item.bountyFont)
+                    if (bountyFontResId != null) {
+                        val typeface = androidx.core.content.res.ResourcesCompat.getFont(context, bountyFontResId)
+                        tvBounty.typeface = typeface
+                    }
                 }
 
                 // Load images synchronously
@@ -220,6 +232,38 @@ class PosterWantedTemplateAdapter(
                 bitmap
             }
         }
+
+        private fun mapFontNameToResource(fontName: String): Int? {
+            return when (fontName) {
+                "Roboto Bold" -> R.font.roboto_bold
+                "Roboto Medium" -> R.font.roboto_medium
+                "Roboto Regular" -> R.font.roboto_regular
+                "Londrina Solid" -> R.font.londrina_solid_regular
+                "Montserrat Bold" -> R.font.montserrat_bold
+                "Montserrat Medium" -> R.font.montserrat_medium
+                "Script Elegant 1" -> R.font.script_elegant_01
+                "Script Elegant 2" -> R.font.script_elegant_02
+                "Handwriting 1" -> R.font.script_handwriting_01
+                "Script Casual" -> R.font.script_casual
+                "Brush Style" -> R.font.brush_01
+                "Horror Style 1" -> R.font.display_horror_02
+                "Horror Style 2" -> R.font.display_horror_04
+                "Halloween" -> R.font.display_halloween
+                "Gothic" -> R.font.display_gothic_01
+                "Horror Style 5" -> R.font.display_horror_11
+                "Creative 1" -> R.font.display_creative_01
+                "Rounded" -> R.font.display_rounded
+                "Serif Classic" -> R.font.serif_02
+                "Signature" -> R.font.serif_signature
+
+                "Display Cultural Style" -> R.font.display_cultural
+                "Display Festive Style" -> R.font.display_festive
+                "Tream Style" -> R.font.treamd
+                "Ocean Style" -> R.font.ocen
+                else -> null
+            }
+        }
+
 
         private fun getTemplateLayoutResId(templateId: Int): Int {
             return when (templateId) {

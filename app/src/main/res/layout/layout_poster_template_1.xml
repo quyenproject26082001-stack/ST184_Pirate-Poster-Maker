@@ -76,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.44" />
 
     <!-- Name Text: namePositionY=0.68, nameColor=#3D3D3D, nameSize=28sp -->
     <TextView
@@ -104,7 +104,7 @@
         android:fontFamily="@font/roboto_bold"
         android:text="$2,000,000"
         android:gravity="center"
-        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintWidth_percent="0.8"
         android:textColor="#3D3D3D"
         android:textSize="32sp"
         android:textStyle="bold"

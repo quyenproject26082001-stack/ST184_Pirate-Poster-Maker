@@ -83,19 +83,15 @@
         android:fontFamily="@font/roboto_bold"
         android:text="NAME HERE"
         android:textColor="#3D3D3D"
-        android:textSize="22sp"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="18sp"
-        android:autoSizeMaxTextSize="28sp"
-        android:autoSizeStepGranularity="1sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:maxLines="3"
+        android:maxLines="1"
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guidline"
         app:layout_constraintEnd_toEndOf="@id/guidline1"
-        app:layout_constraintVertical_bias="0.685" />
+        app:layout_constraintVertical_bias="0.689" />
 
     <!-- Bounty: bountyPositionY=0.88, bountySize=20sp -->
     <TextView
