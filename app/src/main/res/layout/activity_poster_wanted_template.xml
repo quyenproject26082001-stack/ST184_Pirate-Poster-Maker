@@ -36,7 +36,18 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/nativeClListTemplate"
         tools:listitem="@layout/layout_poster_template_1" />
+
+    <!--quyen-->
+    <!-- nativeClListTemplate -->
+    <FrameLayout
+        android:id="@+id/nativeClListTemplate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!--quyen-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

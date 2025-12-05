@@ -48,7 +48,7 @@
         android:layout_marginHorizontal="16dp"
         android:orientation="horizontal"
         android:layout_marginTop="0dp"
-        android:paddingBottom="50dp"
+        android:paddingBottom="16dp"
         android:weightSum="2"
         app:layout_constraintTop_toBottomOf="@+id/imgPoster"
         tools:layout_editor_absoluteX="16dp">
@@ -97,5 +97,18 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
+    <!--quyen-->
+    <!-- Native Ad -->
+    <FrameLayout
+        android:id="@+id/nativeClCreation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <include layout="@layout/ads_shimmer_collap_native_banner" />
+    </FrameLayout>
+    <!--quyen-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,13 @@ import com.piratemaker.postermaker.poster.activity_app.main.MainActivity
 import com.piratemaker.postermaker.poster.activity_app.permission.PermissionActivity
 import com.piratemaker.postermaker.poster.core.extensions.hideNavigation
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
+//quyen
+import com.lvt.ads.util.Admob
+import com.piratemaker.postermaker.poster.R
+import com.piratemaker.postermaker.poster.core.extensions.visible
+import com.piratemaker.postermaker.poster.core.extensions.gone
+import androidx.viewpager2.widget.ViewPager2
+//quyen
 import kotlin.system.exitProcess
 
 class IntroActivity : BaseActivity<ActivityIntroBinding>() {
@@ -36,11 +43,37 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
 
     override fun initActionBar() {}
 
+    //quyen
+    override fun initAds() {
+        // Load native ad
+        Admob.getInstance().loadNativeAd(
+            this,
+            getString(R.string.native_intro),
+            binding.nativeIntro,
+            R.layout.ads_native_avg
+        )
+    }
+    //quyen
+
     private fun initVpg() {
         binding.apply {
             binding.vpgTutorial.adapter = introAdapter
             binding.dotsIndicator.attachTo(binding.vpgTutorial)
             introAdapter.submitList(DataLocal.itemIntroList)
+
+            //quyen
+            // Show/hide native ad based on current page (show only on page 0 and 2)
+            vpgTutorial.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (position == 0 || position == 2) {
+                        nativeIntro.visible()
+                    } else {
+                        nativeIntro.gone()
+                    }
+                }
+            })
+            //quyen
         }
     }
 

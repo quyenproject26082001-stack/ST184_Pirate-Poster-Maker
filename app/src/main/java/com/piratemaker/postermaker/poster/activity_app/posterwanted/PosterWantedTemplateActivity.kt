@@ -16,6 +16,11 @@ import com.piratemaker.postermaker.poster.dialog.WaitingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+//quyen
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.lvt.ads.callback.InterCallback
+import com.lvt.ads.util.Admob
+//quyen
 
 /**
  * Poster Wanted Template Activity
@@ -28,6 +33,9 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
     private lateinit var adapter: PosterWantedTemplateAdapter
 
     private var waitingDialog: WaitingDialog? =null
+    //quyen
+    var interAll: InterstitialAd? = null
+    //quyen
     override fun setViewBinding(): ActivityPosterWantedTemplateBinding {
         return ActivityPosterWantedTemplateBinding.inflate(LayoutInflater.from(this))
     }
@@ -62,9 +70,16 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
 
     override fun viewListener() {
         binding.actionBar.apply {
+            //quyen
             btnActionBarLeft.setOnSingleClick {
-                finishAfterTransition()
+                Admob.getInstance().showInterAds(this@PosterWantedTemplateActivity, interAll, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        finishAfterTransition()
+                    }
+                })
             }
+            //quyen
         }
     }
 
@@ -84,12 +99,35 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         }
     }
 
+    //quyen
+    override fun initAds() {
+        // Load interstitial ad
+        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
+            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
+                super.onAdLoadSuccess(interstitialAd)
+                interAll = interstitialAd
+            }
+        })
+
+        // Load native collapsible ad
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_listTemplate), binding.nativeClListTemplate)
+    }
+    //quyen
+
     override fun onDestroy() {
         super.onDestroy()
         if (::adapter.isInitialized) {
             adapter.cleanup()
         }
     }
+
+    //quyen
+    override fun onRestart() {
+        super.onRestart()
+        // Reload native collapsible ad
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_listTemplate), binding.nativeClListTemplate)
+    }
+    //quyen
 
     /**
      * Handle item click - Navigate to MakeScreen with selected data
@@ -118,9 +156,16 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         // Mark editing started
         viewModel.markEditingStarted()
 
+        //quyen
         // Navigate to MakeScreen
-        val intent = Intent(this, MakeScreenActivity::class.java)
-        startActivity(intent)
-        finish()
+        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
+            override fun onNextAction() {
+                super.onNextAction()
+                val intent = Intent(this@PosterWantedTemplateActivity, MakeScreenActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        })
+        //quyen
     }
 }

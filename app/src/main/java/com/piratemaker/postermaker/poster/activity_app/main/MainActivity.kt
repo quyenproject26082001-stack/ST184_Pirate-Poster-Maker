@@ -21,6 +21,11 @@ import com.piratemaker.postermaker.poster.core.extensions.gone
 
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.strings
+//quyen
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.lvt.ads.callback.InterCallback
+import com.lvt.ads.util.Admob
+//quyen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,6 +36,9 @@ import kotlin.system.exitProcess
 class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
     private var currentLanguage: String = ""
+    //quyen
+    var interAll: InterstitialAd? = null
+    //quyen
 
     override fun setViewBinding(): ActivityHomeBinding {
         return ActivityHomeBinding.inflate(LayoutInflater.from(this))
@@ -59,15 +67,38 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
     override fun viewListener() {
         binding.apply {
             actionBar.btnActionBarRight.setOnSingleClick { startIntentRightToLeft(SettingsActivity::class.java) }
+            //quyen
             btnCreate.setOnSingleClick {
-                startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity::class.java)
+                Admob.getInstance().showInterAds(this@MainActivity, interAll, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity::class.java)
+                    }
+                })
             }
+            //quyen
             BtnPosterWantedTemplate.setOnSingleClick {
-                startIntentRightToLeft(PosterWantedTemplateActivity::class.java)
+                //quyen
+                Admob.getInstance().showInterAds(this@MainActivity, interAll, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        startIntentRightToLeft(PosterWantedTemplateActivity::class.java)
+                    }
+                })
+                //quyen
             }
+            //quyen
             btnMydesgin.setOnSingleClick {
-                startIntentRightToLeft(MyDesignActivity::class.java)
+                //quyen
+                Admob.getInstance().showInterAds(this@MainActivity, interAll, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        startIntentRightToLeft(MyDesignActivity::class.java)
+                    }
+                })
+                //quyen
             }
+            //quyen
         }
     }
 
@@ -86,6 +117,21 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             btnActionBarRight.visible()
         }
     }
+
+    //quyen
+    override fun initAds() {
+        // Load interstitial ad
+        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
+            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
+                super.onAdLoadSuccess(interstitialAd)
+                interAll = interstitialAd
+            }
+        })
+
+        // Load native collapsible ad
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_cl_home), binding.nativeClHome)
+    }
+    //quyen
 
     @SuppressLint("MissingSuperCall", "GestureBackNavigation")
     override fun onBackPressed() {
@@ -169,5 +215,9 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             // Delay update để view đã được render xong
             updateText()
         }
+        //quyen
+        // Reload native collapsible ad
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_cl_home), binding.nativeClHome)
+        //quyen
     }
 }

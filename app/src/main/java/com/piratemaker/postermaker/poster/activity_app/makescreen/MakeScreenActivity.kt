@@ -29,6 +29,11 @@ import com.piratemaker.postermaker.poster.data.local.entity.FontItem
 import com.piratemaker.postermaker.poster.databinding.ActivityMakeScreenBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+//quyen
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.lvt.ads.callback.InterCallback
+import com.lvt.ads.util.Admob
+//quyen
 
 /**
  * MakeScreen Activity
@@ -36,6 +41,10 @@ import kotlinx.coroutines.launch
  * Shows poster preview with 3 action buttons: Templates, Import, Edit
  */
 class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
+
+    //quyen
+    var interAll: InterstitialAd? = null
+    //quyen
 
     // Use shared ViewModel for data binding with WantedEditorActivity
     private val viewModel = PosterEditorSharedViewModel.getInstance()
@@ -308,6 +317,26 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         }
     }
 
+    //quyen
+    override fun initAds() {
+        // Load interstitial ad
+        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
+            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
+                super.onAdLoadSuccess(interstitialAd)
+                interAll = interstitialAd
+            }
+        })
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_poster), binding.nativeClPoster)
+    }
+    //quyen
+
+    //quyen
+    override fun onRestart() {
+        super.onRestart()
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_poster), binding.nativeClPoster)
+    }
+    //quyen
+
     /**
      * Show Save button (call when editing starts)
      */
@@ -322,19 +351,27 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      * Handle back button with "Discard changes?" dialog if edited
      */
     private fun handleBack() {
-        // Check isEditingStarted instead of hasChanges to avoid showing dialog
-        // when user only changed template without importing image or editing
-        if (viewModel.isEditingStarted.value) {
-            // TODO: Show dialog "Discard changes?"
-            // For now, just finish
-            // Clear all data so when coming back, it shows default state (avatar.webp)
-            viewModel.clearAll()
-            finishAfterTransition()
-        } else {
-            // No edits made, just clear and finish
-            viewModel.clearAll()
-            finishAfterTransition()
-        }
+        //quyen
+        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
+            override fun onNextAction() {
+                //quyen
+                // Check isEditingStarted instead of hasChanges to avoid showing dialog
+                // when user only changed template without importing image or editing
+                if (viewModel.isEditingStarted.value) {
+                    // TODO: Show dialog "Discard changes?"
+                    // For now, just finish
+                    // Clear all data so when coming back, it shows default state (avatar.webp)
+                    viewModel.clearAll()
+                    finishAfterTransition()
+                } else {
+                    // No edits made, just clear and finish
+                    viewModel.clearAll()
+                    finishAfterTransition()
+                }
+                //quyen
+            }
+        })
+        //quyen
     }
 
     /**
@@ -358,41 +395,49 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
             }
         }
 
-        // Capture poster view as bitmap
-        val posterView = binding.containerPoster
-        if (posterView.width == 0 || posterView.height == 0) {
-            showToast(strings(R.string.download_failed_please_try_again_later))
-            return
-        }
-
-        val bitmap =
-            Bitmap.createBitmap(posterView.width, posterView.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        posterView.draw(canvas)
-
-        // Save bitmap to internal storage
-        lifecycleScope.launch {
-            MediaHelper.saveBitmapToInternalStorage(this@MakeScreenActivity, "posters", bitmap)
-                .collectLatest { state ->
-                    when (state) {
-                        is SaveState.Success -> {
-                            // Set path in ViewModel and navigate to SuccessActivity
-                            viewModel.setSavedImagePath(state.path)
-                            val intent =
-                                Intent(this@MakeScreenActivity, SuccessActivity::class.java)
-                            startActivity(intent)
-                        }
-
-                        is SaveState.Error -> {
-                            showToast(strings(R.string.download_failed_please_try_again_later))
-                        }
-
-                        SaveState.Loading -> {
-                            // Show loading indicator if needed
-                        }
-                    }
+        //quyen
+        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
+            override fun onNextAction() {
+                //quyen
+                // Capture poster view as bitmap
+                val posterView = binding.containerPoster
+                if (posterView.width == 0 || posterView.height == 0) {
+                    showToast(strings(R.string.download_failed_please_try_again_later))
+                    return
                 }
-        }
+
+                val bitmap =
+                    Bitmap.createBitmap(posterView.width, posterView.height, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                posterView.draw(canvas)
+
+                // Save bitmap to internal storage
+                lifecycleScope.launch {
+                    MediaHelper.saveBitmapToInternalStorage(this@MakeScreenActivity, "posters", bitmap)
+                        .collectLatest { state ->
+                            when (state) {
+                                is SaveState.Success -> {
+                                    // Set path in ViewModel and navigate to SuccessActivity
+                                    viewModel.setSavedImagePath(state.path)
+                                    val intent =
+                                        Intent(this@MakeScreenActivity, SuccessActivity::class.java)
+                                    startActivity(intent)
+                                }
+
+                                is SaveState.Error -> {
+                                    showToast(strings(R.string.download_failed_please_try_again_later))
+                                }
+
+                                SaveState.Loading -> {
+                                    // Show loading indicator if needed
+                                }
+                            }
+                        }
+                }
+                //quyen
+            }
+        })
+        //quyen
     }
 
     /**

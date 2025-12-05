@@ -125,7 +125,7 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.8.0'
 
     //ad
-    implementation 'com.github.LVTapp:AdsLibrary:1.5.1'
+    implementation 'com.github.LVTapp:AdsLibrary:1.5.2_beta3'
     implementation 'com.google.android.gms:play-services-ads:24.5.0'
     implementation 'com.google.ads.mediation:facebook:6.20.0.0'
     implementation 'com.google.ads.mediation:vungle:7.5.0.1'

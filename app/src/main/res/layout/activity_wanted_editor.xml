@@ -22,7 +22,7 @@
         android:clipToPadding="true"
         android:paddingTop="0.5dp"
         android:overScrollMode="never"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/nativeClEdit"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
 
         <LinearLayout
@@ -959,6 +959,7 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
     <!-- Action Bar -->
     <FrameLayout
         android:id="@+id/layoutActionBar"
@@ -970,6 +971,17 @@
             android:id="@+id/actionBar"
             layout="@layout/layout_actionbar" />
     </FrameLayout>
+
+    <!--quyen-->
+    <!-- Native Ad -->
+    <FrameLayout
+        android:id="@+id/nativeClEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <!--quyen-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

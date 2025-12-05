@@ -27,8 +27,17 @@ import com.piratemaker.postermaker.poster.dialog.YesNoDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
+//quyen
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.lvt.ads.callback.InterCallback
+import com.lvt.ads.util.Admob
+//quyen
 
 class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
+
+    //quyen
+    var interAll: InterstitialAd? = null
+    //quyen
 
     private val viewModel = PosterEditorSharedViewModel.getInstance()
     private var savedImagePath: String? = null
@@ -105,9 +114,16 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
     override fun viewListener() {
         binding.apply {
             // Home button
+            //quyen
             actionBar.btnActionBarLeft.setOnSingleClick {
-                goToHome()
+                Admob.getInstance().showInterAds(this@SuccessActivity, interAll, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        goToHome()
+                    }
+                })
             }
+            //quyen
 
             // Share button
             btnShare.setOnSingleClick(2000) {
@@ -124,6 +140,21 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
     override fun dataObservable() {
         // No data observables needed
     }
+
+    //quyen
+    override fun initAds() {
+        // Load interstitial ad
+        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
+            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
+                super.onAdLoadSuccess(interstitialAd)
+                interAll = interstitialAd
+            }
+        })
+
+        // Load native collapsible ad
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_creation), binding.nativeClCreation)
+    }
+    //quyen
 
     private fun goToHome() {
         val intent = Intent(this, MainActivity::class.java)

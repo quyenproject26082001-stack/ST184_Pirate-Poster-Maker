@@ -7,6 +7,9 @@ import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
 import com.piratemaker.postermaker.poster.databinding.ActivityMyDesignBinding
 import java.io.File
+//quyen
+import com.lvt.ads.util.Admob
+//quyen
 
 class MyDesignActivity : BaseActivity<ActivityMyDesignBinding>() {
 
@@ -80,6 +83,16 @@ class MyDesignActivity : BaseActivity<ActivityMyDesignBinding>() {
             btnActionBarReset.gone()
         }
     }
+
+    //quyen
+    override fun initAds() {
+        // Load native regular ad above back button and list
+        Admob.getInstance().loadNativeAd(this, getString(R.string.native_myDesgin), binding.nativeMyDesgin, R.layout.ads_native_avg)
+
+        // Load native collapsible ad at bottom
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_myDesgin), binding.nativeCollapMyDesgin)
+    }
+    //quyen
 
     private fun onDesignClicked(file: File) {
         val intent = Intent(this, ViewDesignActivity::class.java).apply {

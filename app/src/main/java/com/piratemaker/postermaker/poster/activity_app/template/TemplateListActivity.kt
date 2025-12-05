@@ -12,11 +12,19 @@ import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.visible
 import com.piratemaker.postermaker.poster.databinding.ActivityTemplateListBinding
+//quyen
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.lvt.ads.callback.InterCallback
+import com.lvt.ads.util.Admob
+//quyen
 
 class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
 
     private lateinit var adapter: TemplateAdapter
     private var selectedTemplateId = 1
+    //quyen
+    var interAll: InterstitialAd? = null
+    //quyen
 
     override fun setViewBinding(): ActivityTemplateListBinding {
         return ActivityTemplateListBinding.inflate(LayoutInflater.from(this))
@@ -56,15 +64,42 @@ class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
 
             // Done button
             btnActionBarRight.setOnSingleClick {
-                // Return selected template ID to caller
-                val resultIntent = Intent().apply {
-                    putExtra("selectedTemplateId", selectedTemplateId)
-                }
-                setResult(RESULT_OK, resultIntent)
-                finish()
+                //quyen
+                Admob.getInstance().showInterAds(this@TemplateListActivity, interAll, object : InterCallback() {
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        // Return selected template ID to caller
+                        val resultIntent = Intent().apply {
+                            putExtra("selectedTemplateId", selectedTemplateId)
+                        }
+                        setResult(RESULT_OK, resultIntent)
+                        finish()
+                    }
+                })
+                //quyen
             }
         }
     }
+
+    //quyen
+    override fun initAds() {
+        // Load interstitial ad
+        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
+            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
+                super.onAdLoadSuccess(interstitialAd)
+                interAll = interstitialAd
+            }
+        })
+
+        // Load native ad with button on top
+        Admob.getInstance().loadNativeAd(
+            this,
+            getString(R.string.native_template),
+            binding.nativeTemplate,
+            R.layout.ads_native_big_btn_top
+        )
+    }
+    //quyen
 
     private fun setupRecyclerView() {
         // Create 16 templates (matching assets/template/1 to assets/template/16)

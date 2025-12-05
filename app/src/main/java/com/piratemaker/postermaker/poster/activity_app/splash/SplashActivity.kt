@@ -9,11 +9,19 @@ import com.piratemaker.postermaker.poster.core.extensions.initNetworkMonitor
 import com.piratemaker.postermaker.poster.databinding.ActivitySplashBinding
 import com.piratemaker.postermaker.poster.activity_app.intro.IntroActivity
 import com.piratemaker.postermaker.poster.activity_app.language.LanguageActivity
+//quyen
+import com.lvt.ads.callback.InterCallback
+import com.lvt.ads.util.Admob
+//quyen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     var intentActivity: Intent? = null
+    //quyen
+    private var check = false
+    var interCallBack: InterCallback? = null
+    //quyen
 
     override fun setViewBinding(): ActivitySplashBinding {
         return ActivitySplashBinding.inflate(LayoutInflater.from(this))
@@ -38,21 +46,62 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         binding.imvLoading.startAnimation(rotateAnimation)
 
         initNetworkMonitor()
+        Admob.getInstance().setTimeLimitShowAds(30000)
 
         // Simple delay then navigate
-        navigateAfterDelay()
+        //navigateAfterDelay()
     }
 
     private fun navigateAfterDelay() {
         lifecycleScope.launch {
             // Delay 2 seconds for splash screen
             delay(2500)
-            startActivity(intentActivity)
-            finishAffinity()
+            //quyen
+            moveNextScreen()
+            //quyen
         }
     }
 
+    //quyen
+    private fun moveNextScreen() {
+        val nextIntent = if (sharePreference.getIsFirstLang()) {
+            Intent(this, LanguageActivity::class.java)
+        } else {
+            Intent(this, IntroActivity::class.java)
+        }
+
+        interCallBack = object : InterCallback() {
+            override fun onNextAction() {
+                super.onNextAction()
+                startActivity(nextIntent)
+                check = true
+                finishAffinity()
+            }
+        }
+
+        Admob.getInstance().loadSplashInterAds(
+            this,
+            getString(com.piratemaker.postermaker.poster.R.string.inter_splash),
+            30000,
+            3000,
+            interCallBack
+        )
+    }
+    //quyen
+
     override fun dataObservable() {
+
+        var hasNavigated = false
+
+        lifecycleScope.launch {
+            // Delay 3 giây hiển thị splash screen
+            kotlinx.coroutines.delay(3000)
+
+            if (!hasNavigated && !isFinishing) {
+                hasNavigated = true
+                moveNextScreen()
+            }
+        }
         // No data observation needed for Wanted Poster Maker
     }
 
@@ -64,5 +113,20 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     override fun initActionBar() {}
 
     @SuppressLint("GestureBackNavigation", "MissingSuperCall")
-    override fun onBackPressed() {}
+    override fun onBackPressed() {
+        //quyen
+        if (check) {
+            // super.onBackPressed()
+        } else {
+            check = false
+        }
+        //quyen
+    }
+
+    //quyen
+    override fun onResume() {
+        super.onResume()
+        Admob.getInstance().onCheckShowSplashWhenFail(this, interCallBack, 1000)
+    }
+    //quyen
 }

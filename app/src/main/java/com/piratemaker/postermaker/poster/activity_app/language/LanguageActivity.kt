@@ -19,6 +19,9 @@ import com.piratemaker.postermaker.poster.activity_app.intro.IntroActivity
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.strings
 import com.piratemaker.postermaker.poster.ui.language.LanguageViewModel
+//quyen
+import com.lvt.ads.util.Admob
+//quyen
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
@@ -121,6 +124,18 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding>() {
             startIntentWithClearTop(MainActivity::class.java)
         }
     }
+
+    //quyen
+    override fun initAds() {
+        // Load native ad
+        Admob.getInstance().loadNativeAd(
+            this,
+            getString(R.string.native_language),
+            binding.nativeLanguage,
+            R.layout.ads_native_avg
+        )
+    }
+    //quyen
 
     @SuppressLint("MissingSuperCall", "GestureBackNavigation")
     override fun onBackPressed() {

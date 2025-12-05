@@ -35,11 +35,12 @@
         />
     
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:scrollbars="none"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/nativeClHome"
         app:layout_constraintTop_toBottomOf="@id/titleHome">
 
         <LinearLayout
@@ -177,4 +178,15 @@
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
+
+    <!--quyen-->
+    <!-- nativeClHome -->
+    <FrameLayout
+        android:id="@+id/nativeClHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!--quyen-->
 </androidx.constraintlayout.widget.ConstraintLayout>

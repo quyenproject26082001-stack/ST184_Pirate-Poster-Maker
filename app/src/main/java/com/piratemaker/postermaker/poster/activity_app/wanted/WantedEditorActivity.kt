@@ -43,8 +43,17 @@ import com.piratemaker.postermaker.poster.dialog.YesNoDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+//quyen
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.lvt.ads.callback.InterCallback
+import com.lvt.ads.util.Admob
+//quyen
 
 class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
+
+    //quyen
+    var interAll: InterstitialAd? = null
+    //quyen
 
     // Use shared ViewModel for data binding with MakeScreenActivity
     private val viewModel = PosterEditorSharedViewModel.getInstance()
@@ -458,6 +467,26 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         }
     }
 
+    //quyen
+    override fun initAds() {
+        // Load interstitial ad
+        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
+            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
+                super.onAdLoadSuccess(interstitialAd)
+                interAll = interstitialAd
+            }
+        })
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_edit), binding.nativeClEdit)
+    }
+    //quyen
+
+    //quyen
+    override fun onRestart() {
+        super.onRestart()
+        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_edit), binding.nativeClEdit)
+    }
+    //quyen
+
     /**
      * Handle Back button
      */
@@ -470,61 +499,69 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Handle Save button - Copy all local variables to ViewModel and mark editing started
      */
     private fun handleSave() {
-        // Copy ALL local variables to ViewModel (19 properties)
-        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
-        android.util.Log.d("SaveDebug", "WANTED EDITOR - handleSave()")
-        android.util.Log.d("SaveDebug", "tempNameText: '$tempNameText'")
-        android.util.Log.d("SaveDebug", "tempBountyText: '$tempBountyText'")
-        android.util.Log.d("SaveDebug", "tempSelectedImageUri: $tempSelectedImageUri")
-        android.util.Log.d("SaveDebug", "hasChanges BEFORE save: ${viewModel.hasChanges.value}")
-        android.util.Log.d("SaveDebug", "isEditingStarted BEFORE save: ${viewModel.isEditingStarted.value}")
-        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+        //quyen
+        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
+            override fun onNextAction() {
+                //quyen
+                // Copy ALL local variables to ViewModel (19 properties)
+                android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+                android.util.Log.d("SaveDebug", "WANTED EDITOR - handleSave()")
+                android.util.Log.d("SaveDebug", "tempNameText: '$tempNameText'")
+                android.util.Log.d("SaveDebug", "tempBountyText: '$tempBountyText'")
+                android.util.Log.d("SaveDebug", "tempSelectedImageUri: $tempSelectedImageUri")
+                android.util.Log.d("SaveDebug", "hasChanges BEFORE save: ${viewModel.hasChanges.value}")
+                android.util.Log.d("SaveDebug", "isEditingStarted BEFORE save: ${viewModel.isEditingStarted.value}")
+                android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
 
-        tempSelectedImageUri?.let {
-            android.util.Log.d("SaveDebug", "Setting selectedImageUri: $it")
-            viewModel.setSelectedImageUri(it)
-        } ?: android.util.Log.d("SaveDebug", "tempSelectedImageUri is NULL - NOT setting to ViewModel")
+                tempSelectedImageUri?.let {
+                    android.util.Log.d("SaveDebug", "Setting selectedImageUri: $it")
+                    viewModel.setSelectedImageUri(it)
+                } ?: android.util.Log.d("SaveDebug", "tempSelectedImageUri is NULL - NOT setting to ViewModel")
 
-        viewModel.setNameText(tempNameText)
-        viewModel.setBountyFont(tempBountyFont)
-        viewModel.setBountyText(tempBountyText)
-        viewModel.setNameFont(tempNameFont)
-        viewModel.setBountyFont(tempBountyFont)  // ← THÊM DÒNG NÀY
-        viewModel.setNameSpacing(tempNameSpacing)
-        viewModel.setBountySize(tempBountySize)
-        viewModel.setBountyWeight(tempBountyWeight)
-        viewModel.setBountySpacing(tempBountySpacing)
-        viewModel.setBountyPositionX(tempBountyPositionX)
-        viewModel.setBountyPositionY(tempBountyPositionY)
-        viewModel.setFilterShadow(tempFilterShadow)
-        viewModel.setFilterBlur(tempFilterBlur)
-        viewModel.setFilterBrightness(tempFilterBrightness)
-        viewModel.setFilterContrast(tempFilterContrast)
-        viewModel.setFilterGrayscale(tempFilterGrayscale)
-        viewModel.setFilterHueRotate(tempFilterHueRotate)
-        viewModel.setFilterSaturate(tempFilterSaturate)
-        viewModel.setFilterSepia(tempFilterSepia)
-        viewModel.setPosterShadow(tempPosterShadow)
+                viewModel.setNameText(tempNameText)
+                viewModel.setBountyFont(tempBountyFont)
+                viewModel.setBountyText(tempBountyText)
+                viewModel.setNameFont(tempNameFont)
+                viewModel.setBountyFont(tempBountyFont)  // ← THÊM DÒNG NÀY
+                viewModel.setNameSpacing(tempNameSpacing)
+                viewModel.setBountySize(tempBountySize)
+                viewModel.setBountyWeight(tempBountyWeight)
+                viewModel.setBountySpacing(tempBountySpacing)
+                viewModel.setBountyPositionX(tempBountyPositionX)
+                viewModel.setBountyPositionY(tempBountyPositionY)
+                viewModel.setFilterShadow(tempFilterShadow)
+                viewModel.setFilterBlur(tempFilterBlur)
+                viewModel.setFilterBrightness(tempFilterBrightness)
+                viewModel.setFilterContrast(tempFilterContrast)
+                viewModel.setFilterGrayscale(tempFilterGrayscale)
+                viewModel.setFilterHueRotate(tempFilterHueRotate)
+                viewModel.setFilterSaturate(tempFilterSaturate)
+                viewModel.setFilterSepia(tempFilterSepia)
+                viewModel.setPosterShadow(tempPosterShadow)
 
-        android.util.Log.d("SaveDebug", "hasChanges AFTER all setters: ${viewModel.hasChanges.value}")
-        android.util.Log.d("SaveDebug", "isEditingStarted BEFORE mark: ${viewModel.isEditingStarted.value}")
+                android.util.Log.d("SaveDebug", "hasChanges AFTER all setters: ${viewModel.hasChanges.value}")
+                android.util.Log.d("SaveDebug", "isEditingStarted BEFORE mark: ${viewModel.isEditingStarted.value}")
 
-        // Mark editing as started if user made any changes
-        // This will switch MakeScreen from avatar.png to item.png display
-        if (viewModel.hasChanges.value) {
-            android.util.Log.d("SaveDebug", "hasChanges = true → Calling markEditingStarted()")
-            viewModel.markEditingStarted()
-        } else {
-            android.util.Log.d("SaveDebug", "hasChanges = false → NOT marking editing started")
-        }
+                // Mark editing as started if user made any changes
+                // This will switch MakeScreen from avatar.png to item.png display
+                if (viewModel.hasChanges.value) {
+                    android.util.Log.d("SaveDebug", "hasChanges = true → Calling markEditingStarted()")
+                    viewModel.markEditingStarted()
+                } else {
+                    android.util.Log.d("SaveDebug", "hasChanges = false → NOT marking editing started")
+                }
 
-        android.util.Log.d("SaveDebug", "isEditingStarted AFTER mark: ${viewModel.isEditingStarted.value}")
-        android.util.Log.d("SaveDebug", "selectedImageUri in ViewModel: ${viewModel.selectedImageUri.value}")
-        android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
+                android.util.Log.d("SaveDebug", "isEditingStarted AFTER mark: ${viewModel.isEditingStarted.value}")
+                android.util.Log.d("SaveDebug", "selectedImageUri in ViewModel: ${viewModel.selectedImageUri.value}")
+                android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
 
-        // ViewModel now has all saved data - MakeScreenActivity will automatically have access
-        setResult(RESULT_OK)
-        finish()
+                // ViewModel now has all saved data - MakeScreenActivity will automatically have access
+                setResult(RESULT_OK)
+                finish()
+                //quyen
+            }
+        })
+        //quyen
     }
 
     /**
@@ -711,33 +748,37 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Handle reset button - Reset all values to default
      */
     private fun handleReset() {
-        // Reset ViewModel data to template config defaults
-        viewModel.resetAll()
+        //quyen
+        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
+            override fun onNextAction() {
+                //quyen
+                // Reset ViewModel data to template config defaults
+                viewModel.resetAll()
 
-        // Reset local variables to match ViewModel defaults
-        tempSelectedImageUri = viewModel.selectedImageUri.value
-        tempNameText = viewModel.nameText.value
-        tempBountyText = viewModel.bountyText.value
-        tempNameFont = viewModel.nameFont.value
-        tempBountyFont = viewModel.bountyFont.value
-        tempNameSpacing = viewModel.nameSpacing.value
-        tempBountySize = viewModel.bountySize.value
-        tempBountyWeight = viewModel.bountyWeight.value
-        tempBountySpacing = viewModel.bountySpacing.value
-        tempBountyPositionX = viewModel.bountyPositionX.value
-        tempBountyPositionY = viewModel.bountyPositionY.value
-        tempFilterShadow = viewModel.filterShadow.value
-        tempFilterBlur = viewModel.filterBlur.value
-        tempFilterBrightness = viewModel.filterBrightness.value
-        tempFilterContrast = viewModel.filterContrast.value
-        tempFilterGrayscale = viewModel.filterGrayscale.value
-        tempFilterHueRotate = viewModel.filterHueRotate.value
-        tempFilterSaturate = viewModel.filterSaturate.value
-        tempFilterSepia = viewModel.filterSepia.value
-        tempPosterShadow = viewModel.posterShadow.value
+                // Reset local variables to match ViewModel defaults
+                tempSelectedImageUri = viewModel.selectedImageUri.value
+                tempNameText = viewModel.nameText.value
+                tempBountyText = viewModel.bountyText.value
+                tempNameFont = viewModel.nameFont.value
+                tempBountyFont = viewModel.bountyFont.value
+                tempNameSpacing = viewModel.nameSpacing.value
+                tempBountySize = viewModel.bountySize.value
+                tempBountyWeight = viewModel.bountyWeight.value
+                tempBountySpacing = viewModel.bountySpacing.value
+                tempBountyPositionX = viewModel.bountyPositionX.value
+                tempBountyPositionY = viewModel.bountyPositionY.value
+                tempFilterShadow = viewModel.filterShadow.value
+                tempFilterBlur = viewModel.filterBlur.value
+                tempFilterBrightness = viewModel.filterBrightness.value
+                tempFilterContrast = viewModel.filterContrast.value
+                tempFilterGrayscale = viewModel.filterGrayscale.value
+                tempFilterHueRotate = viewModel.filterHueRotate.value
+                tempFilterSaturate = viewModel.filterSaturate.value
+                tempFilterSepia = viewModel.filterSepia.value
+                tempPosterShadow = viewModel.posterShadow.value
 
-        // Reset UI components to match ViewModel defaults (from template config)
-        binding.apply {
+                // Reset UI components to match ViewModel defaults (from template config)
+                binding.apply {
             // Reset EditTexts to template config defaults (NOT hardcoded values!)
             edtName.setText(viewModel.nameText.value)
             edtBounty.setText(viewModel.bountyText.value)
@@ -807,28 +848,32 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         applyShadowEffect(0f)
         applyTemplateShadow(0f)
 
-        // Reload images after reset
-        tempSelectedImageUri?.let { uri ->
-            loadImageToAvatars(uri)
-        } ?: run {
-            // Load default avatar.webp from drawable
-            imgAvatar?.let { imageView ->
-                Glide.with(this)
-                    .load(R.drawable.avatar)
-                    .centerCrop()
-                    .into(imageView)
-            }
-            imgAvatarShadow?.let { imageView ->
-                val shadowRadius = tempFilterShadow / 100f * 15f
-                val shadowAlpha = 0.8f
-                Glide.with(this)
-                    .load(R.drawable.avatar)
-                    .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
-                    .into(imageView)
-            }
-        }
+                // Reload images after reset
+                tempSelectedImageUri?.let { uri ->
+                    loadImageToAvatars(uri)
+                } ?: run {
+                    // Load default avatar.webp from drawable
+                    imgAvatar?.let { imageView ->
+                        Glide.with(this@WantedEditorActivity)
+                            .load(R.drawable.avatar)
+                            .centerCrop()
+                            .into(imageView)
+                    }
+                    imgAvatarShadow?.let { imageView ->
+                        val shadowRadius = tempFilterShadow / 100f * 15f
+                        val shadowAlpha = 0.8f
+                        Glide.with(this@WantedEditorActivity)
+                            .load(R.drawable.avatar)
+                            .transform(CenterCrop(), ShadowTransformation(shadowRadius, shadowAlpha))
+                            .into(imageView)
+                    }
+                }
 
-       // showToast(R.string.reset_to_default_values)
+                // showToast(R.string.reset_to_default_values)
+                //quyen
+            }
+        })
+        //quyen
     }
 
     /**

@@ -26,6 +26,22 @@
             layout="@layout/layout_actionbar" />
     </FrameLayout>
 
+    <!--quyen-->
+    <!-- nativeLanguage -->
+    <FrameLayout
+        android:id="@+id/nativeLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
+
+        <include layout="@layout/ads_shimmer_avg" />
+    </FrameLayout>
+    <!--quyen-->
+
     <!-- rcv -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv"
@@ -39,6 +55,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
+        app:layout_constraintTop_toBottomOf="@id/nativeLanguage"
         tools:listitem="@layout/item_language" />
 </androidx.constraintlayout.widget.ConstraintLayout>

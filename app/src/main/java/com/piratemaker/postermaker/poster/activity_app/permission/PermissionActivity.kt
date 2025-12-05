@@ -25,12 +25,20 @@
     import com.piratemaker.postermaker.poster.activity_app.main.MainActivity
     import com.piratemaker.postermaker.poster.core.extensions.setGradientTextHeightColor
     import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
+    //quyen
+    import com.google.android.gms.ads.interstitial.InterstitialAd
+    import com.lvt.ads.callback.InterCallback
+    import com.lvt.ads.util.Admob
+    //quyen
     import kotlinx.coroutines.launch
     import kotlin.text.toInt
 
     class PermissionActivity : BaseActivity<ActivityPermissionBinding>() {
 
         private val viewModel: PermissionViewModel by viewModels()
+        //quyen
+        var interPer: InterstitialAd? = null
+        //quyen
 
         override fun setViewBinding() = ActivityPermissionBinding.inflate(LayoutInflater.from(this))
 
@@ -138,6 +146,26 @@
         }
 
 
+        //quyen
+        override fun initAds() {
+            // Load interstitial ad
+            Admob.getInstance().loadInterAds(this, getString(R.string.inter_per), object : InterCallback() {
+                override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
+                    super.onAdLoadSuccess(interstitialAd)
+                    interPer = interstitialAd
+                }
+            })
+
+            // Load native ad with button on top
+            Admob.getInstance().loadNativeAd(
+                this,
+                getString(R.string.native_per),
+                binding.nativePer,
+                R.layout.ads_native_avg_top_button
+            )
+        }
+        //quyen
+
         override fun initActionBar() {
             binding.actionBar.tvCenter.apply {
                 text = getString(R.string.permission)
@@ -152,8 +180,15 @@
         ) = StringHelper.changeColor(this, getString(textRes), colorRes, font)
 
         private fun handleContinue() {
+            //quyen
             sharePreference.setIsFirstPermission(false)
-            startIntentRightToLeft(MainActivity::class.java)
-            finishAffinity()
+            Admob.getInstance().showInterAds(this, interPer, object : InterCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    startIntentRightToLeft(MainActivity::class.java)
+                    finishAffinity()
+                }
+            })
+            //quyen
         }
     }

@@ -16,5 +16,11 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="native_text_color_btn">#FFFFFF</color>
     <color name="native_text_color">#FF000000</color>
+    <!--quyen-->
+    <color name="native_text_body">#FFFFFF</color>
+    <color name="native_text_title">#FFFFFF</color>
+    <color name="native_collap_btn_bg">#C4561B</color>
+
+    <!--quyen-->
 
 </resources>

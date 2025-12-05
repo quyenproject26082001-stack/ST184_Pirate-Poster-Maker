@@ -1,6 +1,10 @@
 package com.piratemaker.postermaker.poster.activity_app
 
 import android.app.Application
+import com.lvt.ads.util.AdsApplication
+import com.lvt.ads.util.AppOpenManager
+import com.piratemaker.postermaker.poster.R
+import com.piratemaker.postermaker.poster.activity_app.splash.SplashActivity
 
 class App : AdsApplication() {
     override fun onCreate() {
