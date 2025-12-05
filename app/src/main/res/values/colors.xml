@@ -8,4 +8,13 @@
     <color name="shimmer_placeholder">#E0E0E0</color>
     <color name="lightTransparent">#50000000</color>
 
+    <color name="native_bg_ad">#6618231A</color>
+    <color name="native_bg_btn">#BD1313</color>
+    <color name="color_app">#BD1313</color>
+    <color name="native_bg">#66DFDCDC</color>
+    <color name="colorPrimary">#BD1313</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="native_text_color_btn">#FFFFFF</color>
+    <color name="native_text_color">#FF000000</color>
+
 </resources>

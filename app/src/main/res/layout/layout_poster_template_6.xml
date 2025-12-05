@@ -83,7 +83,7 @@
         android:fontFamily="@font/roboto_bold"
         android:text="NAME HERE"
         android:textColor="#000000"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:gravity="center"
         android:maxLines="1"
@@ -106,7 +106,7 @@
         app:layout_constraintTop_toTopOf="@id/imgTemplate"
         app:layout_constraintBottom_toBottomOf="@id/imgTemplate"
         app:layout_constraintStart_toStartOf="@id/guideBountyStart"
-        app:layout_constraintVertical_bias="0.89" />
+        app:layout_constraintVertical_bias="0.90" />
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideBountyStart"
         android:layout_width="wrap_content"
