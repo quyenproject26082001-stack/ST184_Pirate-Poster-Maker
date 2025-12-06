@@ -22,18 +22,25 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
 
     private var imagePath: String? = null
 
+    private var downloadPermissionDeniedCount = 0
+
     // Permission launcher for Android 8-9
     // ✅ BỎ COUNTER - Luôn hỏi quyền cho đến khi "Don't ask again"
+    // Permission launcher for Android 8-9
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val allGranted = permissions.all { it.value }
 
         if (allGranted) {
-            // ✅ Granted: Proceed download
+            // ✅ Granted: Reset counter và proceed download
+            downloadPermissionDeniedCount = 0
             proceedDownload()
         } else {
-            // ❌ Denied: Check if "Don't ask again" was clicked
+            // ❌ Denied: Tăng counter
+            downloadPermissionDeniedCount++
+
+            // Check if "Don't ask again" was clicked
             val canAskAgain = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             } else {
@@ -41,16 +48,18 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
             }
 
             if (!canAskAgain) {
-                // 🚫 User clicked "Don't ask again" → Mark flag để lần sau vào Settings
-                sharePreference.setDontAskAgainStorage(true)
+                // 🚫 User clicked "Don't ask again" → Hiện dialog Settings
+                goToSettings()
+            } else if (downloadPermissionDeniedCount >= 2) {
+                // ✅ Từ chối 2 lần → Hiện dialog Settings
+            } else {
+                // Show error toast
+                Toast.makeText(
+                    this,
+                    strings(R.string.download_failed_please_try_again_later),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-
-            // Show error toast
-            Toast.makeText(
-                this,
-                strings(R.string.download_failed_please_try_again_later),
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
     override fun setViewBinding(): ActivityViewBinding {
@@ -165,11 +174,11 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
         if (checkPermissions(storagePermissions)) {
             // Đã có quyền → Download
             proceedDownload()
-        } else if (sharePreference.isDontAskAgainStorage()) {
-            // User đã ấn "Don't ask again" → Mở Settings
+        } else if (downloadPermissionDeniedCount >= 2) {
+            // Đã từ chối 2 lần → Hiện dialog Settings
             goToSettings()
         } else {
-            // Hỏi quyền (hỏi mãi cho đến khi user ấn "Don't ask again")
+            // Hỏi quyền lần đầu hoặc lần 2
             permissionLauncher.launch(storagePermissions)
         }
     }

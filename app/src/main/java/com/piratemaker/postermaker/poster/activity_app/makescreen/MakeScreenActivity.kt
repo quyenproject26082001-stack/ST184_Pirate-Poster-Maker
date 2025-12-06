@@ -221,8 +221,8 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         binding.apply {
             // Action bar
             actionBar.apply {
-                btnActionBarLeft.setOnSingleClick { handleBack() }
-                btnActionBarRightText.setOnSingleClick(2000) { handleSave() }
+                btnActionBarLeft.setOnSingleClick { showInterAll {  handleBack() } }
+                btnActionBarRightText.setOnSingleClick(2000) {  handleSave()  }
             }
 
             // Templates button - Navigate to Template Selection Screen
@@ -319,13 +319,6 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
     //quyen
     override fun initAds() {
-        // Load interstitial ad
-        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
-            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
-                super.onAdLoadSuccess(interstitialAd)
-                interAll = interstitialAd
-            }
-        })
         Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_poster), binding.nativeClPoster)
     }
     //quyen
@@ -352,8 +345,6 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
      */
     private fun handleBack() {
         //quyen
-        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
-            override fun onNextAction() {
                 //quyen
                 // Check isEditingStarted instead of hasChanges to avoid showing dialog
                 // when user only changed template without importing image or editing
@@ -369,8 +360,6 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
                     finishAfterTransition()
                 }
                 //quyen
-            }
-        })
         //quyen
     }
 
@@ -396,47 +385,45 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
         }
 
         //quyen
-        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
-            override fun onNextAction() {
+
                 //quyen
-                // Capture poster view as bitmap
-                val posterView = binding.containerPoster
-                if (posterView.width == 0 || posterView.height == 0) {
-                    showToast(strings(R.string.download_failed_please_try_again_later))
-                    return
-                }
+        showInterAll {}
+            // Capture poster view as bitmap
+            val posterView = binding.containerPoster
+            if (posterView.width == 0 || posterView.height == 0) {
+                showToast(strings(R.string.download_failed_please_try_again_later))
+                return
+            }
 
-                val bitmap =
-                    Bitmap.createBitmap(posterView.width, posterView.height, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(bitmap)
-                posterView.draw(canvas)
+            val bitmap =
+                Bitmap.createBitmap(posterView.width, posterView.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            posterView.draw(canvas)
 
-                // Save bitmap to internal storage
-                lifecycleScope.launch {
-                    MediaHelper.saveBitmapToInternalStorage(this@MakeScreenActivity, "posters", bitmap)
-                        .collectLatest { state ->
-                            when (state) {
-                                is SaveState.Success -> {
-                                    // Set path in ViewModel and navigate to SuccessActivity
-                                    viewModel.setSavedImagePath(state.path)
-                                    val intent =
-                                        Intent(this@MakeScreenActivity, SuccessActivity::class.java)
-                                    startActivity(intent)
-                                }
+            // Save bitmap to internal storage
+            lifecycleScope.launch {
+                MediaHelper.saveBitmapToInternalStorage(this@MakeScreenActivity, "posters", bitmap)
+                    .collectLatest { state ->
+                        when (state) {
+                            is SaveState.Success -> {
+                                // Set path in ViewModel and navigate to SuccessActivity
+                                viewModel.setSavedImagePath(state.path)
+                                val intent =
+                                    Intent(this@MakeScreenActivity, SuccessActivity::class.java)
+                                startActivity(intent)
+                            }
 
-                                is SaveState.Error -> {
-                                    showToast(strings(R.string.download_failed_please_try_again_later))
-                                }
+                            is SaveState.Error -> {
+                                showToast(strings(R.string.download_failed_please_try_again_later))
+                            }
 
-                                SaveState.Loading -> {
-                                    // Show loading indicator if needed
-                                }
+                            SaveState.Loading -> {
+                                // Show loading indicator if needed
                             }
                         }
-                }
-                //quyen
+                    }
             }
-        })
+         //quyen
         //quyen
     }
 

@@ -132,7 +132,7 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding>() {
             this,
             getString(R.string.native_language),
             binding.nativeLanguage,
-            R.layout.ads_native_avg
+            R.layout.ads_native_big
         )
     }
     //quyen

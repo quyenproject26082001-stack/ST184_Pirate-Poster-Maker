@@ -25,6 +25,7 @@ import com.piratemaker.postermaker.poster.core.extensions.strings
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lvt.ads.callback.InterCallback
 import com.lvt.ads.util.Admob
+import com.piratemaker.postermaker.poster.core.extensions.showInterAll
 //quyen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -37,7 +38,6 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
     private var currentLanguage: String = ""
     //quyen
-    var interAll: InterstitialAd? = null
     //quyen
 
     override fun setViewBinding(): ActivityHomeBinding {
@@ -62,6 +62,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             tv2.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
             tv3.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
         }
+
     }
 
     override fun viewListener() {
@@ -69,33 +70,26 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             actionBar.btnActionBarRight.setOnSingleClick { startIntentRightToLeft(SettingsActivity::class.java) }
             //quyen
             btnCreate.setOnSingleClick {
-                Admob.getInstance().showInterAds(this@MainActivity, interAll, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
+                showInterAll{
                         startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity::class.java)
                     }
-                })
+
             }
             //quyen
             BtnPosterWantedTemplate.setOnSingleClick {
                 //quyen
-                Admob.getInstance().showInterAds(this@MainActivity, interAll, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
+
                         startIntentRightToLeft(PosterWantedTemplateActivity::class.java)
-                    }
-                })
+
                 //quyen
             }
             //quyen
             btnMydesgin.setOnSingleClick {
                 //quyen
-                Admob.getInstance().showInterAds(this@MainActivity, interAll, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
+                showInterAll {
                         startIntentRightToLeft(MyDesignActivity::class.java)
                     }
-                })
+
                 //quyen
             }
             //quyen
@@ -121,12 +115,8 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
     //quyen
     override fun initAds() {
         // Load interstitial ad
-        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
-            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
-                super.onAdLoadSuccess(interstitialAd)
-                interAll = interstitialAd
-            }
-        })
+        Admob.getInstance().loadInterAll(this, getString(R.string.inter_all))
+        Admob.getInstance().loadNativeAll(this, getString(R.string.native_all))
 
         // Load native collapsible ad
         Admob.getInstance().loadNativeCollap(this, getString(R.string.native_cl_home), binding.nativeClHome)

@@ -72,12 +72,10 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
         binding.actionBar.apply {
             //quyen
             btnActionBarLeft.setOnSingleClick {
-                Admob.getInstance().showInterAds(this@PosterWantedTemplateActivity, interAll, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
+              showInterAll {
                         finishAfterTransition()
                     }
-                })
+
             }
             //quyen
         }
@@ -101,14 +99,6 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
 
     //quyen
     override fun initAds() {
-        // Load interstitial ad
-        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
-            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
-                super.onAdLoadSuccess(interstitialAd)
-                interAll = interstitialAd
-            }
-        })
-
         // Load native collapsible ad
         Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_listTemplate), binding.nativeClListTemplate)
     }
@@ -158,14 +148,12 @@ class PosterWantedTemplateActivity : BaseActivity<ActivityPosterWantedTemplateBi
 
         //quyen
         // Navigate to MakeScreen
-        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
-            override fun onNextAction() {
-                super.onNextAction()
+       showInterAll {
                 val intent = Intent(this@PosterWantedTemplateActivity, MakeScreenActivity::class.java)
                 startActivity(intent)
                 finish()
             }
-        })
+
         //quyen
     }
 }

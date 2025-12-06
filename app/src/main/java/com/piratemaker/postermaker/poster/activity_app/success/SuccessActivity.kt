@@ -31,6 +31,8 @@ import java.io.File
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lvt.ads.callback.InterCallback
 import com.lvt.ads.util.Admob
+import com.piratemaker.postermaker.poster.core.extensions.showInterAll
+
 //quyen
 
 class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
@@ -38,6 +40,8 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
     //quyen
     var interAll: InterstitialAd? = null
     //quyen
+
+    private var downloadPermissionDeniedCount = 0
 
     private val viewModel = PosterEditorSharedViewModel.getInstance()
     private var savedImagePath: String? = null
@@ -50,10 +54,14 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
         val allGranted = permissions.all { it.value }
 
         if (allGranted) {
-            // ✅ Granted: Proceed download
+            // ✅ Granted: Reset counter và proceed download
+            downloadPermissionDeniedCount = 0
             proceedDownload()
         } else {
-            // ❌ Denied: Check if "Don't ask again" was clicked
+            // ❌ Denied: Tăng counter
+            downloadPermissionDeniedCount++
+
+            // Check if "Don't ask again" was clicked
             val canAskAgain = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             } else {
@@ -61,16 +69,18 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
             }
 
             if (!canAskAgain) {
-                // 🚫 User clicked "Don't ask again" → Mark flag để lần sau vào Settings
-                sharePreference.setDontAskAgainStorage(true)
+                // 🚫 User clicked "Don't ask again" → Hiện dialog Settings
+                goToSettings()
+            } else if (downloadPermissionDeniedCount >= 2) {
+                // ✅ Từ chối 2 lần → Hiện dialog Settings
+            } else {
+                // Show error toast
+                Toast.makeText(
+                    this,
+                    strings(R.string.download_failed_please_try_again_later),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-
-            // Show error toast
-            Toast.makeText(
-                this,
-                strings(R.string.download_failed_please_try_again_later),
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
@@ -116,12 +126,10 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
             // Home button
             //quyen
             actionBar.btnActionBarLeft.setOnSingleClick {
-                Admob.getInstance().showInterAds(this@SuccessActivity, interAll, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
+                showInterAll {
                         goToHome()
                     }
-                })
+
             }
             //quyen
 
@@ -143,13 +151,6 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
 
     //quyen
     override fun initAds() {
-        // Load interstitial ad
-        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
-            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
-                super.onAdLoadSuccess(interstitialAd)
-                interAll = interstitialAd
-            }
-        })
 
         // Load native collapsible ad
         Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_creation), binding.nativeClCreation)
@@ -191,14 +192,15 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
         if (checkPermissions(storagePermissions)) {
             // Đã có quyền → Download
             proceedDownload()
-        } else if (sharePreference.isDontAskAgainStorage()) {
-            // User đã ấn "Don't ask again" → Mở Settings
+        } else if (downloadPermissionDeniedCount >= 2) {
+            // Đã từ chối 2 lần → Hiện dialog Settings
             goToSettings()
         } else {
-            // Hỏi quyền (hỏi mãi cho đến khi user ấn "Don't ask again")
+            // Hỏi quyền lần đầu hoặc lần 2
             permissionLauncher.launch(storagePermissions)
         }
     }
+
 
     // ✅ THÊM MỚI
 

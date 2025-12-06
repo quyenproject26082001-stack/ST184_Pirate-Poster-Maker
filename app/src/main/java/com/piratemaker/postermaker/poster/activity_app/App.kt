@@ -24,6 +24,8 @@ class App : AdsApplication() {
         return getString(R.string.open_resume)
     }
 
+
+
     override fun buildDebug(): Boolean {
         return true
     }

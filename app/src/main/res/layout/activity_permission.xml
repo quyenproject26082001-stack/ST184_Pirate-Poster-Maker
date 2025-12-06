@@ -148,13 +148,13 @@
         android:id="@+id/nativePer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="7dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scrollView">
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
 
-        <include layout="@layout/ads_shimmer_avg" />
+        <include layout="@layout/ads_shimmer_big" />
     </FrameLayout>
     <!--quyen-->
 
@@ -170,8 +170,8 @@
         android:textSize="16sp"
         android:layout_marginEnd="16dp"
         android:textColor="#C4561B"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/nativePer"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@id/nativePer"
         app:layout_constraintEnd_toEndOf="parent"
       />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,8 @@ import com.piratemaker.postermaker.poster.databinding.ActivityTemplateListBindin
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.lvt.ads.callback.InterCallback
 import com.lvt.ads.util.Admob
+import com.piratemaker.postermaker.poster.core.extensions.showInterAll
+
 //quyen
 
 class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
@@ -65,17 +67,14 @@ class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
             // Done button
             btnActionBarRight.setOnSingleClick {
                 //quyen
-                Admob.getInstance().showInterAds(this@TemplateListActivity, interAll, object : InterCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
-                        // Return selected template ID to caller
-                        val resultIntent = Intent().apply {
-                            putExtra("selectedTemplateId", selectedTemplateId)
-                        }
-                        setResult(RESULT_OK, resultIntent)
-                        finish()
-                    }
-                })
+              showInterAll {
+                  // Return selected template ID to caller
+                  val resultIntent = Intent().apply {
+                      putExtra("selectedTemplateId", selectedTemplateId)
+                  }
+                  setResult(RESULT_OK, resultIntent)
+                  finish()
+              }
                 //quyen
             }
         }
@@ -83,13 +82,7 @@ class TemplateListActivity : BaseActivity<ActivityTemplateListBinding>() {
 
     //quyen
     override fun initAds() {
-        // Load interstitial ad
-        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
-            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
-                super.onAdLoadSuccess(interstitialAd)
-                interAll = interstitialAd
-            }
-        })
+
 
         // Load native ad with button on top
         Admob.getInstance().loadNativeAd(

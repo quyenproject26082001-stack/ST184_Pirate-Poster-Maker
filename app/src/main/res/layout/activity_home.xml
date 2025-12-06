@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_bg_language"/>
+        android:src="@drawable/img_bg_language" />
 
     <!--    layoutActionBar-->
     <FrameLayout
@@ -24,16 +24,15 @@
             android:id="@+id/actionBar"
             layout="@layout/layout_actionbar" />
     </FrameLayout>
-    
+
     <ImageView
         android:id="@+id/titleHome"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        app:layout_constraintDimensionRatio="360:120"
         android:src="@drawable/img_home_title"
-        app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
-        />
-    
+        app:layout_constraintDimensionRatio="360:120"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar" />
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -66,6 +65,7 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:weightSum="2">
+
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -79,9 +79,9 @@
                         android:gravity="center"
                         android:text="@string/posterwantedmaker"
                         android:textColor="@color/white"
-                        app:outerStrokeWidth="1dp"
+                        android:textSize="30sp"
                         app:outerStrokeColor="#000000"
-                        android:textSize="30sp" />
+                        app:outerStrokeWidth="1dp" />
 
                     <Space
                         android:layout_width="0dp"
@@ -118,14 +118,15 @@
                         android:id="@+id/tv2"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_weight="0"
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
                         android:text="@string/posterwantedtemplates"
-                        android:layout_weight="0"
-                        app:outerStrokeWidth="1dp"
-                        app:outerStrokeColor="#000000"
                         android:textColor="@color/white"
-                        android:textSize="30sp" />
+                        android:textSize="30sp"
+                        app:outerStrokeColor="#000000"
+                        app:outerStrokeWidth="1dp" />
+
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -165,10 +166,10 @@
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
                         android:text="@string/my_design"
-                        app:outerStrokeWidth="1dp"
-                        app:outerStrokeColor="#000000"
                         android:textColor="@color/white"
-                        android:textSize="30sp" />
+                        android:textSize="30sp"
+                        app:outerStrokeColor="#000000"
+                        app:outerStrokeWidth="1dp" />
 
                     <Space
                         android:layout_width="0dp"
@@ -187,6 +188,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include layout="@layout/ads_shimmer_collap_native" />
+    </FrameLayout>
+
     <!--quyen-->
 </androidx.constraintlayout.widget.ConstraintLayout>

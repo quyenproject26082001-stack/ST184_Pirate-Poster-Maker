@@ -3,6 +3,7 @@
     import android.content.pm.PackageManager
     import android.os.Build
     import android.text.TextUtils
+    import android.util.Log
     import android.view.LayoutInflater
     import androidx.activity.viewModels
     import androidx.core.graphics.toColorInt
@@ -50,6 +51,8 @@
                 binding.btnNotification.visible()
                 binding.btnStorage.gone()
             }
+           // Admob.getInstance().setTimeLimitShowAds(0)
+
         }
 
         override fun initText() {
@@ -161,7 +164,7 @@
                 this,
                 getString(R.string.native_per),
                 binding.nativePer,
-                R.layout.ads_native_avg_top_button
+                R.layout.ads_native_big
             )
         }
         //quyen
@@ -185,6 +188,7 @@
             Admob.getInstance().showInterAds(this, interPer, object : InterCallback() {
                 override fun onNextAction() {
                     super.onNextAction()
+                    Log.d("d","bug")
                     startIntentRightToLeft(MainActivity::class.java)
                     finishAffinity()
                 }

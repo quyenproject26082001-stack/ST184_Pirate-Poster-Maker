@@ -372,8 +372,11 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
         binding.apply {
             // Action bar
             actionBar.apply {
-                btnActionBarLeft.setOnSingleClick { handleBack() }
-                btnActionBarRight.setOnSingleClick { handleSave() }
+                btnActionBarLeft.setOnSingleClick {  handleBack() }
+                btnActionBarRight.setOnSingleClick {
+
+                    showInterAll {  handleSave() }
+                }
                 btnActionBarReset.setOnSingleClick { showResetConfirmation() }
             }
 
@@ -470,12 +473,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
     //quyen
     override fun initAds() {
         // Load interstitial ad
-        Admob.getInstance().loadInterAds(this, getString(R.string.inter_all), object : InterCallback() {
-            override fun onAdLoadSuccess(interstitialAd: InterstitialAd?) {
-                super.onAdLoadSuccess(interstitialAd)
-                interAll = interstitialAd
-            }
-        })
         Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_edit), binding.nativeClEdit)
     }
     //quyen
@@ -499,9 +496,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      * Handle Save button - Copy all local variables to ViewModel and mark editing started
      */
     private fun handleSave() {
-        //quyen
-        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
-            override fun onNextAction() {
+
                 //quyen
                 // Copy ALL local variables to ViewModel (19 properties)
                 android.util.Log.d("SaveDebug", "═══════════════════════════════════════")
@@ -559,8 +554,6 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
                 setResult(RESULT_OK)
                 finish()
                 //quyen
-            }
-        })
         //quyen
     }
 
@@ -574,8 +567,10 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
             description = R.string.change_your_whole_design_are_you_sure
         )
         dialog.onYesClick = {
+            showInterAll{
             handleReset()
             dialog.dismiss()
+        }
         }
         dialog.onNoClick = {
             dialog.dismiss()
@@ -749,8 +744,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
      */
     private fun handleReset() {
         //quyen
-        Admob.getInstance().showInterAds(this, interAll, object : InterCallback() {
-            override fun onNextAction() {
+
                 //quyen
                 // Reset ViewModel data to template config defaults
                 viewModel.resetAll()
@@ -871,8 +865,7 @@ class WantedEditorActivity : BaseActivity<ActivityWantedEditorBinding>() {
 
                 // showToast(R.string.reset_to_default_values)
                 //quyen
-            }
-        })
+
         //quyen
     }
 

@@ -50,7 +50,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
             this,
             getString(R.string.native_intro),
             binding.nativeIntro,
-            R.layout.ads_native_avg
+            R.layout.ads_native_avg2_btn_bottom
         )
     }
     //quyen
