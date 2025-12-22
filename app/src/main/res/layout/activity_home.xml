@@ -42,24 +42,25 @@
         app:layout_constraintBottom_toTopOf="@id/nativeClHome"
         app:layout_constraintTop_toBottomOf="@id/titleHome">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:paddingHorizontal="16dp">
 
-
-
-            <!--            btnCreate-->
+            <!--btnBountyFilter-->
             <FrameLayout
                 android:id="@+id/btnBountyFilter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="328:128"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:src="@drawable/img_home_0" />
 
                 <LinearLayout
@@ -91,17 +92,22 @@
                         android:layout_weight="1" />
                 </LinearLayout>
             </FrameLayout>
-            <!--            btnCreate-->
+
+            <!--btnCreate-->
             <FrameLayout
                 android:id="@+id/btnCreate"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                android:layout_height="wrap_content">
+                app:layout_constraintDimensionRatio="328:128"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnBountyFilter">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:src="@drawable/img_home_1" />
 
                 <LinearLayout
@@ -134,17 +140,21 @@
                 </LinearLayout>
             </FrameLayout>
 
-            <!--            btnMyCreation-->
+            <!--BtnPosterWantedTemplate-->
             <FrameLayout
                 android:id="@+id/BtnPosterWantedTemplate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintDimensionRatio="328:128"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnCreate">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:src="@drawable/img_home_2" />
 
                 <LinearLayout
@@ -178,17 +188,21 @@
                 </LinearLayout>
             </FrameLayout>
 
-            <!--            btnRandom-->
+            <!--btnMydesgin-->
             <FrameLayout
                 android:id="@+id/btnMydesgin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintDimensionRatio="328:128"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/BtnPosterWantedTemplate">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:src="@drawable/img_home_3" />
 
                 <LinearLayout
@@ -221,9 +235,9 @@
                         android:layout_weight="1" />
                 </LinearLayout>
             </FrameLayout>
-        </LinearLayout>
-    </ScrollView>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
     <!--quyen-->
     <!-- nativeClHome -->
     <FrameLayout

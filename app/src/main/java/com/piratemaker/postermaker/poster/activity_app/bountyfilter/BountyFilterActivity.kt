@@ -2,14 +2,18 @@ package com.piratemaker.postermaker.poster.activity_app.bountyfilter
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import java.io.File
+import java.io.FileOutputStream
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -91,6 +95,8 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     override fun initActionBar() {
         binding.actionBar.apply {
             tvCenter.text = getString(R.string.bountyFilter)
+
+            btnActionBarLeft.setImageResource(R.drawable.ic_back)
             btnActionBarLeft.visible()
             btnActionBarRight.gone()
         }
@@ -308,20 +314,27 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
-                    // Photo captured successfully
-                    Toast.makeText(
-                        this@BountyFilterActivity,
-                        "Photo captured! Bounty: ${binding.tvBountyFilter.text}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Convert image to bitmap and save
+                    val bitmap = image.toBitmap()
+                    val photoFile = saveBitmapToFile(bitmap)
 
                     image.close()
 
-                    // TODO: Process the captured image here
-                    // For now, just finish the activity after a delay
-                    handler.postDelayed({
+                    // Navigate to SuccessfulBountyActivity
+                    if (photoFile != null) {
+                        val intent = Intent(this@BountyFilterActivity, SuccessfulBountyActivity::class.java).apply {
+                            putExtra("PHOTO_PATH", photoFile.absolutePath)
+                            putExtra("BOUNTY_VALUE", binding.tvBountyFilter.text.toString())
+                        }
+                        startActivity(intent)
                         finish()
-                    }, 1500)
+                    } else {
+                        Toast.makeText(
+                            this@BountyFilterActivity,
+                            "Failed to save photo",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -333,6 +346,27 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                 }
             }
         )
+    }
+
+    private fun saveBitmapToFile(bitmap: Bitmap): File? {
+        return try {
+            val fileName = "bounty_${System.currentTimeMillis()}.jpg"
+            val file = File(cacheDir, fileName)
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+            }
+            file
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun ImageProxy.toBitmap(): Bitmap {
+        val buffer = planes[0].buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

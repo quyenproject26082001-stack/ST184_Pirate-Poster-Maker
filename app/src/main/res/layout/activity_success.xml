@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     tools:context="com.piratemaker.postermaker.poster.activity_app.success.SuccessActivity"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    >
 
     <!-- Background -->
     <ImageView
