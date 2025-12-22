@@ -52,7 +52,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
         // Initial state: dark screen with only btnPlay visible
         binding.apply {
-            // Make screen dark
+            // Create a dark overlay view
             root.setBackgroundColor(Color.BLACK)
 
             // Hide all elements except btnPlay
@@ -133,12 +133,15 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
             // Hide btnPlay
             btnPlay.gone()
 
-            // Screen becomes light (remove dark background)
-            root.setBackgroundColor(Color.TRANSPARENT)
+            // Screen becomes light (restore normal background)
+            root.setBackgroundResource(R.drawable.img_bg_language)
 
             // Change imgPlay to use img_bounty_playing
             imgPlay.setImageResource(R.drawable.img_bounty_playing)
             imgPlay.visible()
+
+            // Keep camera visible in imgCamera area
+            imgCamera.visible()
 
             // Start random bounty filter animation
             startRandomBountyAnimation()
@@ -200,8 +203,8 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                     this, cameraSelector, preview, imageCapture
                 )
 
-                // Make camera view visible
-                binding.imgCamera.visible()
+                // Camera is ready but stays hidden until countdown finishes
+                // imgCamera will be made visible in onCountdownFinished()
 
             } catch (exc: Exception) {
                 Toast.makeText(this, "Failed to start camera: ${exc.message}", Toast.LENGTH_SHORT).show()
