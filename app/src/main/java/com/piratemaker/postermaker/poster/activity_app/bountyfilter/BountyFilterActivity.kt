@@ -24,6 +24,7 @@ import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.visible
+import com.piratemaker.postermaker.poster.core.helper.SoundHelper
 import com.piratemaker.postermaker.poster.databinding.ActivityBountyFilterBinding
 import java.text.NumberFormat
 import java.util.Locale
@@ -51,6 +52,13 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     override fun initView() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
+        binding.actionBar.btnActionBarLeft.visible()
+
+        // Load camera sound
+        if (!SoundHelper.isSoundNotNull(R.raw.camera_sound)) {
+            SoundHelper.loadSound(this, R.raw.camera_sound)
+        }
+
         // Initial state: show all elements normally - no dark overlay
         binding.apply {
             // Show all elements in their normal positions
@@ -58,9 +66,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
             imgCamera.gone()
             tvBountyFilter.gone()
             btnPlay.visible()
-
-            // No dark overlay - keep screen bright
-            darkOverlay.gone()
+            flashOverlay.gone()
         }
     }
 
@@ -107,38 +113,37 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
         var currentIndex = 0
 
         binding.tvBountyFilter.apply {
-            visible()
-            textSize = 180f
-            typeface = ResourcesCompat.getFont(this@BountyFilterActivity, R.font.kurale_regular)
+            animate().cancel()
+            clearAnimation()
 
-            setTextColor(ContextCompat.getColor(this@BountyFilterActivity, R.color.app))
+            // ✅ set trước để khỏi ló 1 frame
+            text = countdownNumbers[0]
+            textSize = 80f
+            setTextColor(Color.WHITE)
+
+            alpha = 0f
+            scaleX = 0.5f
+            scaleY = 0.5f
+            visible()
         }
 
         val countdownRunnable = object : Runnable {
             override fun run() {
                 if (currentIndex < countdownNumbers.size) {
-                    // Set countdown number
-                    binding.tvBountyFilter.text = countdownNumbers[currentIndex]
+                    binding.tvBountyFilter.animate().cancel()
 
-                    // Animate countdown with scale and fade effects
+                    binding.tvBountyFilter.text = countdownNumbers[currentIndex]
                     binding.tvBountyFilter.apply {
-                        // Start from small and fade in
+                        alpha = 0f
                         scaleX = 0.5f
                         scaleY = 0.5f
-                        alpha = 0f
 
-                        // Animate to full size
                         animate()
-                            .scaleX(1.2f)
-                            .scaleY(1.2f)
-                            .alpha(1f)
+                            .scaleX(1.2f).scaleY(1.2f).alpha(1f)
                             .setDuration(300)
                             .withEndAction {
-                                // Then scale down slightly and fade out
                                 animate()
-                                    .scaleX(0.8f)
-                                    .scaleY(0.8f)
-                                    .alpha(0.3f)
+                                    .scaleX(0.8f).scaleY(0.8f).alpha(0.3f)
                                     .setDuration(700)
                                     .start()
                             }
@@ -148,13 +153,13 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                     currentIndex++
                     handler.postDelayed(this, 1000)
                 } else {
-                    // Countdown finished
                     onCountdownFinished()
                 }
             }
         }
 
-        handler.post(countdownRunnable)
+        // ✅ chạy ngay số 3 luôn, không đợi 1 nhịp handler
+        countdownRunnable.run()
     }
 
     private fun onCountdownFinished() {
@@ -276,6 +281,29 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
+        // Play camera sound
+        SoundHelper.playSound(R.raw.camera_sound)
+
+        // Show white flash effect
+        binding.flashOverlay.apply {
+            visible()
+            alpha = 0f
+            animate()
+                .alpha(1f)
+                .setDuration(100)
+                .withEndAction {
+                    animate()
+                        .alpha(0f)
+                        .setDuration(200)
+                        .withEndAction {
+                            gone()
+                        }
+                        .start()
+                }
+                .start()
+        }
+
+        // Capture photo
         imageCapture.takePicture(
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageCapturedCallback() {

@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
-        android:src="@drawable/img_bounty_start"
+        android:src="@drawable/img_bounty_playing"
         android:layout_marginHorizontal="16dp"
         app:layout_constraintDimensionRatio="328:480"
         />
@@ -49,25 +49,45 @@
         android:fontFamily="@font/caslon_antique_regular"/>
 
 
-<!--    &lt;!&ndash; Dark overlay for initial dimming effect - placed before btnPlay so btnPlay is on top &ndash;&gt;-->
-<!--    <View-->
-<!--        android:id="@+id/darkOverlay"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="#99000000"-->
-<!--        android:visibility="visible"-->
-<!--        android:clickable="false"-->
-<!--        android:focusable="false"/>-->
+    <!--    &lt;!&ndash; Dark overlay for initial dimming effect - placed before btnPlay so btnPlay is on top &ndash;&gt;-->
+    <!--    <View-->
+    <!--        android:id="@+id/darkOverlay"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="#99000000"-->
+    <!--        android:visibility="visible"-->
+    <!--        android:clickable="false"-->
+    <!--        android:focusable="false"/>-->
 
     <TextView
-        android:id="@+id/btnPlay"
-        android:layout_width="match_parent"
+        android:id="@+id/btnDownload"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         app:layout_constraintTop_toBottomOf="@id/imgPlay"
         android:background="@drawable/ic_play"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
-        android:text="@string/play"
+        android:text="@string/download"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="@id/glcenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="4dp"
+        android:fontFamily="@font/kurale_regular"
+        android:textSize="20sp"
+        android:textColor="#C4561B"/>
+    <TextView
+        android:id="@+id/btnShare"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toBottomOf="@id/imgPlay"
+        app:layout_constraintEnd_toEndOf="@id/glcenter"
+        android:background="@drawable/ic_play"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/share"
         android:gravity="center"
         android:fontFamily="@font/kurale_regular"
         android:textSize="20sp"
@@ -93,5 +113,12 @@
             android:id="@+id/actionBar"
             layout="@layout/layout_actionbar" />
     </FrameLayout>
+
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"
+        android:id="@+id/glcenter"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
