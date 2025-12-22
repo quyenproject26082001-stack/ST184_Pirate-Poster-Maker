@@ -118,4 +118,5 @@
     <string name="enter_bounty">Entrez la prime</string>
     <string name="edit">Modifier</string>
     <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Veuillez entrer un nom avant d’enregistrer</string>
+    <string name="bountyFilter">Bounty Filter</string>
 </resources>

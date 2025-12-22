@@ -48,10 +48,54 @@
             android:orientation="vertical"
             android:paddingHorizontal="16dp">
 
+
+
+            <!--            btnCreate-->
+            <FrameLayout
+                android:id="@+id/btnBountyFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/img_home_0" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                        android:id="@+id/tv0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/kurale_regular"
+                        android:gravity="center"
+                        android:text="@string/bountyFilter"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        app:outerStrokeColor="#000000"
+                        app:outerStrokeWidth="1.5dp" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </FrameLayout>
             <!--            btnCreate-->
             <FrameLayout
                 android:id="@+id/btnCreate"
                 android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
                 android:layout_height="wrap_content">
 
                 <ImageView
@@ -81,7 +125,7 @@
                         android:textColor="@color/white"
                         android:textSize="30sp"
                         app:outerStrokeColor="#000000"
-                        app:outerStrokeWidth="1dp" />
+                        app:outerStrokeWidth="1.5dp" />
 
                     <Space
                         android:layout_width="0dp"
@@ -125,7 +169,7 @@
                         android:textColor="@color/white"
                         android:textSize="30sp"
                         app:outerStrokeColor="#000000"
-                        app:outerStrokeWidth="1dp" />
+                        app:outerStrokeWidth="1.5dp" />
 
                     <Space
                         android:layout_width="0dp"
