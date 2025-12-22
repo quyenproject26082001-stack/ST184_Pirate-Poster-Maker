@@ -15,6 +15,7 @@ import com.piratemaker.postermaker.poster.core.utils.key.ValueKey
 import com.piratemaker.postermaker.poster.core.utils.state.RateState
 import com.piratemaker.postermaker.poster.databinding.ActivityHomeBinding
 import com.piratemaker.postermaker.poster.activity_app.SettingsActivity
+import com.piratemaker.postermaker.poster.activity_app.bountyfilter.BountyFilterActivity
 import com.piratemaker.postermaker.poster.activity_app.mydesign.MyDesignActivity
 import com.piratemaker.postermaker.poster.activity_app.posterwanted.PosterWantedTemplateActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
@@ -58,6 +59,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
         // Enable hardware layer cho TextViews để giảm redraw
         binding.apply {
+            tv0.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
             tv1.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
             tv2.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
             tv3.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
@@ -69,6 +71,9 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         binding.apply {
             actionBar.btnActionBarRight.setOnSingleClick { startIntentRightToLeft(SettingsActivity::class.java) }
             //quyen
+            btnBountyFilter.setOnSingleClick {
+                startIntentRightToLeft(BountyFilterActivity::class.java)
+            }
             btnCreate.setOnSingleClick {
                 showInterAll{
                         startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity::class.java)
@@ -172,13 +177,14 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             binding.apply {
                 // Fade out nhanh → update text → fade in
                 // Điều này tạo smooth transition thay vì sudden change
-                listOf(tv1, tv2, tv3).forEach { textView ->
+                listOf(tv0, tv1, tv2, tv3).forEach { textView ->
                     textView.animate()
                         .alpha(0f)
                         .setDuration(50)
                         .withEndAction {
                             // Update text khi đã invisible
                             when (textView) {
+                                tv0 -> textView.text = strings(R.string.bountyFilter)
                                 tv1 -> textView.text = strings(R.string.posterwantedmaker)
                                 tv2 -> textView.text = strings(R.string.posterwantedtemplates)
                                 tv3 -> textView.text = strings(R.string.my_design)

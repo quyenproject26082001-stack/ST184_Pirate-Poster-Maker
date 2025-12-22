@@ -27,10 +27,28 @@
         android:layout_marginHorizontal="16dp"
         app:layout_constraintDimensionRatio="328:480"
         />
-    <ImageView
+
+    <TextView
+        android:id="@+id/tvBountyFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2.000.000"
+        app:layout_constraintStart_toStartOf="@id/imgPlay"
+        app:layout_constraintEnd_toEndOf="@id/imgPlay"
+        app:layout_constraintTop_toTopOf="@id/imgPlay"
+        app:layout_constraintBottom_toBottomOf="@id/imgPlay"
+        android:textSize="40sp"
+        android:textColor="#3B2104"
+        app:layout_constraintVertical_bias="0.83"
+        android:fontFamily="@font/kurale_regular"/>
+
+    <androidx.camera.view.PreviewView
         android:id="@+id/imgCamera"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.33"
+        app:layout_constraintWidth_percent="0.76"
+        app:layout_constraintVertical_bias="0.36"
         app:layout_constraintStart_toStartOf="@id/imgPlay"
         app:layout_constraintEnd_toEndOf="@id/imgPlay"
         app:layout_constraintTop_toTopOf="@id/imgPlay"
@@ -50,7 +68,7 @@
             android:gravity="center"
             android:fontFamily="@font/kurale_regular"
             android:textSize="20sp"
-            android:textColor="#C4561B"
+            android:textColor="#C4561B"/>
 
 
 
