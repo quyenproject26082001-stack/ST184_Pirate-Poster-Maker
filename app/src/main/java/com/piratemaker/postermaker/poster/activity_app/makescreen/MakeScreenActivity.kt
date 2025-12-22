@@ -319,7 +319,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
 
     //quyen
     override fun initAds() {
-        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_poster), binding.nativeClPoster)
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_collap_poster), binding.nativeClPoster)
     }
     //quyen
 

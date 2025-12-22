@@ -248,7 +248,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <include layout="@layout/ads_shimmer_collap_native" />
     </FrameLayout>
 
     <!--quyen-->

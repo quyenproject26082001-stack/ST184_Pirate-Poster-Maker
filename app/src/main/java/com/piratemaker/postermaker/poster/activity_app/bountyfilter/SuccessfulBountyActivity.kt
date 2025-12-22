@@ -3,6 +3,7 @@ package com.piratemaker.postermaker.poster.activity_app.bountyfilter
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.lvt.ads.util.Admob
 import java.io.FileOutputStream
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.activity_app.main.MainActivity
@@ -19,6 +25,7 @@ import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.goToSettings
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.shareImagesPaths
+import com.piratemaker.postermaker.poster.core.extensions.showInterAll
 import com.piratemaker.postermaker.poster.core.extensions.strings
 import com.piratemaker.postermaker.poster.core.extensions.visible
 import com.piratemaker.postermaker.poster.core.helper.MediaHelper
@@ -84,26 +91,49 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
         bountyValue = intent.getStringExtra("BOUNTY_VALUE")
 
         binding.apply {
-            // Load captured photo into imgCamera
+            // Show bounty value first
+            bountyValue?.let {
+                tvBountyFilter.text = it
+                tvBountyFilter.visible()
+            }
+
+            // Load captured photo into imgCamera with listener
             photoPath?.let { path ->
                 val file = File(path)
                 if (file.exists()) {
                     Glide.with(this@SuccessfulBountyActivity)
                         .load(file)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                android.util.Log.e("SuccessfulBounty", "Failed to load image", e)
+                                return false
+                            }
+
+                            override fun onResourceReady(
+                                resource: Drawable,
+                                model: Any,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                // Image loaded successfully, now create composite
+                                android.util.Log.d("SuccessfulBounty", "Image loaded, creating composite")
+                                binding.containerBounty.post {
+                                    createCompositeImage()
+                                }
+                                return false
+                            }
+                        })
                         .into(imgCamera)
+                } else {
+                    android.util.Log.e("SuccessfulBounty", "Photo file not found: $path")
                 }
             }
-
-            // Show bounty value
-            bountyValue?.let {
-                tvBountyFilter.text = it
-                tvBountyFilter.visible()
-            }
-        }
-
-        // Create composite image after view is laid out
-        binding.containerBounty.post {
-            createCompositeImage()
         }
     }
     private fun goToHome() {
@@ -122,11 +152,15 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
     override fun viewListener() {
         binding.apply {
             actionBar.btnActionBarLeft.setOnSingleClick {
+                showInterAll {
                 goToHome()
+                }
             }
 
             btnDownload.setOnSingleClick {
+                showInterAll {
                 downloadImage()
+               }
             }
 
             btnShare.setOnSingleClick(2000) {
@@ -193,7 +227,11 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             permissionLauncher.launch(storagePermissions)
         }
     }
-
+    fun initNativeCollab() {
+        Admob.getInstance().loadNativeCollapNotBanner(this,
+            getString(R.string.native_cl_fillter_success),
+            binding.nativeClBountySuccess)
+    }
     private fun proceedDownload() {
         val pathToDownload = compositeImagePath ?: photoPath
         pathToDownload?.let { path ->

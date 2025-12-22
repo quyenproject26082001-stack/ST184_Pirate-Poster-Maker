@@ -46,11 +46,18 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         binding.imvLoading.startAnimation(rotateAnimation)
 
         initNetworkMonitor()
-       Admob.getInstance().setTimeLimitShowAds(30000)
-        Admob.getInstance().setOpenShowAllAds(false)
+       Admob.getInstance().setTimeLimitShowAds(20000)
+        Admob.getInstance().setTimeCountdownNativeCollab(15000)
+
         // Simple delay then navigate
         //navigateAfterDelay()
-        Admob.getInstance().setOpenShowAllAds(false)
+//        interCallBack = object : InterCallback() {
+//            override fun onNextAction() {
+//                super.onNextAction()
+//                startActivity(intentActivity)
+//                finishAffinity()
+//            }
+//        }
     }
 
     private fun navigateAfterDelay() {

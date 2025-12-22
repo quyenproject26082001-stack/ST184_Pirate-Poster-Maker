@@ -72,7 +72,9 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             actionBar.btnActionBarRight.setOnSingleClick { startIntentRightToLeft(SettingsActivity::class.java) }
             //quyen
             btnBountyFilter.setOnSingleClick {
-                startIntentRightToLeft(BountyFilterActivity::class.java)
+               showInterAll {
+                   startIntentRightToLeft(BountyFilterActivity::class.java)
+               }
             }
             btnCreate.setOnSingleClick {
                 showInterAll{
@@ -124,7 +126,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         Admob.getInstance().loadNativeAll(this, getString(R.string.native_all))
 
         // Load native collapsible ad
-        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_cl_home), binding.nativeClHome)
+        initNativeCollab()
     }
     //quyen
 
@@ -201,6 +203,11 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         }
     }
 
+    fun initNativeCollab() {
+        Admob.getInstance().loadNativeCollapNotBanner(this,
+            getString(R.string.native_cl_home),
+            binding.nativeClHome)
+    }
     override fun onRestart() {
         super.onRestart()
         // Chỉ update text khi language thực sự thay đổi
@@ -213,7 +220,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         }
         //quyen
         // Reload native collapsible ad
-        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_cl_home), binding.nativeClHome)
+       initNativeCollab()
         //quyen
     }
 }

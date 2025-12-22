@@ -99,4 +99,15 @@
             layout="@layout/layout_actionbar" />
     </FrameLayout>
 
+    <!-- nativeClHome -->
+    <FrameLayout
+        android:id="@+id/nativeClBounty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

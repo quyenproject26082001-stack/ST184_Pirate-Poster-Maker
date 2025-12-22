@@ -23,10 +23,12 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
+import com.piratemaker.postermaker.poster.core.extensions.showInterAll
 import com.piratemaker.postermaker.poster.core.extensions.visible
 import com.piratemaker.postermaker.poster.core.helper.SoundHelper
 import com.piratemaker.postermaker.poster.databinding.ActivityBountyFilterBinding
@@ -326,8 +328,9 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                             putExtra("PHOTO_PATH", photoFile.absolutePath)
                             putExtra("BOUNTY_VALUE", binding.tvBountyFilter.text.toString())
                         }
-                        startActivity(intent)
-                        finish()
+                       showInterAll {
+                           startActivity(intent)
+                       }
                     } else {
                         Toast.makeText(
                             this@BountyFilterActivity,
@@ -393,10 +396,25 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
         }
     }
 
+    override fun initAds() {
+        // Load interstitial ad
+        // Load native collapsible ad
+        initNativeCollab()
+    }
+    fun initNativeCollab() {
+        Admob.getInstance().loadNativeCollapNotBanner(this,
+            getString(R.string.native_collap_fillter),
+            binding.nativeClBounty)
+    }
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
         handler.removeCallbacks(randomRunnable ?: return)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        initNativeCollab()
     }
 
     @SuppressLint("MissingSuperCall")
