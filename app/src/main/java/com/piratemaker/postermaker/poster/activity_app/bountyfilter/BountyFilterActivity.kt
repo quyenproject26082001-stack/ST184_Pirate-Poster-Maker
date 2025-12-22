@@ -18,6 +18,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
@@ -50,18 +51,16 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     override fun initView() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Initial state: dark screen with only btnPlay visible
+        // Initial state: show all elements normally - no dark overlay
         binding.apply {
-            // Create a dark overlay view
-            root.setBackgroundColor(Color.BLACK)
-
-            // Hide all elements except btnPlay
-            imgPlay.gone()
+            // Show all elements in their normal positions
+            imgPlay.visible()
             imgCamera.gone()
             tvBountyFilter.gone()
-
-            // Only btnPlay is visible
             btnPlay.visible()
+
+            // No dark overlay - keep screen bright
+            darkOverlay.gone()
         }
     }
 
@@ -109,13 +108,43 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
         binding.tvBountyFilter.apply {
             visible()
-            textSize = 80f
+            textSize = 180f
+            typeface = ResourcesCompat.getFont(this@BountyFilterActivity, R.font.kurale_regular)
+
+            setTextColor(ContextCompat.getColor(this@BountyFilterActivity, R.color.app))
         }
 
         val countdownRunnable = object : Runnable {
             override fun run() {
                 if (currentIndex < countdownNumbers.size) {
+                    // Set countdown number
                     binding.tvBountyFilter.text = countdownNumbers[currentIndex]
+
+                    // Animate countdown with scale and fade effects
+                    binding.tvBountyFilter.apply {
+                        // Start from small and fade in
+                        scaleX = 0.5f
+                        scaleY = 0.5f
+                        alpha = 0f
+
+                        // Animate to full size
+                        animate()
+                            .scaleX(1.2f)
+                            .scaleY(1.2f)
+                            .alpha(1f)
+                            .setDuration(300)
+                            .withEndAction {
+                                // Then scale down slightly and fade out
+                                animate()
+                                    .scaleX(0.8f)
+                                    .scaleY(0.8f)
+                                    .alpha(0.3f)
+                                    .setDuration(700)
+                                    .start()
+                            }
+                            .start()
+                    }
+
                     currentIndex++
                     handler.postDelayed(this, 1000)
                 } else {
@@ -130,11 +159,14 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
     private fun onCountdownFinished() {
         binding.apply {
-            // Hide btnPlay
-            btnPlay.gone()
-
-            // Screen becomes light (restore normal background)
-            root.setBackgroundResource(R.drawable.img_bg_language)
+            // Hide btnPlay with fade animation
+            btnPlay.animate()
+                .alpha(0f)
+                .setDuration(300)
+                .withEndAction {
+                    btnPlay.gone()
+                }
+                .start()
 
             // Change imgPlay to use img_bounty_playing
             imgPlay.setImageResource(R.drawable.img_bounty_playing)
@@ -151,7 +183,19 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     private fun startRandomBountyAnimation() {
         binding.tvBountyFilter.apply {
             textSize = 40f
+            setTextColor(Color.parseColor("#3B2104"))
+            alpha = 0f
+            scaleX = 0.5f
+            scaleY = 0.5f
             visible()
+
+            // Animate in
+            animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(500)
+                .start()
         }
 
         val startTime = System.currentTimeMillis()
@@ -166,6 +210,22 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                     val randomValue = Random.nextInt(100000, 10000001)
                     val formattedValue = NumberFormat.getNumberInstance(Locale.US).format(randomValue)
                     binding.tvBountyFilter.text = formattedValue
+
+                    // Add slight scale pulse effect during animation
+                    binding.tvBountyFilter.apply {
+                        animate()
+                            .scaleX(1.05f)
+                            .scaleY(1.05f)
+                            .setDuration(50)
+                            .withEndAction {
+                                animate()
+                                    .scaleX(1f)
+                                    .scaleY(1f)
+                                    .setDuration(50)
+                                    .start()
+                            }
+                            .start()
+                    }
 
                     // Update every 100ms for smooth animation
                     handler.postDelayed(this, 100)
