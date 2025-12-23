@@ -86,11 +86,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name=".activity_app.mydesign.MyCreationActivity"
+            android:name=".activity_app.mycreation.MyCreationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity_app.mydesign.ViewDesignActivity"
+            android:name=".activity_app.mycreation.ViewCreationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

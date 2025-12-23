@@ -46,8 +46,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         binding.imvLoading.startAnimation(rotateAnimation)
 
         initNetworkMonitor()
-               Admob.getInstance().setOpenShowAllAds(false)
-
+        Admob.getInstance().setOpenShowAllAds(false)
         Admob.getInstance().setTimeLimitShowAds(20000)
         Admob.getInstance().setTimeCountdownNativeCollab(15000)
 

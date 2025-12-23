@@ -1,4 +1,4 @@
-package com.piratemaker.postermaker.poster.activity_app.mydesign
+package com.piratemaker.postermaker.poster.activity_app.mycreation
 
 import android.os.Build
 import android.view.LayoutInflater
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.io.File
 
-class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
+class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
 
     private var imagePath: String? = null
 
@@ -189,19 +189,19 @@ class ViewDesignActivity : BaseActivity<ActivityViewBinding>() {
     private fun proceedDownload() {
         imagePath?.let { path ->
             lifecycleScope.launch {
-                MediaHelper.downloadPartsToExternal(this@ViewDesignActivity, listOf(path))
+                MediaHelper.downloadPartsToExternal(this@ViewCreationActivity, listOf(path))
                     .collectLatest { state ->
                         when (state) {
                             HandleState.SUCCESS -> {
                                 Toast.makeText(
-                                    this@ViewDesignActivity,
+                                    this@ViewCreationActivity,
                                     strings(R.string.download_success),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
                             HandleState.FAIL -> {
                                 Toast.makeText(
-                                    this@ViewDesignActivity,
+                                    this@ViewCreationActivity,
                                     strings(R.string.download_failed_please_try_again_later),
                                     Toast.LENGTH_SHORT
                                 ).show()

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:context="com.piratemaker.postermaker.poster.activity_app.mydesign.ViewDesignActivity"
+    tools:context="com.piratemaker.postermaker.poster.activity_app.oldwest.ViewOldWestActivity"
     android:layout_height="match_parent">
 
     <!-- Background -->
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:orientation="horizontal"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="13dp"
         android:paddingBottom="50dp"
         android:weightSum="2"
         app:layout_constraintTop_toBottomOf="@+id/imgPoster"
@@ -95,5 +95,15 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
+    <!-- Native Ad -->
+    <FrameLayout
+        android:id="@+id/nativeClOldWest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

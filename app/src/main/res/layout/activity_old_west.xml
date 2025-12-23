@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity_app.mydesign.OldWest">
+    tools:context=".activity_app.oldwest.OldWestActivity">
 
     <!-- Background -->
     <ImageView
@@ -41,22 +41,23 @@
     </FrameLayout>
     <!--quyen-->
 
-    <!-- RecyclerView Grid -->
+    <!-- RecyclerView Staggered Grid -->
+
+    <!-- Empty State -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvDesigns"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingHorizontal="12dp"
-        android:clipToPadding="true"
         android:layout_marginTop="5dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        app:layout_constraintTop_toBottomOf="@id/nativeMyDesgin"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:clipToPadding="false"
+        android:paddingHorizontal="8dp"
         android:paddingBottom="84dp"
-        tools:listitem="@layout/layout_poster_template_1" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nativeMyDesgin"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp"
+        tools:listitem="@layout/item_oldwest" />
 
-    <!-- Empty State -->
     <TextView
         android:id="@+id/tvEmpty"
         android:layout_width="0dp"
@@ -79,14 +80,13 @@
     <!--quyen-->
     <!-- Native Collapsible Ad - Bottom -->
     <FrameLayout
-        android:id="@+id/nativeCollapMyDesgin"
+        android:id="@+id/nativeCollapOldWestActivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <include layout="@layout/ads_shimmer_collap_native" />
     </FrameLayout>
     <!--quyen-->
 

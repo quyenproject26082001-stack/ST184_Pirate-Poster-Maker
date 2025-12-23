@@ -20,6 +20,11 @@
     <string name="native_collap_fillter" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
     <string name="native_cl_fillter_success" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
 
+
+    <!-- oldwest -->
+    <string name="native_cl_Old_West_detail" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_cl_Old_West" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+
     <!-- poster maker -->
     <string name="native_collap_poster" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
 

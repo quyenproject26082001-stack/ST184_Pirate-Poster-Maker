@@ -16,7 +16,7 @@ import com.piratemaker.postermaker.poster.core.utils.state.RateState
 import com.piratemaker.postermaker.poster.databinding.ActivityHomeBinding
 import com.piratemaker.postermaker.poster.activity_app.SettingsActivity
 import com.piratemaker.postermaker.poster.activity_app.bountyfilter.BountyFilterActivity
-import com.piratemaker.postermaker.poster.activity_app.mydesign.MyCreationActivity
+import com.piratemaker.postermaker.poster.activity_app.mycreation.MyCreationActivity
 import com.piratemaker.postermaker.poster.activity_app.posterwanted.PosterWantedTemplateActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 

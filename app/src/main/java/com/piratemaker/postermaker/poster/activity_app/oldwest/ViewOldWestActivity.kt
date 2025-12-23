@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
@@ -115,7 +116,7 @@ class ViewOldWestActivity : BaseActivity<ActivityViewOldwestBinding>() {
         binding.apply {
             // Back button
             actionBar.btnActionBarLeft.setOnSingleClick {
-                finishAfterTransition()
+               showInterAll {  finishAfterTransition() }
             }
 
             // Share button
@@ -158,6 +159,18 @@ class ViewOldWestActivity : BaseActivity<ActivityViewOldwestBinding>() {
         } else {
             permissionLauncher.launch(storagePermissions)
         }
+    }
+
+    //quyen
+    override fun initAds() {
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_cl_Old_West_detail), binding.nativeClOldWest)
+    }
+    //quyen
+
+
+    override fun onRestart() {
+        super.onRestart()
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_cl_Old_West_detail), binding.nativeClOldWest)
     }
 
     private fun proceedDownload() {

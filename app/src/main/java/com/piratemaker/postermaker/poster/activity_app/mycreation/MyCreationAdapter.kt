@@ -1,4 +1,4 @@
-package com.piratemaker.postermaker.poster.activity_app.mydesign
+package com.piratemaker.postermaker.poster.activity_app.mycreation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,10 +7,10 @@ import com.bumptech.glide.Glide
 import com.piratemaker.postermaker.poster.databinding.ItemMyDesignBinding
 import java.io.File
 
-class MyDesignAdapter(
+class MyCreationAdapter(
     private var items: List<File>,
     private val onItemClick: (File) -> Unit
-) : RecyclerView.Adapter<MyDesignAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<MyCreationAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: ItemMyDesignBinding) :
         RecyclerView.ViewHolder(binding.root) {

@@ -1,4 +1,4 @@
-package com.piratemaker.postermaker.poster.activity_app.mydesign
+package com.piratemaker.postermaker.poster.activity_app.mycreation
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import com.lvt.ads.util.Admob
 
 class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
 
-    private lateinit var adapter: MyDesignAdapter
+    private lateinit var adapter: MyCreationAdapter
 
     override fun setViewBinding(): ActivityMyCreationBinding {
         return ActivityMyCreationBinding.inflate(LayoutInflater.from(this))
@@ -52,7 +52,7 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
             if (::adapter.isInitialized) {
                 adapter.updateItems(designs)
             } else {
-                adapter = MyDesignAdapter(designs) { file ->
+                adapter = MyCreationAdapter(designs) { file ->
                     onDesignClicked(file)
                 }
                 binding.rvDesigns.adapter = adapter
@@ -95,7 +95,7 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
     //quyen
 
     private fun onDesignClicked(file: File) {
-        val intent = Intent(this, ViewDesignActivity::class.java).apply {
+        val intent = Intent(this, ViewCreationActivity::class.java).apply {
             putExtra("imagePath", file.absolutePath)
         }
         startActivity(intent)

@@ -2,6 +2,7 @@ package com.piratemaker.postermaker.poster.activity_app.oldwest
 
 import android.content.Intent
 import android.view.LayoutInflater
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
@@ -21,6 +22,10 @@ class OldWestActivity : BaseActivity<ActivityOldWestBinding>() {
     }
 
     override fun initView() {
+        // Setup StaggeredGridLayoutManager with 2 columns
+        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.rvDesigns.layoutManager = layoutManager
+
         loadDesigns()
     }
 
@@ -90,13 +95,15 @@ class OldWestActivity : BaseActivity<ActivityOldWestBinding>() {
     //quyen
     override fun initAds() {
         // Load native regular ad above back button and list
-        Admob.getInstance().loadNativeAd(this, getString(R.string.native_myDesgin), binding.nativeMyDesgin, R.layout.ads_native_collap_banner_1)
-
         // Load native collapsible ad at bottom
-        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_myDesgin), binding.nativeCollapMyDesgin)
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_cl_Old_West), binding.nativeCollapOldWestActivity)
     }
     //quyen
 
+    override fun onRestart() {
+        super.onRestart()
+        initAds()
+    }
     private fun onDesignClicked(fileName: String) {
         val intent = Intent(this, ViewOldWestActivity::class.java).apply {
             putExtra("assetFileName", fileName)
