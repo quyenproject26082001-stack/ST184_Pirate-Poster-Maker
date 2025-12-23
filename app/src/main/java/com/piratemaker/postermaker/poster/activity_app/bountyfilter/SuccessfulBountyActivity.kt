@@ -186,15 +186,28 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             val canvas = Canvas(bitmap)
             view.draw(canvas)
 
-            // Save composite bitmap to cache
             val fileName = "bounty_composite_${System.currentTimeMillis()}.jpg"
-            val file = File(cacheDir, fileName)
-            FileOutputStream(file).use { out ->
+
+            // Save to cache for immediate sharing/downloading
+            val cacheFile = File(cacheDir, fileName)
+            FileOutputStream(cacheFile).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
+            }
+            compositeImagePath = cacheFile.absolutePath
+
+            // Also save to bounty_designs folder for My Creation tab
+            val bountyDesignsDir = File(filesDir, "bounty_designs")
+            if (!bountyDesignsDir.exists()) {
+                bountyDesignsDir.mkdirs()
+            }
+
+            val savedFile = File(bountyDesignsDir, fileName)
+            FileOutputStream(savedFile).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
             }
 
-            compositeImagePath = file.absolutePath
             android.util.Log.d("SuccessfulBounty", "Composite image created: $compositeImagePath")
+            android.util.Log.d("SuccessfulBounty", "Saved to My Design: ${savedFile.absolutePath}")
         } catch (e: Exception) {
             e.printStackTrace()
             android.util.Log.e("SuccessfulBounty", "Failed to create composite image", e)

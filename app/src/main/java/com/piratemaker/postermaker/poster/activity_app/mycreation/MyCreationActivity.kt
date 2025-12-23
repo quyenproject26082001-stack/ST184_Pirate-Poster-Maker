@@ -14,12 +14,19 @@ import com.lvt.ads.util.Admob
 class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
 
     private lateinit var adapter: MyCreationAdapter
+    private var currentTab = TabType.MY_DESIGN // Default to My Design
+
+    enum class TabType {
+        MY_DESIGN,  // Bounty photos
+        MY_WANTED   // Wanted posters
+    }
 
     override fun setViewBinding(): ActivityMyCreationBinding {
         return ActivityMyCreationBinding.inflate(LayoutInflater.from(this))
     }
 
     override fun initView() {
+        setupTabs()
         loadDesigns()
     }
 
@@ -31,8 +38,52 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
         }
     }
 
+    private fun setupTabs() {
+        // Set initial tab selection
+        updateTabSelection(TabType.MY_DESIGN)
+
+        binding.apply {
+            tabMyDesign.setOnSingleClick {
+                if (currentTab != TabType.MY_DESIGN) {
+                    currentTab = TabType.MY_DESIGN
+                    updateTabSelection(TabType.MY_DESIGN)
+                    loadDesigns()
+                }
+            }
+
+            tabMyWanted.setOnSingleClick {
+                if (currentTab != TabType.MY_WANTED) {
+                    currentTab = TabType.MY_WANTED
+                    updateTabSelection(TabType.MY_WANTED)
+                    loadDesigns()
+                }
+            }
+        }
+    }
+
+    private fun updateTabSelection(selectedTab: TabType) {
+        binding.apply {
+            when (selectedTab) {
+                TabType.MY_DESIGN -> {
+                    tabMyDesign.isSelected = true
+                    tabMyWanted.isSelected = false
+                }
+                TabType.MY_WANTED -> {
+                    tabMyDesign.isSelected = false
+                    tabMyWanted.isSelected = true
+                }
+            }
+        }
+    }
+
     private fun loadDesigns() {
-        val postersDir = File(filesDir, "posters")
+        // Select folder based on current tab
+        val folderName = when (currentTab) {
+            TabType.MY_DESIGN -> "bounty_designs"  // Bounty photos
+            TabType.MY_WANTED -> "posters"          // Wanted posters
+        }
+
+        val postersDir = File(filesDir, folderName)
         val designs = if (postersDir.exists()) {
             postersDir.listFiles()
                 ?.filter { it.isFile && (it.extension == "png" || it.extension == "jpg" || it.extension == "jpeg") }
