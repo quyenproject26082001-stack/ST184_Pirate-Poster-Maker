@@ -9,16 +9,35 @@ import java.io.File
 
 class MyCreationAdapter(
     private var items: List<File>,
+    private var isMyWantedTab: Boolean = false,
     private val onItemClick: (File) -> Unit
 ) : RecyclerView.Adapter<MyCreationAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: ItemMyDesignBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(file: File) {
+        fun bind(file: File, isMyWanted: Boolean) {
             Glide.with(binding.root.context)
                 .load(file)
                 .into(binding.imgDesign)
+
+            // Set margins based on tab type
+            val layoutParams = binding.rootContainer.layoutParams as ViewGroup.MarginLayoutParams
+            if (isMyWanted) {
+                // MY_WANTED tab: set margins to 0
+                layoutParams.setMargins(0, 0, 0, 0)
+            } else {
+                // MY_DESIGN tab: use default margins
+                val horizontalMargin = binding.root.context.resources.displayMetrics.density * 4
+                val bottomMargin = binding.root.context.resources.displayMetrics.density * 8
+                layoutParams.setMargins(
+                    horizontalMargin.toInt(),
+                    0,
+                    horizontalMargin.toInt(),
+                    bottomMargin.toInt()
+                )
+            }
+            binding.rootContainer.layoutParams = layoutParams
 
             binding.root.setOnClickListener {
                 onItemClick(file)
@@ -36,13 +55,14 @@ class MyCreationAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], isMyWantedTab)
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun updateItems(newItems: List<File>) {
+    fun updateItems(newItems: List<File>, isMyWanted: Boolean = false) {
         items = newItems
+        isMyWantedTab = isMyWanted
         notifyDataSetChanged()
     }
 }

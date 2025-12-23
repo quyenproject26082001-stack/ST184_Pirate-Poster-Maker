@@ -100,10 +100,12 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
             binding.rvDesigns.visible()
             binding.tvEmpty.gone()
 
+            val isMyWanted = currentTab == TabType.MY_WANTED
+
             if (::adapter.isInitialized) {
-                adapter.updateItems(designs)
+                adapter.updateItems(designs, isMyWanted)
             } else {
-                adapter = MyCreationAdapter(designs) { file ->
+                adapter = MyCreationAdapter(designs, isMyWanted) { file ->
                     onDesignClicked(file)
                 }
                 binding.rvDesigns.adapter = adapter

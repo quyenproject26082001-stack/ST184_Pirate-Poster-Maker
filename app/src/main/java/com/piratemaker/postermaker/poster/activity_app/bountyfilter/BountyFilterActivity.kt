@@ -26,7 +26,9 @@ import androidx.core.content.res.ResourcesCompat
 import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
+import com.piratemaker.postermaker.poster.core.extensions.checkPermissions
 import com.piratemaker.postermaker.poster.core.extensions.gone
+import com.piratemaker.postermaker.poster.core.extensions.goToSettings
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.showInterAll
 import com.piratemaker.postermaker.poster.core.extensions.visible
@@ -65,6 +67,9 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
             SoundHelper.loadSound(this, R.raw.camera_sound)
         }
 
+        // TODO: REMOVE THIS LINE AFTER TESTING - Reset counter for testing
+        // sharePreference.setCameraPermission(0)
+
         // Initial state: show all elements normally - no dark overlay
         binding.apply {
             // Show all elements in their normal positions
@@ -82,9 +87,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                 if (allPermissionsGranted()) {
                     startBountyFilterSequence()
                 } else {
-                    ActivityCompat.requestPermissions(
-                        this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-                    )
+                    handleCameraPermissionRequest()
                 }
             }
         }
@@ -92,6 +95,30 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
         binding.actionBar.btnActionBarLeft.setOnSingleClick {
             finish()
         }
+    }
+
+    private fun handleCameraPermissionRequest() {
+        val currentCounter = sharePreference.getCameraPermission()
+        android.util.Log.d("BountyFilter", "Camera permission counter: $currentCounter")
+
+        if (checkPermissions(REQUIRED_PERMISSIONS)) {
+            // Permission already granted
+            startBountyFilterSequence()
+        } else if (needGoToSettings()) {
+            // User has denied permission more than 2 times, go to settings
+            android.util.Log.d("BountyFilter", "Going to settings (counter >= 2)")
+            goToSettings()
+        } else {
+            // Request permission
+            android.util.Log.d("BountyFilter", "Requesting permission (counter < 2)")
+            ActivityCompat.requestPermissions(
+                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+            )
+        }
+    }
+
+    private fun needGoToSettings(): Boolean {
+        return sharePreference.getCameraPermission() >= 2
     }
 
     override fun initActionBar() {
@@ -219,10 +246,18 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                 val elapsed = System.currentTimeMillis() - startTime
 
                 if (elapsed < duration) {
-                    // Generate random bounty value between 100,000 and 10,000,000
-                    val randomValue = Random.nextInt(100000, 10000001)
-                    val formattedValue = NumberFormat.getNumberInstance(Locale.US).format(randomValue)
-                    binding.tvBountyFilter.text = formattedValue
+                    // 30% probability to show infinity symbol, 70% to show random number
+                    val showInfinity = Random.nextInt(100) < 30
+
+                    val displayText = if (showInfinity) {
+                        "∞"  // Infinity symbol
+                    } else {
+                        // Generate random bounty value between 100,000 and 10,000,000
+                        val randomValue = Random.nextInt(100000, 10000001)
+                        NumberFormat.getNumberInstance(Locale.US).format(randomValue)
+                    }
+
+                    binding.tvBountyFilter.text = displayText
 
                     // Add slight scale pulse effect during animation
                     binding.tvBountyFilter.apply {
@@ -328,9 +363,9 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                             putExtra("PHOTO_PATH", photoFile.absolutePath)
                             putExtra("BOUNTY_VALUE", binding.tvBountyFilter.text.toString())
                         }
-                       showInterAll {
-                           startActivity(intent)
-                       }
+                        showInterAll {
+                            startActivity(intent)
+                        }
                     } else {
                         Toast.makeText(
                             this@BountyFilterActivity,
@@ -383,15 +418,27 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
+            val granted = grantResults.isNotEmpty() &&
+                         grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+
+            if (granted) {
+                // Reset counter when permission is granted
+                android.util.Log.d("BountyFilter", "Permission granted, resetting counter to 0")
+                sharePreference.setCameraPermission(0)
                 startBountyFilterSequence()
             } else {
+                // Increment counter when permission is denied
+                val currentCount = sharePreference.getCameraPermission()
+                val newCount = currentCount + 1
+                sharePreference.setCameraPermission(newCount)
+                android.util.Log.d("BountyFilter", "Permission denied, counter: $currentCount -> $newCount")
+
+                // Just show toast, don't go to settings yet
                 Toast.makeText(
                     this,
                     "Camera permission is required",
                     Toast.LENGTH_SHORT
                 ).show()
-                finish()
             }
         }
     }
@@ -410,6 +457,14 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
         super.onDestroy()
         cameraExecutor.shutdown()
         handler.removeCallbacks(randomRunnable ?: return)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Reset counter if permission is now granted (user came back from settings)
+        if (allPermissionsGranted()) {
+            sharePreference.setCameraPermission(0)
+        }
     }
 
     override fun onRestart() {
