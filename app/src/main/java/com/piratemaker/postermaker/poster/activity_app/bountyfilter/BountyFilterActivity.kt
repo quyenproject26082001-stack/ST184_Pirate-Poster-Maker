@@ -137,6 +137,9 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     private fun startBountyFilterSequence() {
         isCountingDown = true
 
+        // Hide btnPlay and imgPlay immediately when starting
+        binding.btnPlay.gone()
+
         // Step 1: Open camera
         startCamera()
 
@@ -156,7 +159,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
             // ✅ set trước để khỏi ló 1 frame
             text = countdownNumbers[0]
-            textSize = 80f
+            textSize = 180f
             setTextColor(Color.WHITE)
 
             alpha = 0f
@@ -202,16 +205,9 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
     private fun onCountdownFinished() {
         binding.apply {
-            // Hide btnPlay with fade animation
-            btnPlay.animate()
-                .alpha(0f)
-                .setDuration(300)
-                .withEndAction {
-                    btnPlay.gone()
-                }
-                .start()
+            // btnPlay already hidden in startBountyFilterSequence()
 
-            // Change imgPlay to use img_bounty_playing
+            // Change imgPlay to use img_bounty_playing and show it
             imgPlay.setImageResource(R.drawable.img_bounty_playing)
             imgPlay.visible()
 
@@ -254,7 +250,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
                     val displayText = when {
                         random < 10 -> "Infinity ∞"  // 10% - Infinity symbol
-                        random < 20 -> "0"  // 10% - Zero
+                        random < 15 -> "0"  // 10% - Zero
                         random < 30 -> NumberFormat.getNumberInstance(Locale.US).format(999999999)  // 10% - 999,999,999
                         random < 40 -> NumberFormat.getNumberInstance(Locale.US).format(666666)     // 10% - 666,666
                         else -> {
@@ -283,7 +279,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                     }
 
                     // Update every 100ms for smooth animation
-                    handler.postDelayed(this, 100)
+                    handler.postDelayed(this, 50)
                 } else {
                     // Animation finished, take photo
                     takePhoto()
@@ -373,6 +369,8 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                         }
                         showInterAll {
                             startActivity(intent)
+                            finish()
+
                         }
                     } else {
                         Toast.makeText(
@@ -433,7 +431,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             val granted = grantResults.isNotEmpty() &&
-                         grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+                    grantResults.all { it == PackageManager.PERMISSION_GRANTED }
 
             if (granted) {
                 // Reset counter when permission is granted

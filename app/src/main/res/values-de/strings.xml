@@ -118,7 +118,7 @@
     <string name="enter_bounty">Kopfgeld eingeben</string>
     <string name="edit">Bearbeiten</string>
     <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Bitte geben Sie einen Namen ein, bevor Sie speichern</string>
-    <string name="bountyFilter">Kopfgeld-Filter</string>
+    <string name="bountyFilter">Kopfgeld \nFilter</string>
     <string name="play">Spielen</string>
     <string name="old_west">Wilder Westen \nGesetzlose</string>
     <string name="old_west_outlwaw">Wilder Westen Gesetzlose</string>

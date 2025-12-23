@@ -90,7 +90,7 @@ class IntroActivity : BaseActivity<ActivityIntroBinding>() {
                         Intent(this@IntroActivity, MainActivity::class.java)
                     }
                 startActivity(intent)
-                finishAffinity()
+                finish()
             }
         }
     }

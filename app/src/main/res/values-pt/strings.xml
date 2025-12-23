@@ -118,7 +118,7 @@
     <string name="enter_bounty">Digite a recompensa</string>
     <string name="edit">Editar</string>
     <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Por favor, insira um nome antes de salvar</string>
-    <string name="bountyFilter">Filtro de Recompensa</string>
+    <string name="bountyFilter">Filtro de \nRecompensa</string>
     <string name="play">Jogar</string>
     <string name="old_west">Velho Oeste \nFora da Lei</string>
     <string name="old_west_outlwaw">Velho Oeste Fora da Lei</string>

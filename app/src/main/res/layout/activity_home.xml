@@ -72,7 +72,7 @@
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="1.7" />
 
                     <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tv0"
@@ -82,14 +82,17 @@
                         android:gravity="center"
                         android:text="@string/bountyFilter"
                         android:textColor="@color/white"
-                        android:textSize="30sp"
+                        android:textSize="28sp"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1.5dp" />
+
 
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
+
+
                 </LinearLayout>
             </FrameLayout>
 
@@ -129,7 +132,7 @@
                         android:gravity="center"
                         android:text="@string/posterwantedmaker"
                         android:textColor="@color/white"
-                        android:textSize="30sp"
+                        android:textSize="28sp"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1.5dp" />
 
@@ -177,7 +180,7 @@
                         android:gravity="center"
                         android:text="@string/posterwantedtemplates"
                         android:textColor="@color/white"
-                        android:textSize="30sp"
+                        android:textSize="28sp"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1.5dp" />
 
@@ -226,7 +229,7 @@
                         android:gravity="center"
                         android:text="@string/my_creation"
                         android:textColor="@color/white"
-                        android:textSize="30sp"
+                        android:textSize="24sp"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1dp" />
 
@@ -275,7 +278,7 @@
                         android:gravity="center"
                         android:text="@string/old_west"
                         android:textColor="@color/white"
-                        android:textSize="30sp"
+                        android:textSize="24sp"
                         android:maxLines="2"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1dp" />
