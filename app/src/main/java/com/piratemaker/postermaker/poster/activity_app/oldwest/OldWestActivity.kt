@@ -1,4 +1,4 @@
-package com.piratemaker.postermaker.poster.activity_app.mydesign
+package com.piratemaker.postermaker.poster.activity_app.oldwest
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -6,16 +6,15 @@ import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
 
-import java.io.File
 //quyen
 import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.databinding.ActivityOldWestBinding
 
 //quyen
 
-class OldWest : BaseActivity<ActivityOldWestBinding>() {
+class OldWestActivity : BaseActivity<ActivityOldWestBinding>() {
 
-    private lateinit var adapter: MyDesignAdapter
+    private lateinit var adapter: OldWestAdapter
 
     override fun setViewBinding(): ActivityOldWestBinding {
         return ActivityOldWestBinding.inflate(LayoutInflater.from(this))
@@ -27,38 +26,40 @@ class OldWest : BaseActivity<ActivityOldWestBinding>() {
 
     override fun onResume() {
         super.onResume()
-        // Reload designs when returning from ViewDesignActivity (in case of deletion)
+        // Reload designs when returning from ViewOldWestActivity
         if (::adapter.isInitialized) {
             loadDesigns()
         }
     }
 
     private fun loadDesigns() {
-        val postersDir = File(filesDir, "posters")
-        val designs = if (postersDir.exists()) {
-            postersDir.listFiles()
-                ?.filter { it.isFile && (it.extension == "png" || it.extension == "jpg" || it.extension == "jpeg") }
-                ?.sortedByDescending { it.lastModified() }
+        try {
+            // Load images from assets/oldwest folder
+            val assetFiles = assets.list("oldwest")
+                ?.filter { it.endsWith(".png") || it.endsWith(".jpg") || it.endsWith(".jpeg") }
+                ?.sorted()
                 ?: emptyList()
-        } else {
-            emptyList()
-        }
 
-        if (designs.isEmpty()) {
+            if (assetFiles.isEmpty()) {
+                binding.rvDesigns.gone()
+                binding.tvEmpty.visible()
+            } else {
+                binding.rvDesigns.visible()
+                binding.tvEmpty.gone()
+
+                if (::adapter.isInitialized) {
+                    adapter.updateItems(assetFiles)
+                } else {
+                    adapter = OldWestAdapter(this, assetFiles) { fileName ->
+                        onDesignClicked(fileName)
+                    }
+                    binding.rvDesigns.adapter = adapter
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
             binding.rvDesigns.gone()
             binding.tvEmpty.visible()
-        } else {
-            binding.rvDesigns.visible()
-            binding.tvEmpty.gone()
-
-            if (::adapter.isInitialized) {
-                adapter.updateItems(designs)
-            } else {
-                adapter = MyDesignAdapter(designs) { file ->
-                    onDesignClicked(file)
-                }
-                binding.rvDesigns.adapter = adapter
-            }
         }
     }
 
@@ -78,7 +79,7 @@ class OldWest : BaseActivity<ActivityOldWestBinding>() {
         binding.actionBar.apply {
             btnActionBarLeft.setImageResource(R.drawable.ic_back)
             btnActionBarLeft.visible()
-            tvCenter.text = strings(R.string.my_design)
+            tvCenter.text = "Old West"
             tvCenter.gone()
             btnActionBarRight.gone()
             btnActionBarRightText.gone()
@@ -96,9 +97,9 @@ class OldWest : BaseActivity<ActivityOldWestBinding>() {
     }
     //quyen
 
-    private fun onDesignClicked(file: File) {
-        val intent = Intent(this, ViewDesignActivity::class.java).apply {
-            putExtra("imagePath", file.absolutePath)
+    private fun onDesignClicked(fileName: String) {
+        val intent = Intent(this, ViewOldWestActivity::class.java).apply {
+            putExtra("assetFileName", fileName)
         }
         startActivity(intent)
     }

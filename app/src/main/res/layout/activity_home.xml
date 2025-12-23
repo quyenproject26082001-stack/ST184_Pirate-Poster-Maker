@@ -237,7 +237,7 @@
                 </LinearLayout>
             </FrameLayout>
 
-            <!--btnMydesgin-->
+            <!--btnOldWest-->
             <FrameLayout
                 android:id="@+id/btnOldWest"
                 android:layout_width="0dp"
@@ -267,7 +267,7 @@
                         android:layout_weight="1" />
 
                     <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
-                        android:id="@+id/tv3"
+                        android:id="@+id/tvOldWest"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="0"

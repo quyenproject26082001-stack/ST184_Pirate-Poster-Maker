@@ -23,8 +23,13 @@
         android:theme="@style/Theme.BaseProject"
         tools:replace="android:fullBackupContent">
         <activity
-            android:name=".activity_app.oldwest.OldWest"
-            android:exported="false" />
+            android:name=".activity_app.oldwest.OldWestActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.oldwest.ViewOldWestActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity_app.splash.SplashActivity"
             android:exported="true"

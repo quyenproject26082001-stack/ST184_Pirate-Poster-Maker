@@ -96,6 +96,9 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
                 //quyen
             }
+            btnOldWest.setOnSingleClick {
+                startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.oldwest.OldWestActivity::class.java)
+            }
             //quyen
         }
     }
