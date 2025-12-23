@@ -61,7 +61,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
             android:background="@drawable/tab_selector"
-            android:text="My Design"
+            android:text="@string/my_design"
             android:textColor="@color/tab_text_color"
             android:textSize="20sp"
             android:fontFamily="@font/kurale_regular"
@@ -76,7 +76,7 @@
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:background="@drawable/tab_selector"
-            android:text="My Wanted"
+            android:text="@string/my_wanted"
             android:textColor="@color/tab_text_color"
             android:textSize="20sp"
             android:fontFamily="@font/kurale_regular"
@@ -97,7 +97,7 @@
         app:spanCount="2"
         app:layout_constraintTop_toBottomOf="@id/nativeMyDesgin"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingBottom="84dp"
+        android:paddingBottom="16dp"
         tools:listitem="@layout/layout_poster_template_1" />
 
     <!-- Empty State -->
@@ -130,7 +130,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <include layout="@layout/ads_shimmer_collap_native" />
     </FrameLayout>
     <!--quyen-->
 

@@ -30,14 +30,16 @@
     <!-- Import & Edit Row -->
     <ImageView
         android:id="@+id/imgPoster"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="294:388"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="0dp"
+        android:layout_marginBottom="10dp"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rowImportEdit"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar" />
 
     <LinearLayout
@@ -47,9 +49,9 @@
         android:layout_marginHorizontal="16dp"
         android:orientation="horizontal"
         android:layout_marginTop="15dp"
-        android:paddingBottom="50dp"
+        android:paddingBottom="0.5dp"
         android:weightSum="2"
-        app:layout_constraintTop_toBottomOf="@+id/imgPoster"
+        app:layout_constraintBottom_toTopOf="@id/nativeDetail"
         tools:layout_editor_absoluteX="16dp">
 
         <!-- Import Button -->
@@ -95,5 +97,17 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/nativeDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <include layout="@layout/ads_shimmer_big" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

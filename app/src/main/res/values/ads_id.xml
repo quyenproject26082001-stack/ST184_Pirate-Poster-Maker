@@ -40,6 +40,10 @@
     <!-- Poster Templates -->
     <string name="native_collap_listTemplate" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
 
+
+    <string name="native_detail" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+
+
     <!-- My desgin -->
     <string name="native_collap_myDesgin" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
     <string name="native_myDesgin" translatable="false">ca-app-pub-3940256099942544/2247696110</string>

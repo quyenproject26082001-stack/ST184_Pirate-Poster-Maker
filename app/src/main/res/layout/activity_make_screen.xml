@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
-                android:paddingBottom="85dp"
+                android:paddingBottom="16dp"
                 android:weightSum="2">
 
                 <!-- Import Button -->

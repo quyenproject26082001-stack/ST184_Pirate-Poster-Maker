@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pirate Poster Maker</string>
+    <string name="app_name">Wanted Poster Creator: Filter</string>
     <string name="go_to_setting_message">Die App benötigt diese Berechtigung</string>
     <string name="settings">Einstellungen</string>
     <string name="this_action_can_contain_ads">Diese Aktion kann Werbung enthalten</string>
@@ -55,7 +55,7 @@
     <string name="no">Nein</string>
     <string name="wait_a_minute">Bitte warten Sie einige Sekunden...</string>
     <string name="reset">Zurücksetzen</string>
-    <string name="download_success">Download erfolgreich ins Pirate Poster Maker Album</string>
+    <string name="download_success">Download erfolgreich ins Wanted Poster Creator: Filter Album</string>
     <string name="please_check_your_internet">Bitte überprüfen Sie Ihre Internetverbindung</string>
     <string name="please_select_an_image">Bitte wählen Sie ein Bild aus</string>
     <string name="error">Fehler</string>
@@ -118,7 +118,11 @@
     <string name="enter_bounty">Kopfgeld eingeben</string>
     <string name="edit">Bearbeiten</string>
     <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Bitte geben Sie einen Namen ein, bevor Sie speichern</string>
-    <string name="bountyFilter">Bounty Filter</string>
+    <string name="bountyFilter">Kopfgeld-Filter</string>
     <string name="play">Spielen</string>
-    <string name="old_west">Old West \nOutlaws</string>
+    <string name="old_west">Wilder Westen \nGesetzlose</string>
+    <string name="old_west_outlwaw">Wilder Westen Gesetzlose</string>
+    <string name="camera_permission_is_required">Kameraberechtigung ist erforderlich</string>
+    <string name="my_wanted">Mein Wanted</string>
+
 </resources>

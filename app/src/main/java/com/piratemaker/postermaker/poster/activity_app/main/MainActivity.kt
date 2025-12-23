@@ -60,6 +60,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             tv1.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
             tv2.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
             tv3.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+            tvOldWest.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
         }
 
     }
@@ -69,21 +70,21 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             actionBar.btnActionBarRight.setOnSingleClick { startIntentRightToLeft(SettingsActivity::class.java) }
             //quyen
             btnBountyFilter.setOnSingleClick {
-               showInterAll {
-                   startIntentRightToLeft(BountyFilterActivity::class.java)
-               }
+                showInterAll {
+                    startIntentRightToLeft(BountyFilterActivity::class.java)
+                }
             }
             btnCreate.setOnSingleClick {
-                showInterAll{
-                        startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity::class.java)
-                    }
+                showInterAll {
+                    startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity::class.java)
+                }
 
             }
             //quyen
             BtnPosterWantedTemplate.setOnSingleClick {
                 //quyen
 
-                        startIntentRightToLeft(PosterWantedTemplateActivity::class.java)
+                startIntentRightToLeft(PosterWantedTemplateActivity::class.java)
 
                 //quyen
             }
@@ -91,13 +92,15 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             btnMydesgin.setOnSingleClick {
                 //quyen
                 showInterAll {
-                        startIntentRightToLeft(MyCreationActivity::class.java)
-                    }
+                    startIntentRightToLeft(MyCreationActivity::class.java)
+                }
 
                 //quyen
             }
             btnOldWest.setOnSingleClick {
-                startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.oldwest.OldWestActivity::class.java)
+                showInterAll {
+                    startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.oldwest.OldWestActivity::class.java)
+                }
             }
             //quyen
         }
@@ -141,9 +144,11 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
                             finishAffinity()
                         }
                     }
+
                     RateState.GREATER3 -> {
                         finishAffinity()
                     }
+
                     RateState.CANCEL -> {
                         lifecycleScope.launch {
                             sharePreference.setCountBack(sharePreference.getCountBack() + 1)
@@ -163,7 +168,8 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
     private fun deleteTempFolder() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val dataTemp = MediaHelper.getImageInternal(this@MainActivity, ValueKey.DOWNLOAD_ALBUM_BACKGROUND)
+            val dataTemp =
+                MediaHelper.getImageInternal(this@MainActivity, ValueKey.DOWNLOAD_ALBUM_BACKGROUND)
             if (dataTemp.isNotEmpty()) {
                 dataTemp.forEach {
                     val file = File(it)
@@ -179,7 +185,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             binding.apply {
                 // Fade out nhanh → update text → fade in
                 // Điều này tạo smooth transition thay vì sudden change
-                listOf(tv0, tv1, tv2, tv3).forEach { textView ->
+                listOf(tv0, tv1, tv2, tv3,tvOldWest).forEach { textView ->
                     textView.animate()
                         .alpha(0f)
                         .setDuration(50)
@@ -190,6 +196,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
                                 tv1 -> textView.text = strings(R.string.posterwantedmaker)
                                 tv2 -> textView.text = strings(R.string.posterwantedtemplates)
                                 tv3 -> textView.text = strings(R.string.my_design)
+                                tvOldWest -> textView.text = strings(R.string.old_west)
                             }
                             // Fade in lại
                             textView.animate()
@@ -204,10 +211,13 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
     }
 
     fun initNativeCollab() {
-        Admob.getInstance().loadNativeCollapNotBanner(this,
+        Admob.getInstance().loadNativeCollapNotBanner(
+            this,
             getString(R.string.native_cl_home),
-            binding.nativeClHome)
+            binding.nativeClHome
+        )
     }
+
     override fun onRestart() {
         super.onRestart()
         // Chỉ update text khi language thực sự thay đổi
@@ -220,7 +230,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
         }
         //quyen
         // Reload native collapsible ad
-       initNativeCollab()
+        initNativeCollab()
         //quyen
     }
 }

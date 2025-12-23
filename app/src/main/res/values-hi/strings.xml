@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pirate Poster Maker</string>
+    <string name="app_name">Wanted Poster Creator: Filter</string>
     <string name="go_to_setting_message">ऐप को इस अनुमति की आवश्यकता है</string>
     <string name="settings">सेटिंग्स</string>
     <string name="this_action_can_contain_ads">इस क्रिया में विज्ञापन हो सकते हैं</string>
@@ -55,7 +55,7 @@
     <string name="no">नहीं</string>
     <string name="wait_a_minute">कुछ सेकंड प्रतीक्षा करें...</string>
     <string name="reset">रीसेट</string>
-    <string name="download_success">Pirate Poster Maker एल्बम में डाउनलोड सफल</string>
+    <string name="download_success">Wanted Poster Creator: Filter एल्बम में डाउनलोड सफल</string>
     <string name="please_check_your_internet">कृपया अपना इंटरनेट जांचें</string>
     <string name="please_select_an_image">कृपया एक छवि चुनें</string>
     <string name="error">त्रुटि</string>
@@ -118,7 +118,11 @@
     <string name="enter_bounty">इनाम दर्ज करें</string>
     <string name="edit">संपादित करें</string>
     <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">कृपया सेव करने से पहले नाम दर्ज करें</string>
-    <string name="bountyFilter">Bounty Filter</string>
+    <string name="bountyFilter">इनाम फ़िल्टर</string>
     <string name="play">खेलें</string>
-    <string name="old_west">Old West \nOutlaws</string>
+    <string name="old_west">पुराना पश्चिम \nडाकू</string>
+    <string name="old_west_outlwaw">पुराना पश्चिम डाकू</string>
+    <string name="camera_permission_is_required">कैमरा अनुमति आवश्यक है</string>
+    <string name="my_wanted">मेरा वांटेड</string>
+
 </resources>

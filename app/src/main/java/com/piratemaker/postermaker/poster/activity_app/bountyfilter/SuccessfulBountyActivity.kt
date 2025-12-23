@@ -30,6 +30,7 @@ import com.piratemaker.postermaker.poster.core.extensions.strings
 import com.piratemaker.postermaker.poster.core.extensions.visible
 import com.piratemaker.postermaker.poster.core.helper.MediaHelper
 import com.piratemaker.postermaker.poster.core.helper.PermissionHelper
+import com.piratemaker.postermaker.poster.core.helper.SoundHelper
 import com.piratemaker.postermaker.poster.core.utils.state.HandleState
 import com.piratemaker.postermaker.poster.core.viewmodel.PosterEditorSharedViewModel
 import com.piratemaker.postermaker.poster.databinding.SuccessfullBountyBinding
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
+
 
     private var photoPath: String? = null
     private var bountyValue: String? = null
@@ -84,6 +86,8 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
     override fun setViewBinding(): SuccessfullBountyBinding {
         return SuccessfullBountyBinding.inflate(LayoutInflater.from(this))
     }
+
+
 
     override fun initView() {
         // Get data from intent
@@ -240,10 +244,20 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             permissionLauncher.launch(storagePermissions)
         }
     }
+
+    override fun onRestart() {
+        super.onRestart()
+    }
+
+    override fun initAds() {
+        super.initAds()
+        initNativeCollab()
+    }
+
     fun initNativeCollab() {
-        Admob.getInstance().loadNativeCollapNotBanner(this,
+        Admob.getInstance().loadNativeCollap(this,
             getString(R.string.native_cl_fillter_success),
-            binding.nativeClBountySuccess)
+            binding.nativeCollapSSBounty)
     }
     private fun proceedDownload() {
         val pathToDownload = compositeImagePath ?: photoPath

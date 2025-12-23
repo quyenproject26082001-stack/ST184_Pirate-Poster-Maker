@@ -137,13 +137,18 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_collap_myDesgin), binding.nativeCollapMyDesgin)
+
+    }
     //quyen
     override fun initAds() {
         // Load native regular ad above back button and list
         Admob.getInstance().loadNativeAd(this, getString(R.string.native_myDesgin), binding.nativeMyDesgin, R.layout.ads_native_collap_banner_1)
 
         // Load native collapsible ad at bottom
-        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_myDesgin), binding.nativeCollapMyDesgin)
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_collap_myDesgin), binding.nativeCollapMyDesgin)
     }
     //quyen
 

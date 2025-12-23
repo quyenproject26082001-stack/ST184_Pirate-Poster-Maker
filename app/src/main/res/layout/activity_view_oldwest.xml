@@ -47,9 +47,9 @@
         android:layout_marginHorizontal="16dp"
         android:orientation="horizontal"
         android:layout_marginTop="15dp"
-        android:paddingBottom="50dp"
+        android:paddingBottom="20dp"
         android:weightSum="2"
-        app:layout_constraintTop_toBottomOf="@+id/imgPoster"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="16dp">
 
         <!-- Import Button -->

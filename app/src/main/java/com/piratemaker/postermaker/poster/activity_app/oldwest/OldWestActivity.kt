@@ -56,7 +56,7 @@ class OldWestActivity : BaseActivity<ActivityOldWestBinding>() {
                     adapter.updateItems(assetFiles)
                 } else {
                     adapter = OldWestAdapter(this, assetFiles) { fileName ->
-                        onDesignClicked(fileName)
+                       showInterAll {   onDesignClicked (fileName) }
                     }
                     binding.rvDesigns.adapter = adapter
                 }
@@ -71,7 +71,7 @@ class OldWestActivity : BaseActivity<ActivityOldWestBinding>() {
     override fun viewListener() {
         binding.actionBar.apply {
             btnActionBarLeft.setOnSingleClick {
-                finishAfterTransition()
+               showInterAll { finishAfterTransition() }
             }
         }
     }
@@ -84,8 +84,8 @@ class OldWestActivity : BaseActivity<ActivityOldWestBinding>() {
         binding.actionBar.apply {
             btnActionBarLeft.setImageResource(R.drawable.ic_back)
             btnActionBarLeft.visible()
-            tvCenter.text = "Old West"
-            tvCenter.gone()
+            tvCenter.text = getString(R.string.old_west_outlwaw)
+            tvCenter.visible()
             btnActionBarRight.gone()
             btnActionBarRightText.gone()
             btnActionBarReset.gone()

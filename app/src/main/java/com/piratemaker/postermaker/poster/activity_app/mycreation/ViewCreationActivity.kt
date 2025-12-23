@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
@@ -101,7 +102,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
         binding.apply {
             // Back button
             actionBar.btnActionBarLeft.setOnSingleClick {
-                finishAfterTransition()
+               showInterAll { finishAfterTransition() }
             }
 
             // Delete button
@@ -116,7 +117,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
 
             // Download button
             btnDownload.setOnSingleClick {
-                downloadImage()
+               showInterAll {   downloadImage() }
             }
         }
     }
@@ -182,6 +183,20 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
             permissionLauncher.launch(storagePermissions)
         }
     }
+
+
+
+    override fun initAds() {
+
+        Admob.getInstance().loadNativeAd(
+            this,
+            getString(R.string.native_detail),
+            binding.nativeDetail,
+            R.layout.ads_native_big_btn_top
+        )
+    }
+
+
 
     /**
      * Proceed with download after permission check

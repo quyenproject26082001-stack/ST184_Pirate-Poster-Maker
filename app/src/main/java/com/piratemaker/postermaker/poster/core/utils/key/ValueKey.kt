@@ -1,7 +1,7 @@
 package com.piratemaker.postermaker.poster.core.utils.key
 
 object ValueKey {
-    const val DOWNLOAD_ALBUM = "Pirate Poster Maker"
+    const val DOWNLOAD_ALBUM = "Wanted Poster Creator: Filter"
     const val DOWNLOAD_ALBUM_BACKGROUND = "Image Background"
     const val RANDOM_QUANTITY = 10
     const val WIDTH_HEIGHT_BITMAP = 512

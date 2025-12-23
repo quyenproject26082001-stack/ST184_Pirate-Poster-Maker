@@ -42,6 +42,9 @@ import kotlin.random.Random
 
 class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
+
+    private var isActivityResumed = false
+
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     private val handler = Handler(Looper.getMainLooper())
@@ -246,15 +249,19 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                 val elapsed = System.currentTimeMillis() - startTime
 
                 if (elapsed < duration) {
-                    // 30% probability to show infinity symbol, 70% to show random number
-                    val showInfinity = Random.nextInt(100) < 30
+                    // Generate random number 0-99 for probability distribution
+                    val random = Random.nextInt(100)
 
-                    val displayText = if (showInfinity) {
-                        "∞"  // Infinity symbol
-                    } else {
-                        // Generate random bounty value between 100,000 and 10,000,000
-                        val randomValue = Random.nextInt(100000, 10000001)
-                        NumberFormat.getNumberInstance(Locale.US).format(randomValue)
+                    val displayText = when {
+                        random < 10 -> "Infinity ∞"  // 10% - Infinity symbol
+                        random < 20 -> "0"  // 10% - Zero
+                        random < 30 -> NumberFormat.getNumberInstance(Locale.US).format(999999999)  // 10% - 999,999,999
+                        random < 40 -> NumberFormat.getNumberInstance(Locale.US).format(666666)     // 10% - 666,666
+                        else -> {
+                            // 60% - Random bounty value between 100,000 and 10,000,000
+                            val randomValue = Random.nextInt(100000, 10000001)
+                            NumberFormat.getNumberInstance(Locale.US).format(randomValue)
+                        }
                     }
 
                     binding.tvBountyFilter.text = displayText
@@ -324,9 +331,9 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
-        // Play camera sound
-        SoundHelper.playSound(R.raw.camera_sound)
-
+        if(isActivityResumed) {// Play camera sound
+            SoundHelper.playSound(R.raw.camera_sound)
+        }
         // Show white flash effect
         binding.flashOverlay.apply {
             visible()
@@ -351,9 +358,10 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onCaptureSuccess(image: ImageProxy) {
-                    // Convert image to bitmap and save
+                    // Convert image to bitmap, flip it horizontally, and save
                     val bitmap = image.toBitmap()
-                    val photoFile = saveBitmapToFile(bitmap)
+                    val flippedBitmap = flipBitmapHorizontally(bitmap)
+                    val photoFile = saveBitmapToFile(flippedBitmap)
 
                     image.close()
 
@@ -384,6 +392,12 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                 }
             }
         )
+    }
+
+    private fun flipBitmapHorizontally(bitmap: Bitmap): Bitmap {
+        val matrix = android.graphics.Matrix()
+        matrix.setScale(-1f, 1f)  // Flip horizontally
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     private fun saveBitmapToFile(bitmap: Bitmap): File? {
@@ -436,7 +450,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                 // Just show toast, don't go to settings yet
                 Toast.makeText(
                     this,
-                    "Camera permission is required",
+                    getString(R.string.camera_permission_is_required),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -449,7 +463,7 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
         initNativeCollab()
     }
     fun initNativeCollab() {
-        Admob.getInstance().loadNativeCollapNotBanner(this,
+        Admob.getInstance().loadNativeCollap(this,
             getString(R.string.native_collap_fillter),
             binding.nativeClBounty)
     }
@@ -469,7 +483,29 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
     override fun onRestart() {
         super.onRestart()
+        recreate()
         initNativeCollab()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isActivityResumed = true
+    }
+
+    override fun onPause() {
+        isActivityResumed = false  // ← Set false trước
+
+        SoundHelper.stopAll()
+
+        super.onPause()
+
+    }
+
+    override fun onStop() {
+
+        super.onStop()
+
+
     }
 
     @SuppressLint("MissingSuperCall")
