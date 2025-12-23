@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.piratemaker.postermaker.poster.databinding.ItemMyDesignBinding
+import com.piratemaker.postermaker.poster.databinding.ItemOldwestBinding
 
 class OldWestAdapter(
     private val context: Context,
@@ -13,7 +13,7 @@ class OldWestAdapter(
     private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<OldWestAdapter.ViewHolder>() {
 
-    inner class ViewHolder(private val binding: ItemMyDesignBinding) :
+    inner class ViewHolder(private val binding: ItemOldwestBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(assetFileName: String) {
@@ -21,7 +21,7 @@ class OldWestAdapter(
                 // Load image from assets folder
                 val inputStream = context.assets.open("oldwest/$assetFileName")
                 val bitmap = BitmapFactory.decodeStream(inputStream)
-                binding.imgDesign.setImageBitmap(bitmap)
+                binding.imgOldWest.setImageBitmap(bitmap)
                 inputStream.close()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -34,7 +34,7 @@ class OldWestAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemMyDesignBinding.inflate(
+        val binding = ItemOldwestBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
