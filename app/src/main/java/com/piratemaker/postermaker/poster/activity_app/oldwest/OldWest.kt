@@ -5,18 +5,20 @@ import android.view.LayoutInflater
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
-import com.piratemaker.postermaker.poster.databinding.ActivityMyDesignBinding
+
 import java.io.File
 //quyen
 import com.lvt.ads.util.Admob
+import com.piratemaker.postermaker.poster.databinding.ActivityOldWestBinding
+
 //quyen
 
-class MyDesignActivity : BaseActivity<ActivityMyDesignBinding>() {
+class OldWest : BaseActivity<ActivityOldWestBinding>() {
 
     private lateinit var adapter: MyDesignAdapter
 
-    override fun setViewBinding(): ActivityMyDesignBinding {
-        return ActivityMyDesignBinding.inflate(LayoutInflater.from(this))
+    override fun setViewBinding(): ActivityOldWestBinding {
+        return ActivityOldWestBinding.inflate(LayoutInflater.from(this))
     }
 
     override fun initView() {

@@ -194,13 +194,14 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintDimensionRatio="328:128"
+                app:layout_constraintDimensionRatio="160:128"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/glCenter"
+                android:layout_marginStart="4dp"
                 app:layout_constraintTop_toBottomOf="@id/BtnPosterWantedTemplate">
 
                 <ImageView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:src="@drawable/img_home_3" />
@@ -223,7 +224,7 @@
                         android:layout_weight="0"
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
-                        android:text="@string/my_design"
+                        android:text="@string/my_creation"
                         android:textColor="@color/white"
                         android:textSize="30sp"
                         app:outerStrokeColor="#000000"
@@ -235,6 +236,63 @@
                         android:layout_weight="1" />
                 </LinearLayout>
             </FrameLayout>
+
+            <!--btnMydesgin-->
+            <FrameLayout
+                android:id="@+id/btnOldWest"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintDimensionRatio="160:128"
+                app:layout_constraintEnd_toEndOf="@id/glCenter"
+                android:layout_marginStart="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/BtnPosterWantedTemplate">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/img_home_4" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                        android:id="@+id/tv3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:fontFamily="@font/kurale_regular"
+                        android:gravity="center"
+                        android:text="@string/old_west"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        android:maxLines="2"
+                        app:outerStrokeColor="#000000"
+                        app:outerStrokeWidth="1dp" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5"
+                android:id="@+id/glCenter"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

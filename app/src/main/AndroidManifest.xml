@@ -22,7 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BaseProject"
         tools:replace="android:fullBackupContent">
-
+        <activity
+            android:name=".activity_app.oldwest.OldWest"
+            android:exported="false" />
         <activity
             android:name=".activity_app.splash.SplashActivity"
             android:exported="true"
@@ -48,10 +50,10 @@
         <activity
             android:name=".activity_app.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Transparent"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".activity_app.SettingsActivity"
             android:exported="false"
@@ -59,8 +61,8 @@
         <activity
             android:name=".activity_app.wanted.WantedEditorActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".activity_app.makescreen.MakeScreenActivity"
             android:exported="false"
@@ -76,10 +78,10 @@
         <activity
             android:name=".activity_app.success.SuccessActivity"
             android:exported="false"
-            android:theme="@style/Theme.Transparent"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent" />
         <activity
-            android:name=".activity_app.mydesign.MyDesignActivity"
+            android:name=".activity_app.mydesign.MyCreationActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -104,7 +106,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/app_id" />
-
 
         <provider
             android:name="androidx.core.content.FileProvider"

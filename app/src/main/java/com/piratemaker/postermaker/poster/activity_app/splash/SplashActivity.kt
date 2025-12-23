@@ -46,7 +46,9 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         binding.imvLoading.startAnimation(rotateAnimation)
 
         initNetworkMonitor()
-       Admob.getInstance().setTimeLimitShowAds(20000)
+               Admob.getInstance().setOpenShowAllAds(false)
+
+        Admob.getInstance().setTimeLimitShowAds(20000)
         Admob.getInstance().setTimeCountdownNativeCollab(15000)
 
         // Simple delay then navigate

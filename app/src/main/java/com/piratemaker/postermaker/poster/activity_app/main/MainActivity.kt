@@ -16,15 +16,13 @@ import com.piratemaker.postermaker.poster.core.utils.state.RateState
 import com.piratemaker.postermaker.poster.databinding.ActivityHomeBinding
 import com.piratemaker.postermaker.poster.activity_app.SettingsActivity
 import com.piratemaker.postermaker.poster.activity_app.bountyfilter.BountyFilterActivity
-import com.piratemaker.postermaker.poster.activity_app.mydesign.MyDesignActivity
+import com.piratemaker.postermaker.poster.activity_app.mydesign.MyCreationActivity
 import com.piratemaker.postermaker.poster.activity_app.posterwanted.PosterWantedTemplateActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.strings
 //quyen
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.lvt.ads.callback.InterCallback
 import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.core.extensions.showInterAll
 //quyen
@@ -33,7 +31,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.system.exitProcess
 
 class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
@@ -94,7 +91,7 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
             btnMydesgin.setOnSingleClick {
                 //quyen
                 showInterAll {
-                        startIntentRightToLeft(MyDesignActivity::class.java)
+                        startIntentRightToLeft(MyCreationActivity::class.java)
                     }
 
                 //quyen
