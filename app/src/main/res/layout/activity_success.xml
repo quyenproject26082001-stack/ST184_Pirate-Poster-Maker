@@ -43,16 +43,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar" />
 
+
+
+    <!-- Import Button -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnEdit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/imgPoster"
+        app:cardCornerRadius="8dp"
+        app:strokeColor="#C4561B"
+        app:strokeWidth="2dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kurale_regular"
+            android:text="@string/edit"
+            android:textColor="#C4561B"
+            android:textSize="20sp" />
+    </com.google.android.material.card.MaterialCardView>
+
+
     <LinearLayout
         android:id="@+id/rowImportEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:orientation="horizontal"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="8dp"
         android:paddingBottom="85dp"
         android:weightSum="2"
-        app:layout_constraintTop_toBottomOf="@+id/imgPoster"
+        app:layout_constraintTop_toBottomOf="@+id/btnEdit"
         tools:layout_editor_absoluteX="16dp">
 
         <!-- Import Button -->
