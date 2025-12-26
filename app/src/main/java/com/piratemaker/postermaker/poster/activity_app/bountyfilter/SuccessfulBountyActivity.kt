@@ -200,7 +200,7 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
         binding.actionBar.apply {
             if (hasStickers) {
                 btnActionBarRight.visible()
-                btnActionBarRight.setImageResource(R.drawable.ic_save)
+                btnActionBarRight.setImageResource(R.drawable.ic_done)
             } else {
                 btnActionBarRight.gone()
             }
