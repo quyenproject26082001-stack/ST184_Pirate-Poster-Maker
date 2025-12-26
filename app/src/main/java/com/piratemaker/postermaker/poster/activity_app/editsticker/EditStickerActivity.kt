@@ -166,7 +166,10 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
                         // Set delete callback after view is created
                         setOnDeleteListener {
-                            binding.stickerCanvas.removeView(this)
+                            // Post removal to happen after touch event completes
+                            binding.stickerCanvas.post {
+                                binding.stickerCanvas.removeView(this)
+                            }
                         }
                     }
 
