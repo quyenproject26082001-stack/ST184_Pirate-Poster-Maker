@@ -27,7 +27,7 @@ class StickerView(
 
     private val borderPaint = Paint().apply {
         isAntiAlias = true
-        color = ContextCompat.getColor(context, R.color.white)
+        color = android.graphics.Color.parseColor("#C4561B")
         strokeWidth = 6f
         style = Paint.Style.STROKE
         pathEffect = DashPathEffect(floatArrayOf(20f, 10f), 0f)
@@ -59,28 +59,26 @@ class StickerView(
     }
 
     private fun setupIcons() {
-        // Delete icon (top-right)
+        // Delete icon (bottom-left)
         val deleteIcon = BitmapStickerIcon(
             ContextCompat.getDrawable(context, R.drawable.ic_delete_sticker)!!,
-            BitmapStickerIcon.IconPosition.TOP_RIGHT
+            BitmapStickerIcon.IconPosition.BOTTOM_LEFT
         ).apply {
             iconEvent = DeleteIconEvent()
         }
 
-        // Flip icon (top-left)
-
-
+        // Flip icon (bottom-right)
         val flipIcon = BitmapStickerIcon(
             ContextCompat.getDrawable(context, R.drawable.ic_flip_sticker)!!,
-            BitmapStickerIcon.IconPosition.TOP_LEFT
+            BitmapStickerIcon.IconPosition.BOTTOM_RIGHT
         ).apply {
             iconEvent = FlipIconEvent()
         }
 
-        // Zoom/Rotate icon (bottom-right)
+        // Zoom/Rotate icon (top-right)
         val zoomIcon = BitmapStickerIcon(
             ContextCompat.getDrawable(context, R.drawable.ic_rotate_scale)!!,
-            BitmapStickerIcon.IconPosition.BOTTOM_RIGHT
+            BitmapStickerIcon.IconPosition.TOP_RIGHT
         ).apply {
             iconEvent = ZoomIconEvent()
         }
@@ -115,10 +113,11 @@ class StickerView(
     }
 
     private fun updateIconPositions() {
-        val left = paddingLeft.toFloat()
-        val top = paddingTop.toFloat()
-        val right = width - paddingRight.toFloat()
-        val bottom = height - paddingBottom.toFloat()
+        val iconOffset = 10f // Offset to keep icons inside bounds
+        val left = paddingLeft.toFloat() + iconOffset
+        val top = paddingTop.toFloat() + iconOffset
+        val right = width - paddingRight.toFloat() - iconOffset
+        val bottom = height - paddingBottom.toFloat() - iconOffset
 
         for (icon in icons) {
             when (icon.position) {

@@ -74,7 +74,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             btnActionBarLeft.visible()
 
             tvCenter.text = getString(R.string.add_sticker)
-            tvCenter.visible()
+            tvCenter.gone()
 
             btnActionBarRight.setImageResource(R.drawable.ic_done)
             btnActionBarRight.visible()

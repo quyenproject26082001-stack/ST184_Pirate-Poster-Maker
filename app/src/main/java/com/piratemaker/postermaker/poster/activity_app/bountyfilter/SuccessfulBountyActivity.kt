@@ -23,6 +23,7 @@ import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.checkPermissions
 import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.goToSettings
+import com.piratemaker.postermaker.poster.core.extensions.select
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.shareImagesPaths
 import com.piratemaker.postermaker.poster.core.extensions.showInterAll
@@ -182,7 +183,7 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
                 shareImage()
             }
 
-            actionBar.btnActionBarRight.setOnSingleClick {
+            actionBar.btnActionBarRightText.setOnSingleClick {
                 saveToMyDesign()
             }
         }
@@ -193,6 +194,8 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             tvCenter.text = getString(R.string.bountyFilter)
             btnActionBarLeft.setImageResource(R.drawable.ic_home)
             btnActionBarLeft.visible()
+            btnActionBarRightText.visible()
+            tvRightText.select()
             updateActionBarIcons()
         }
     }
@@ -200,10 +203,9 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
     private fun updateActionBarIcons() {
         binding.actionBar.apply {
             if (hasStickers) {
-                btnActionBarRight.visible()
-                btnActionBarRight.setImageResource(R.drawable.ic_done)
+                btnActionBarRightText.visible()
             } else {
-                btnActionBarRight.gone()
+                btnActionBarRightText.visible()
             }
         }
     }
