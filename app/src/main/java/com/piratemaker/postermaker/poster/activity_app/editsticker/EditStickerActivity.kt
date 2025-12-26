@@ -10,11 +10,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.piratemaker.postermaker.poster.R
-import com.piratemaker.postermaker.poster.activity_app.template.CenterZoomLayoutManager
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
@@ -106,21 +104,14 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             loadStickersForCategory(categoryId)
         }
 
-        val layoutManager = CenterZoomLayoutManager(this)
+        // Use normal horizontal LinearLayoutManager
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+            this,
+            androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
+            false
+        )
         binding.rvCategories.layoutManager = layoutManager
         binding.rvCategories.adapter = categoryAdapter
-
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(binding.rvCategories)
-
-        binding.rvCategories.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    updateSelectedCategoryFromCenter(recyclerView, snapHelper)
-                }
-            }
-        })
     }
 
     private fun setupStickerGrid() {
@@ -128,7 +119,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             addStickerToCanvas(stickerPath)
         }
 
-        binding.rvStickers.layoutManager = GridLayoutManager(this, 4)
+        binding.rvStickers.layoutManager = GridLayoutManager(this, 5)
         binding.rvStickers.adapter = stickerAdapter
     }
 
@@ -138,20 +129,6 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             withContext(Dispatchers.Main) {
                 stickerAdapter.updateStickers(stickers)
             }
-        }
-    }
-
-    private fun updateSelectedCategoryFromCenter(recyclerView: RecyclerView, snapHelper: LinearSnapHelper) {
-        val layoutManager = recyclerView.layoutManager ?: return
-        val snappedView = snapHelper.findSnapView(layoutManager) ?: return
-        val position = layoutManager.getPosition(snappedView)
-
-        val newCategoryId = position + 1
-
-        if (currentCategoryId != newCategoryId) {
-            currentCategoryId = newCategoryId
-            categoryAdapter.setSelectedPosition(position)
-            loadStickersForCategory(newCategoryId)
         }
     }
 

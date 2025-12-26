@@ -53,8 +53,12 @@ class StickerCategoryAdapter(
                 .centerInside()
                 .into(binding.imgCategoryThumb)
 
-            // Update selection state
-            binding.cardStickerCategory.alpha = if (isSelected) 1.0f else 0.7f
+            // Update selection state - change background
+            if (isSelected) {
+                binding.imgCategoryThumb.setBackgroundResource(com.piratemaker.postermaker.poster.R.drawable.bg_cateris_selected)
+            } else {
+                binding.imgCategoryThumb.setBackgroundResource(com.piratemaker.postermaker.poster.R.drawable.bg_item_category)
+            }
 
             // Handle click
             binding.root.setOnClickListener {
