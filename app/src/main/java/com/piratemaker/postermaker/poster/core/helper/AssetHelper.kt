@@ -211,4 +211,47 @@ object AssetHelper {
     fun getTemplateAvatarPath(templateId: Int): String {
         return "file:///android_asset/template/$templateId/avatar.webp"
     }
+
+    /**
+     * Get sticker category thumbnail (first sticker image) for navigation
+     * @param categoryId: 1-16
+     * @return: "file:///android_asset/sticker/{categoryId}/1.png"
+     */
+    fun getStickerCategoryThumbnail(categoryId: Int): String {
+        return "file:///android_asset/sticker/$categoryId/1.png"
+    }
+
+    /**
+     * Get all stickers in a specific category
+     * @param context: Android context
+     * @param categoryId: 1-16
+     * @return: ArrayList of sticker paths
+     */
+    fun getStickersByCategory(context: Context, categoryId: Int): ArrayList<String> {
+        val categoryPath = "sticker/$categoryId"
+        val allFiles = context.assets.list(categoryPath)
+        val sortedFiles = MediaHelper.sortAsset(allFiles)
+            ?.filter { !it.contains("Thumbs.db") && (it.endsWith(".png") || it.endsWith(".webp") || it.endsWith(".jpg")) }
+            ?.map { "file:///android_asset/sticker/$categoryId/$it" }
+            ?.toCollection(ArrayList())
+        return sortedFiles ?: arrayListOf()
+    }
+
+    /**
+     * Get all sticker category IDs (1-16)
+     * @return: ArrayList of category IDs
+     */
+    fun getAllStickerCategories(): ArrayList<Int> {
+        return (1..16).toCollection(ArrayList())
+    }
+
+    /**
+     * Get specific sticker path
+     * @param categoryId: 1-16
+     * @param fileName: sticker file name (e.g., "1.png")
+     * @return: "file:///android_asset/sticker/{categoryId}/{fileName}"
+     */
+    fun getStickerPath(categoryId: Int, fileName: String): String {
+        return "file:///android_asset/sticker/$categoryId/$fileName"
+    }
 }

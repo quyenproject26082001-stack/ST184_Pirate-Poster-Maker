@@ -34,17 +34,23 @@ import com.piratemaker.postermaker.poster.core.helper.SoundHelper
 import com.piratemaker.postermaker.poster.core.utils.state.HandleState
 import com.piratemaker.postermaker.poster.core.viewmodel.PosterEditorSharedViewModel
 import com.piratemaker.postermaker.poster.databinding.SuccessfullBountyBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
 
+    companion object {
+        private const val REQUEST_CODE_EDIT_STICKER = 1001
+    }
 
     private var photoPath: String? = null
     private var bountyValue: String? = null
     private var downloadPermissionDeniedCount = 0
     private var compositeImagePath: String? = null
+    private var hasStickers = false
 
     private val viewModel = PosterEditorSharedViewModel.getInstance()
 
@@ -161,6 +167,10 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
                 }
             }
 
+            btnEdit.setOnSingleClick {
+                openEditSticker()
+            }
+
             btnDownload.setOnSingleClick {
                 showInterAll {
                 downloadImage()
@@ -170,6 +180,10 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             btnShare.setOnSingleClick(2000) {
                 shareImage()
             }
+
+            actionBar.btnActionBarRight.setOnSingleClick {
+                saveToMyDesign()
+            }
         }
     }
 
@@ -178,7 +192,18 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             tvCenter.text = getString(R.string.bountyFilter)
             btnActionBarLeft.setImageResource(R.drawable.ic_home)
             btnActionBarLeft.visible()
-            btnActionBarRight.gone()
+            updateActionBarIcons()
+        }
+    }
+
+    private fun updateActionBarIcons() {
+        binding.actionBar.apply {
+            if (hasStickers) {
+                btnActionBarRight.visible()
+                btnActionBarRight.setImageResource(R.drawable.ic_save)
+            } else {
+                btnActionBarRight.gone()
+            }
         }
     }
 
@@ -259,6 +284,80 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             getString(R.string.native_cl_fillter_success),
             binding.nativeCollapSSBounty)
     }
+    private fun openEditSticker() {
+        val pathToEdit = compositeImagePath ?: photoPath
+        pathToEdit?.let { path ->
+            val intent = Intent(this, com.piratemaker.postermaker.poster.activity_app.editsticker.EditStickerActivity::class.java)
+            intent.putExtra("IMAGE_PATH", path)
+            startActivityForResult(intent, REQUEST_CODE_EDIT_STICKER)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_EDIT_STICKER && resultCode == RESULT_OK) {
+            data?.let {
+                val editedPath = it.getStringExtra("EDITED_IMAGE_PATH")
+                val hasStickersAdded = it.getBooleanExtra("HAS_STICKERS", false)
+
+                if (editedPath != null) {
+                    compositeImagePath = editedPath
+                    hasStickers = hasStickersAdded
+
+                    // Reload image
+                    Glide.with(this)
+                        .load(File(editedPath))
+                        .into(binding.imgCamera)
+
+                    // Update action bar to show save icon
+                    updateActionBarIcons()
+                }
+            }
+        }
+    }
+
+    private fun saveToMyDesign() {
+        val pathToSave = compositeImagePath ?: photoPath
+        pathToSave?.let { path ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    val sourceFile = File(path)
+                    val myDesignDir = File(filesDir, "bounty_designs")
+                    if (!myDesignDir.exists()) {
+                        myDesignDir.mkdirs()
+                    }
+
+                    val fileName = "poster_${System.currentTimeMillis()}.png"
+                    val destFile = File(myDesignDir, fileName)
+                    sourceFile.copyTo(destFile, overwrite = true)
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@SuccessfulBountyActivity,
+                            "Saved to My Design!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        // Navigate to My Design
+                        val intent = Intent(this@SuccessfulBountyActivity, com.piratemaker.postermaker.poster.activity_app.mycreation.MyCreationActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                        finish()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@SuccessfulBountyActivity,
+                            "Save failed!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun proceedDownload() {
         val pathToDownload = compositeImagePath ?: photoPath
         pathToDownload?.let { path ->
