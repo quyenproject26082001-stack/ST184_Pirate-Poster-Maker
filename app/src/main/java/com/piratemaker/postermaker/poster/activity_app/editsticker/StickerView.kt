@@ -242,6 +242,12 @@ class StickerView(
         // Calculate scale factor (like ST193)
         var scaleFactor = if (oldDistance > 0f) newDistance / oldDistance else 1f
 
+
+        // Chống zoom nhạy (dead-zone)
+        if (kotlin.math.abs(scaleFactor - 1f) < 0.04f) {
+            scaleFactor = 1f
+        }
+
         // Get current scale
         val currentScale = initialScale
 

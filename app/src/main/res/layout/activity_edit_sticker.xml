@@ -41,12 +41,11 @@
             android:scaleType="fitXY" />
 
         <!-- Sticker Canvas (will hold stickers added by user) -->
-        <FrameLayout
-            android:id="@+id/stickerCanvas"
+        <com.piratemaker.postermaker.core.custom.drawview.DrawView
+            android:id="@+id/drawView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false" />
+            />
 
     </FrameLayout>
 

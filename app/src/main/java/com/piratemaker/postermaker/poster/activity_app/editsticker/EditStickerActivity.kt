@@ -1,17 +1,20 @@
 package com.piratemaker.postermaker.poster.activity_app.editsticker
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.view.Gravity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.ocmaker.pixcel.maker.data.model.draw.Draw
+import com.ocmaker.pixcel.maker.data.model.draw.DrawableDraw
+import com.piratemaker.postermaker.listener.listenerdraw.OnDrawListener
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
@@ -25,10 +28,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
+
+    private var touchedAnyDraw = false
+
+    var currentDraw: Draw? = null
+
+    var drawViewList: ArrayList<Draw> = arrayListOf()
     private lateinit var categoryAdapter: StickerCategoryAdapter
+
     private lateinit var stickerAdapter: StickerItemAdapter
     private var currentImagePath: String = ""
     private var currentCategoryId: Int = 1
@@ -44,24 +56,12 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
         // Load background image
         if (currentImagePath.isNotEmpty()) {
-            Glide.with(this)
-                .load(File(currentImagePath))
-                .into(binding.imgBackground)
+            Glide.with(this).load(File(currentImagePath)).into(binding.imgBackground)
         }
 
         // Setup canvas touch to deselect stickers
-        binding.stickerCanvas.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                // Deselect all stickers when canvas background is tapped
-                for (i in 0 until binding.stickerCanvas.childCount) {
-                    val child = binding.stickerCanvas.getChildAt(i)
-                    if (child is StickerView) {
-                        child.setStickerSelected(false)
-                    }
-                }
-            }
-            false // Allow touch events to propagate to children
-        }
+
+        initDrawView()
 
         setupCategoryNavigation()
         setupStickerGrid()
@@ -106,9 +106,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
         // Use normal horizontal LinearLayoutManager
         val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
-            this,
-            androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
-            false
+            this, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false
         )
         binding.rvCategories.layoutManager = layoutManager
         binding.rvCategories.adapter = categoryAdapter
@@ -116,7 +114,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
     private fun setupStickerGrid() {
         stickerAdapter = StickerItemAdapter { stickerPath ->
-            addStickerToCanvas(stickerPath)
+            addDrawable(stickerPath)
         }
 
         binding.rvStickers.layoutManager = GridLayoutManager(this, 5)
@@ -132,63 +130,14 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         }
     }
 
-    private fun addStickerToCanvas(stickerPath: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Load sticker bitmap with Glide
-                val bitmap = Glide.with(this@EditStickerActivity)
-                    .asBitmap()
-                    .load(stickerPath)
-                    .submit(512, 512)
-                    .get()
-
-                withContext(Dispatchers.Main) {
-                    // Deselect all other stickers first
-                    for (i in 0 until binding.stickerCanvas.childCount) {
-                        val child = binding.stickerCanvas.getChildAt(i)
-                        if (child is StickerView) {
-                            child.setStickerSelected(false)
-                        }
-                    }
-
-                    // Create StickerView with handle box
-                    val stickerView = StickerView(
-                        this@EditStickerActivity,
-                        bitmap
-                    ).apply {
-                        // Set initial size (25% of canvas)
-                        val size = (binding.stickerCanvas.width * 0.25f).toInt()
-                        layoutParams = FrameLayout.LayoutParams(size, size).apply {
-                            gravity = Gravity.CENTER
-                        }
-                        tag = stickerPath
-                        setStickerSelected(true)
-
-                        // Set delete callback after view is created
-                        setOnDeleteListener {
-                            // Post removal to happen after touch event completes
-                            binding.stickerCanvas.post {
-                                binding.stickerCanvas.removeView(this)
-                            }
-                        }
-                    }
-
-                    // Add to canvas
-                    binding.stickerCanvas.addView(stickerView)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     private fun saveAndReturn() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 // Deselect all stickers before capturing to avoid showing handle boxes
                 withContext(Dispatchers.Main) {
-                    for (i in 0 until binding.stickerCanvas.childCount) {
-                        val child = binding.stickerCanvas.getChildAt(i)
+                    for (i in 0 until binding.drawView.childCount) {
+                        val child = binding.drawView.getChildAt(i)
                         if (child is StickerView) {
                             child.setStickerSelected(false)
                         }
@@ -208,7 +157,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                 }
 
                 // Check if any stickers were added
-                val hasStickers = binding.stickerCanvas.childCount > 0
+                val hasStickers = binding.drawView.childCount > 0
 
                 withContext(Dispatchers.Main) {
                     val resultIntent = Intent().apply {
@@ -226,6 +175,126 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             }
         }
     }
+
+    private fun addDrawable(path: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val bitmapDefault =
+                Glide.with(this@EditStickerActivity).load(path).submit().get().toBitmap()
+
+            withContext(Dispatchers.Main) {
+                binding.drawView.addDraw(loadDrawableEmoji(this@EditStickerActivity, bitmapDefault))
+            }
+        }
+    }
+
+
+    private fun initDrawView() {
+        binding.drawView.setOnTouchListener { _, ev ->
+        if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
+            touchedAnyDraw = false
+
+            // delay cực nhỏ để OnDrawListener có cơ hội set touchedAnyDraw=true nếu hit draw
+            binding.drawView.post {
+                if (!touchedAnyDraw) {
+                    // ==> CLICK OUTSIDE (vùng trống trên canvas)
+                    currentDraw = null
+
+                    // Ẩn handle/option (tuỳ lib của bạn: gọi hàm hide option nếu có)
+                    // binding.drawView.hideOptionIcon()  // nếu thư viện có
+
+                    // Nếu bạn có custom StickerView con trong drawView:
+                    for (i in 0 until binding.drawView.childCount) {
+                        (binding.drawView.getChildAt(i) as? StickerView)?.setStickerSelected(
+                            false
+                        )
+                    }
+                }
+            }
+        }
+        false // trả false để drawView v
+    }
+        binding.drawView.apply {
+            setConstrained(true)
+            setLocked(false)
+            setOnDrawListener(object : OnDrawListener {
+                override fun onAddedDraw(draw: Draw) {
+                    Log.d("EditTextFlow", "DrawView: onAddedDraw")
+                    updateCurrentCurrentDraw(draw)
+                    addDrawView(draw)
+                }
+
+                override fun onClickedDraw(draw: Draw) {
+                    Log.d("EditTextFlow", "DrawView: onClickedDraw")
+
+                }
+
+                override fun onDeletedDraw(draw: Draw) {
+                    Log.d("EditTextFlow", "DrawView: onDeletedDraw")
+                    deleteDrawView(draw)
+                }
+
+                override fun onDragFinishedDraw(draw: Draw) {
+                    Log.d("EditTextFlow", "DrawView: onDragFinishedDraw")
+                }
+
+                override fun onTouchedDownDraw(draw: Draw) {
+                    Log.d("EditTextFlow", "DrawView: onTouchedDownDraw")
+                    updateCurrentCurrentDraw(draw)
+                }
+
+                override fun onZoomFinishedDraw(draw: Draw) {}
+
+                override fun onFlippedDraw(draw: Draw) {
+                    Log.d("EditTextFlow", "DrawView: onFlippedDraw")
+
+                }
+
+                override fun onDoubleTappedDraw(draw: Draw) {}
+
+                override fun onHideOptionIconDraw() {}
+
+                override fun onUndoDeleteDraw(draw: List<Draw?>) {}
+
+                override fun onUndoUpdateDraw(draw: List<Draw?>) {}
+
+                override fun onUndoDeleteAll() {}
+
+                override fun onRedoAll() {}
+
+                override fun onReplaceDraw(draw: Draw) {}
+
+                override fun onEditText(draw: DrawableDraw) {}
+
+                override fun onReplace(draw: Draw) {}
+            })
+        }
+
+    }
+
+    fun updateCurrentCurrentDraw(draw: Draw) {
+        currentDraw = draw
+    }
+
+    fun addDrawView(draw: Draw) {
+        drawViewList.add(draw)
+    }
+
+    fun deleteDrawView(draw: Draw) {
+        drawViewList.removeIf { it == draw }
+    }
+
+    fun loadDrawableEmoji(context: Context, bitmap: Bitmap): DrawableDraw {
+        val drawable = bitmap.toDrawable(context.resources)
+        val drawableEmoji =
+            DrawableDraw(drawable, "${SimpleDateFormat("dd_MM_yyyy_hh_mm_ss").format(Date())}.png")
+        return drawableEmoji
+    }
+
+    fun resetDraw() {
+        drawViewList.clear()
+
+    }
+
 
     override fun initAds() {
         // Load native ad if needed

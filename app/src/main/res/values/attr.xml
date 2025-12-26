@@ -25,6 +25,14 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="StickerView">
+        <attr name="showIcons" format="boolean" />
+        <attr name="showBorder" format="boolean" />
+        <attr name="bringToFrontCurrentSticker" format="boolean" />
+        <attr name="borderColor" format="color"/>
+        <attr name="borderAlpha" format="integer"/>
+    </declare-styleable>
+
     <!-- Double Stroke -->
     <declare-styleable name="DoubleStrokeTextView">
         <attr name="outerStrokeColor" format="color" />
