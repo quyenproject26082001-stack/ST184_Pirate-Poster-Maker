@@ -146,6 +146,7 @@ class StickerView(
                 currentIcon = findTouchedIcon(event.x, event.y)
                 if (currentIcon != null) {
                     currentIcon?.iconEvent?.onActionDown(this, event)
+                    parent?.requestDisallowInterceptTouchEvent(true)
                     return true
                 }
 
@@ -213,38 +214,57 @@ class StickerView(
         invalidate()
     }
 
-    // Zoom and rotate methods
+    // Zoom and rotate methods (ST193 approach)
     private var initialRotation = 0f
     private var initialScale = 1f
     private var centerX = 0f
     private var centerY = 0f
+    private var oldDistance = 0f
+    private var oldRotation = 0f
 
     fun onZoomAndRotateStart(event: MotionEvent) {
+        // Calculate center point in SCREEN coordinates (not view-relative)
         centerX = x + width / 2f
         centerY = y + height / 2f
-        startDistance = calculateDistance(centerX, centerY, event.rawX, event.rawY)
-        startRotation = calculateRotation(centerX, centerY, event.rawX, event.rawY)
+
+        // Store initial state using rawX, rawY (screen coordinates)
+        oldDistance = calculateDistance(centerX, centerY, event.rawX, event.rawY)
+        oldRotation = calculateRotation(centerX, centerY, event.rawX, event.rawY)
         initialRotation = rotation
         initialScale = scaleX
     }
 
     fun onZoomAndRotate(event: MotionEvent) {
+        // Calculate new distance and rotation using rawX, rawY (screen coordinates)
         val newDistance = calculateDistance(centerX, centerY, event.rawX, event.rawY)
         val newRotation = calculateRotation(centerX, centerY, event.rawX, event.rawY)
 
-        // Scale
-        if (startDistance > 0) {
-            val scale = newDistance / startDistance
-            val newScale = initialScale * scale
-            // Limit scale between 0.3 and 3.0
-            if (newScale in 0.3f..3.0f) {
-                scaleX = newScale
-                scaleY = newScale
-            }
+        // Calculate scale factor (like ST193)
+        var scaleFactor = if (oldDistance > 0f) newDistance / oldDistance else 1f
+
+        // Get current scale
+        val currentScale = initialScale
+
+        // Calculate new scale
+        val newScale = currentScale * scaleFactor
+
+        // Limit scale between 0.3 and 3.0 (ST193 uses 0.4 to 3.0)
+        val minScale = 0.3f
+        val maxScale = 3.0f
+
+        if (newScale < minScale) {
+            scaleFactor = minScale / currentScale
+        } else if (newScale > maxScale) {
+            scaleFactor = maxScale / currentScale
         }
 
-        // Rotate
-        rotation = initialRotation + (newRotation - startRotation)
+        // Apply scale (relative to initial)
+        scaleX = currentScale * scaleFactor
+        scaleY = currentScale * scaleFactor
+
+        // Apply rotation (absolute, like ST193: newRotation - oldRotation)
+        rotation = initialRotation + (newRotation - oldRotation)
+
         invalidate()
     }
 
