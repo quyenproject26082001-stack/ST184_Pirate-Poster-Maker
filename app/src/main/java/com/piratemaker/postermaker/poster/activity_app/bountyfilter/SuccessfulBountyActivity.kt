@@ -28,6 +28,7 @@ import com.piratemaker.postermaker.poster.core.extensions.shareImagesPaths
 import com.piratemaker.postermaker.poster.core.extensions.showInterAll
 import com.piratemaker.postermaker.poster.core.extensions.strings
 import com.piratemaker.postermaker.poster.core.extensions.visible
+import com.piratemaker.postermaker.poster.core.helper.BitmapHelper
 import com.piratemaker.postermaker.poster.core.helper.MediaHelper
 import com.piratemaker.postermaker.poster.core.helper.PermissionHelper
 import com.piratemaker.postermaker.poster.core.helper.SoundHelper
@@ -285,11 +286,33 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             binding.nativeCollapSSBounty)
     }
     private fun openEditSticker() {
-        val pathToEdit = compositeImagePath ?: photoPath
-        pathToEdit?.let { path ->
-            val intent = Intent(this, com.piratemaker.postermaker.poster.activity_app.editsticker.EditStickerActivity::class.java)
-            intent.putExtra("IMAGE_PATH", path)
-            startActivityForResult(intent, REQUEST_CODE_EDIT_STICKER)
+        // Capture entire containerBounty as bitmap
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val containerBitmap = BitmapHelper.createBimapFromView(binding.containerBounty)
+
+                // Save to temp file
+                val tempFile = File(cacheDir, "temp_container_${System.currentTimeMillis()}.png")
+                FileOutputStream(tempFile).use { out ->
+                    containerBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                }
+
+                withContext(Dispatchers.Main) {
+                    val intent = Intent(this@SuccessfulBountyActivity,
+                        com.piratemaker.postermaker.poster.activity_app.editsticker.EditStickerActivity::class.java)
+                    intent.putExtra("IMAGE_PATH", tempFile.absolutePath)
+                    startActivityForResult(intent, REQUEST_CODE_EDIT_STICKER)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    android.widget.Toast.makeText(
+                        this@SuccessfulBountyActivity,
+                        "Error capturing poster",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
 
@@ -304,10 +327,31 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
                     compositeImagePath = editedPath
                     hasStickers = hasStickersAdded
 
-                    // Reload image
+                    // Hide original views
+                    binding.imgCamera.visibility = android.view.View.GONE
+                    binding.imgPlaySuccess.visibility = android.view.View.GONE
+                    binding.tvBountyFilter.visibility = android.view.View.GONE
+
+                    // Remove any existing composite ImageView
+                    binding.containerBounty.findViewWithTag<android.widget.ImageView>("composite_view")?.let { view ->
+                        binding.containerBounty.removeView(view)
+                    }
+
+                    // Add new ImageView with composite image
+                    val compositeImageView = android.widget.ImageView(this).apply {
+                        tag = "composite_view"
+                        scaleType = android.widget.ImageView.ScaleType.FIT_XY
+                        layoutParams = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
+                            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT,
+                            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_PARENT
+                        )
+                    }
+
                     Glide.with(this)
                         .load(File(editedPath))
-                        .into(binding.imgCamera)
+                        .into(compositeImageView)
+
+                    binding.containerBounty.addView(compositeImageView)
 
                     // Update action bar to show save icon
                     updateActionBarIcons()

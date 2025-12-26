@@ -30,6 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="328:480"
         app:layout_constraintHeight_percent="0.35">
 
         <!-- Background Image (poster from previous activity) -->
@@ -37,7 +38,7 @@
             android:id="@+id/imgBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside" />
+            android:scaleType="fitXY" />
 
         <!-- Sticker Canvas (will hold stickers added by user) -->
         <FrameLayout
@@ -55,6 +56,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
+        app:spanCount="5"
         app:layout_constraintTop_toBottomOf="@id/flCanvas"
         app:layout_constraintBottom_toTopOf="@id/rvCategories"
         app:layout_constraintHeight_default="spread"
@@ -64,7 +66,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCategories"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="56dp"
         android:orientation="horizontal"
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
@@ -72,6 +74,7 @@
         app:layout_constraintBottom_toTopOf="@id/nativeCollapEditSticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_category"
         tools:listitem="@layout/item_sticker_category" />
 
     <!-- Native Ad Bottom -->
@@ -83,7 +86,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <include layout="@layout/ads_shimmer_collap_native" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

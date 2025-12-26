@@ -1,12 +1,13 @@
 package com.piratemaker.postermaker.poster.activity_app.editsticker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -38,6 +39,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         return ActivityEditStickerBinding.inflate(LayoutInflater.from(this))
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView() {
         // Get image path from intent
         currentImagePath = intent.getStringExtra("IMAGE_PATH") ?: ""
@@ -46,8 +48,21 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         if (currentImagePath.isNotEmpty()) {
             Glide.with(this)
                 .load(File(currentImagePath))
-                .centerInside()
                 .into(binding.imgBackground)
+        }
+
+        // Setup canvas touch to deselect stickers
+        binding.stickerCanvas.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                // Deselect all stickers when canvas background is tapped
+                for (i in 0 until binding.stickerCanvas.childCount) {
+                    val child = binding.stickerCanvas.getChildAt(i)
+                    if (child is StickerView) {
+                        child.setStickerSelected(false)
+                    }
+                }
+            }
+            false // Allow touch events to propagate to children
         }
 
         setupCategoryNavigation()
@@ -151,19 +166,31 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                     .get()
 
                 withContext(Dispatchers.Main) {
-                    // Create ImageView for sticker
-                    val stickerView = ImageView(this@EditStickerActivity).apply {
-                        setImageBitmap(bitmap)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
+                    // Deselect all other stickers first
+                    for (i in 0 until binding.stickerCanvas.childCount) {
+                        val child = binding.stickerCanvas.getChildAt(i)
+                        if (child is StickerView) {
+                            child.setStickerSelected(false)
+                        }
+                    }
 
+                    // Create StickerView with handle box
+                    val stickerView = StickerView(
+                        this@EditStickerActivity,
+                        bitmap
+                    ).apply {
                         // Set initial size (25% of canvas)
                         val size = (binding.stickerCanvas.width * 0.25f).toInt()
                         layoutParams = FrameLayout.LayoutParams(size, size).apply {
                             gravity = Gravity.CENTER
                         }
+                        tag = stickerPath
+                        setStickerSelected(true)
 
-                        // Add touch handling for move/scale/rotate
-                        setOnTouchListener(StickerTouchListener(this@EditStickerActivity))
+                        // Set delete callback after view is created
+                        setOnDeleteListener {
+                            binding.stickerCanvas.removeView(this)
+                        }
                     }
 
                     // Add to canvas
@@ -178,6 +205,19 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     private fun saveAndReturn() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
+                // Deselect all stickers before capturing to avoid showing handle boxes
+                withContext(Dispatchers.Main) {
+                    for (i in 0 until binding.stickerCanvas.childCount) {
+                        val child = binding.stickerCanvas.getChildAt(i)
+                        if (child is StickerView) {
+                            child.setStickerSelected(false)
+                        }
+                    }
+                }
+
+                // Small delay to ensure UI updates
+                kotlinx.coroutines.delay(100)
+
                 // Render entire canvas to bitmap
                 val bitmap = BitmapHelper.createBimapFromView(binding.flCanvas)
 
