@@ -210,7 +210,7 @@ class StickerView(
     }
 
     fun flipHorizontal() {
-        scaleX *= -1
+        imageView.scaleX *= -1  // Flip only the image, not the handle box
         invalidate()
     }
 
