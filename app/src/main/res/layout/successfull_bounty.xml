@@ -1,143 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/img_bg_language"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity_app.bountyfilter.SuccessfulBountyActivity">
 
 
-
-
-    <!-- Container for composite capture: background + camera + text -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/containerBounty"
-        android:layout_width="match_parent"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
-        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="83dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp"
-        app:layout_constraintDimensionRatio="328:480">
-
-
-        <ImageView
-            android:id="@+id/imgCamera"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.46"
-            app:layout_constraintWidth_percent="0.87"
-            app:layout_constraintVertical_bias="0.354"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:scaleType="centerCrop"
-
-            />
-
-        <ImageView
-            android:id="@+id/imgPlaySuccess"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
+        <!-- SINGLE CHILD -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/img_bounty_playing"
-            android:scaleType="fitXY"/>
+            android:layout_height="wrap_content">
+            <!-- Container for composite capture: background + camera + text -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerBounty"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="16dp"
+                app:layout_constraintDimensionRatio="328:480"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
 
-        <TextView
-            android:id="@+id/tvBountyFilter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2.000.000"
-            android:layout_gravity="center_horizontal"
-            android:textSize="40sp"
-            android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.82"
-            android:textColor="#3B2104"
-            android:fontFamily="@font/caslon_antique_regular"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/imgCamera"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.46"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.354"
+                    app:layout_constraintWidth_percent="0.87"
+
+                    />
+
+                <ImageView
+                    android:id="@+id/imgPlaySuccess"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/img_bounty_playing" />
 
 
-    <!--    &lt;!&ndash; Dark overlay for initial dimming effect - placed before btnPlay so btnPlay is on top &ndash;&gt;-->
-    <!--    <View-->
-    <!--        android:id="@+id/darkOverlay"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:background="#99000000"-->
-    <!--        android:visibility="visible"-->
-    <!--        android:clickable="false"-->
-    <!--        android:focusable="false"/>-->
+                <TextView
+                    android:id="@+id/tvBountyFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/caslon_antique_regular"
+                    android:text="2.000.000"
+                    android:textColor="#3B2104"
+                    android:textSize="40sp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.82" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Import Button -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/btnEdit"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/containerBounty"
-        app:cardCornerRadius="8dp"
-        app:strokeColor="#C4561B"
-        app:strokeWidth="2dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/kurale_regular"
-            android:text="@string/edit"
-            android:textColor="#C4561B"
-            android:textSize="20sp" />
-    </com.google.android.material.card.MaterialCardView>
+            <!--    &lt;!&ndash; Dark overlay for initial dimming effect - placed before btnPlay so btnPlay is on top &ndash;&gt;-->
+            <!--    <View-->
+            <!--        android:id="@+id/darkOverlay"-->
+            <!--        android:layout_width="match_parent"-->
+            <!--        android:layout_height="match_parent"-->
+            <!--        android:background="#99000000"-->
+            <!--        android:visibility="visible"-->
+            <!--        android:clickable="false"-->
+            <!--        android:focusable="false"/>-->
 
-    <TextView
-        android:id="@+id/btnDownload"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        app:layout_constraintTop_toBottomOf="@id/btnEdit"
-        android:background="@drawable/ic_btn"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/download"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="@id/glcenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="4dp"
-        android:fontFamily="@font/kurale_regular"
-        android:textSize="20sp"
-        android:textColor="#C4561B"/>
-    <TextView
-        android:id="@+id/btnShare"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        app:layout_constraintTop_toBottomOf="@id/btnEdit"
-        app:layout_constraintEnd_toEndOf="@id/glcenter"
-        android:background="@drawable/ic_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="4dp"
-        android:text="@string/share"
-        android:gravity="center"
-        android:fontFamily="@font/kurale_regular"
-        android:textSize="20sp"
-        android:textColor="#C4561B"/>
+            <!-- Import Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnEdit"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintTop_toBottomOf="@id/containerBounty"
+                app:strokeColor="#C4561B"
+                app:strokeWidth="2dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/kurale_regular"
+                    android:text="@string/edit"
+                    android:textColor="#C4561B"
+                    android:textSize="20sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/btnDownload"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_btn"
+                android:fontFamily="@font/kurale_regular"
+                android:gravity="center"
+                android:text="@string/download"
+                android:textColor="#C4561B"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/glcenter"
+                app:layout_constraintTop_toBottomOf="@id/btnEdit" />
+
+            <TextView
+                android:id="@+id/btnShare"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/ic_btn"
+                android:fontFamily="@font/kurale_regular"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:text="@string/share"
+                android:textColor="#C4561B"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@id/glcenter"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnEdit" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/glcenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
     <!-- White flash overlay for camera capture effect -->
     <View
         android:id="@+id/flashOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0"
         android:background="#FFFFFF"
-        android:visibility="gone"
-        android:alpha="0"/>
+        android:visibility="gone" />
 
     <!--    layoutActionBar-->
     <FrameLayout
@@ -151,12 +173,7 @@
             layout="@layout/layout_actionbar" />
     </FrameLayout>
 
-    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"
-        android:id="@+id/glcenter"
-        />
+
 
     <!-- nativeClHome -->
     <FrameLayout
@@ -175,8 +192,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <include layout="@layout/ads_shimmer_collap_native" />
     </FrameLayout>

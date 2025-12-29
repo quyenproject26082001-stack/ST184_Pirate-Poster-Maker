@@ -140,12 +140,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             try {
                 // Deselect all stickers before capturing to avoid showing handle boxes
                 withContext(Dispatchers.Main) {
-                    for (i in 0 until binding.drawView.childCount) {
-                        val child = binding.drawView.getChildAt(i)
-                        if (child is StickerView) {
-                            child.setStickerSelected(false)
-                        }
-                    }
+                    binding.drawView.hideSelect()
                 }
 
                 // Small delay to ensure UI updates
@@ -161,7 +156,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                 }
 
                 // Check if any stickers were added
-                val hasStickers = binding.drawView.childCount > 0
+                val hasStickers = binding.drawView.getStickerCount() > 0
 
                 withContext(Dispatchers.Main) {
                     val resultIntent = Intent().apply {
