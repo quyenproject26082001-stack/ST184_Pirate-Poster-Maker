@@ -1,9 +1,11 @@
 package com.piratemaker.postermaker.poster.activity_app.editsticker
 
+import android.R.attr.bitmap
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -16,6 +18,8 @@ import com.ocmaker.pixcel.maker.data.model.draw.Draw
 import com.ocmaker.pixcel.maker.data.model.draw.DrawableDraw
 import com.piratemaker.postermaker.listener.listenerdraw.OnDrawListener
 import com.piratemaker.postermaker.poster.R
+
+import android.graphics.drawable.BitmapDrawable
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
@@ -180,10 +184,20 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         lifecycleScope.launch(Dispatchers.IO) {
             val bitmapDefault =
                 Glide.with(this@EditStickerActivity).load(path).submit().get().toBitmap()
-
+            Log.d("STICKER_TYPE", "==================")
             withContext(Dispatchers.Main) {
                 binding.drawView.addDraw(loadDrawableEmoji(this@EditStickerActivity, bitmapDefault))
             }
+
+            // ← CHECK TYPE
+            val currentDraw = binding.drawView.getCurrentDraw()
+            Log.d("STICKER_TYPE", "isText: ${currentDraw?.isText}")
+            Log.d("STICKER_TYPE", "isCharacter: ${currentDraw?.isCharacter}")
+
+            val values = FloatArray(9)
+            currentDraw?.getMatrix()?.getValues(values)
+            Log.d("STICKER_TYPE", "Initial scale: ${values[Matrix.MSCALE_X]}")
+
         }
     }
 
@@ -191,11 +205,15 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     private fun initDrawView() {
         binding.drawView.setOnTouchListener { _, ev ->
         if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
+            Log.d("DEBUG", "DrawView touched!")  // ← THÊM LOG
             touchedAnyDraw = false
 
             // delay cực nhỏ để OnDrawListener có cơ hội set touchedAnyDraw=true nếu hit draw
             binding.drawView.post {
+                Log.d("DEBUG", "Post run, touchedAnyDraw=$touchedAnyDraw")
                 if (!touchedAnyDraw) {
+                    binding.drawView.hideSelect()
+                    Log.d("DEBUG", "Deselecting, childCount=${binding.drawView.childCount}")  // ← THÊM
                     // ==> CLICK OUTSIDE (vùng trống trên canvas)
                     currentDraw = null
 
@@ -204,6 +222,18 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
                     // Nếu bạn có custom StickerView con trong drawView:
                     for (i in 0 until binding.drawView.childCount) {
+                        val child = binding.drawView.getChildAt(i)
+                        Log.d("DEBUG", "Child $i: ${child::class.simpleName}")  // ← THÊM
+                        val stickerView = child as? StickerView
+                        if(stickerView !=null)
+                        {
+                            Log.d("DEBUG", "Setting selected =false for sticker $i")
+                            stickerView.setStickerSelected(false)
+                        }
+                        else{
+                            Log.d("DEBUG", "Child $i is not a StickerView")
+                        }
+
                         (binding.drawView.getChildAt(i) as? StickerView)?.setStickerSelected(
                             false
                         )
@@ -213,6 +243,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         }
         false // trả false để drawView v
     }
+
         binding.drawView.apply {
             setConstrained(true)
             setLocked(false)
@@ -239,6 +270,17 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
                 override fun onTouchedDownDraw(draw: Draw) {
                     Log.d("EditTextFlow", "DrawView: onTouchedDownDraw")
+                   touchedAnyDraw = true
+                    touchedAnyDraw =true
+                    updateCurrentCurrentDraw(draw)
+
+                    val values = FloatArray(9)
+                    draw.getMatrix().getValues(values)
+                    val scaleX = values[Matrix.MSCALE_X]
+                    val scaleY = values[Matrix.MSCALE_Y]
+                    Log.d("DEBUG", "Touch down - scaleX: $scaleX, scaleY: $scaleY")  // ← CHECK
+
+                    touchedAnyDraw = true
                     updateCurrentCurrentDraw(draw)
                 }
 
