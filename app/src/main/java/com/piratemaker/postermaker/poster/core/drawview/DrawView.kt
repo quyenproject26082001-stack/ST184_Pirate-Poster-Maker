@@ -150,7 +150,13 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
                 downX = ev.x
                 downY = ev.y
 
-                return targetCurrentDraw() != null || targetHandlingDraw() != null
+                val hasIcon = targetCurrentDraw() != null
+                val hasSticker = targetHandlingDraw() != null
+                val shouldIntercept = hasIcon || hasSticker
+
+                Log.d("DrawView_Intercept", "ACTION_DOWN: hasIcon=$hasIcon, hasSticker=$hasSticker → shouldIntercept=$shouldIntercept")
+
+                return shouldIntercept
             }
         }
 
@@ -586,29 +592,46 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         oldDistance = calcDistance(midPoint.x, midPoint.y, downX, downY)
         oldRotation = calcRotation(midPoint.x, midPoint.y, downX, downY)
 
+        Log.d("DrawView_TouchDown", "========== TOUCH DOWN START ==========")
+        Log.d("DrawView_TouchDown", "Touch position: x=$downX, y=$downY")
+        Log.d("DrawView_TouchDown", "Total stickers in drawList: ${drawList.size}")
+
+        // ✅ FIX: Tìm icon TRƯỚC (dựa trên handlingDraw CŨ)
         currentIcon = targetCurrentDraw()
-        if (currentIcon != null) {
+
+        // Nếu KHÔNG có icon → Tìm sticker mới tại touch position
+        if (currentIcon == null) {
+            Log.d("DrawView_TouchDown", "No icon touched, finding sticker at touch position...")
+            handlingDraw = targetHandlingDraw()
+        } else {
+            // Có icon → GIỮ NGUYÊN handlingDraw (không update)
             currentMode = DrawKey.ICON
             currentIcon!!.onActionDown(this, event)
-        } else {
-            handlingDraw = targetHandlingDraw()
+            Log.d("DrawView_TouchDown", "✓ Icon touched: ${currentIcon} → Keep current handlingDraw")
         }
         if (handlingDraw != null) {
+            Log.d("DrawView_TouchDown", "✓ Sticker FOUND! handlingDraw = ${handlingDraw}")
             OnDrawListener!!.onTouchedDownDraw(handlingDraw!!)
             downMatrix.set(handlingDraw!!.getMatrix())
 
             if (bringToFrontCurrentSticker) {
                 drawList.remove(handlingDraw)
                 drawList.add(handlingDraw!!)
+                Log.d("DrawView_TouchDown", "Brought sticker to front")
             }
+        } else {
+            Log.e("DrawView_TouchDown", "✗ NO STICKER FOUND at x=$downX, y=$downY")
+            Log.e("DrawView_TouchDown", "DrawList has ${drawList.size} stickers but none matched")
         }
 
         if (currentIcon == null && handlingDraw == null) {
+            Log.e("DrawView_TouchDown", "✗✗ FAILED: No icon and no sticker found → returning FALSE")
             Log.d(
                 "Function: onTouchDown", "CurrentIcon: $currentIcon, HandingDraw: $handlingDraw"
             )
             return false
         }
+        Log.d("DrawView_TouchDown", "========== TOUCH DOWN SUCCESS → invalidate() ==========")
         invalidate()
         return true
     }
@@ -656,6 +679,7 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         }
 
         if (handlingDraw != null && !isLocked && (isShowBorder || isShowIcons)) {
+            Log.d("DrawView_Draw", "✓ Drawing handle box for handlingDraw")
             getDrawPoints(handlingDraw, bitmapPoints)
 
             val x1 = bitmapPoints[0]
@@ -695,6 +719,14 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
                         icon.draw(canvas, borderPaint)
                     }
                 }
+            }
+        } else {
+            if (handlingDraw == null) {
+                Log.w("DrawView_Draw", "✗ NOT drawing handle box: handlingDraw is NULL")
+            } else if (isLocked) {
+                Log.w("DrawView_Draw", "✗ NOT drawing handle box: isLocked=$isLocked")
+            } else if (!isShowBorder && !isShowIcons) {
+                Log.w("DrawView_Draw", "✗ NOT drawing handle box: isShowBorder=$isShowBorder, isShowIcons=$isShowIcons")
             }
         }
     }
@@ -811,6 +843,13 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     }
 
     private fun targetCurrentDraw(): BitmapDrawIcon? {
+        // ✅ FIX: Icon chỉ detect khi có sticker được chọn
+        if (handlingDraw == null) {
+            Log.d("DrawView_TargetIcon", "No handlingDraw → skip icon detection")
+            return null
+        }
+
+        // Check từng icon xem có bị touch không
         for (icon in iconList) {
             // Skip delete icon for character
             if (handlingDraw?.isCharacter == true) {
@@ -823,25 +862,39 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             val y = icon.y - downY
             val distance = x * x + y * y
             if (distance <= (icon.radius + icon.radius).toDouble().pow(2.0)) {
+                Log.d("DrawView_TargetIcon", "✓ Icon touched at distance=${sqrt(distance.toDouble())}")
                 return icon
             }
         }
+        Log.d("DrawView_TargetIcon", "No icon matched at touch position")
         return null
     }
 
     private fun targetHandlingDraw(): DrawableDraw? {
+        Log.d("DrawView_TargetDraw", "--- Searching for sticker at x=$downX, y=$downY ---")
         for (i in drawList.indices.reversed()) {
-            if (isFocusDraw(drawList[i], downX, downY)) {
-                return drawList[i]
+            val draw = drawList[i]
+            val isFocused = isFocusDraw(draw, downX, downY)
+            Log.d("DrawView_TargetDraw", "Sticker[$i]: isFocused=$isFocused, isHide=${draw.isHide}")
+            if (isFocused) {
+                Log.d("DrawView_TargetDraw", "✓ Found target sticker at index $i")
+                return draw
             }
         }
+        Log.e("DrawView_TargetDraw", "✗ No sticker matched the touch position!")
         return null
     }
 
     private fun isFocusDraw(draw: DrawableDraw, downX: Float, downY: Float): Boolean {
         temp[0] = downX
         temp[1] = downY
-        return draw.contains(temp)
+        val contains = draw.contains(temp)
+        if (!contains) {
+            Log.d("DrawView_IsFocus", "  → Sticker bounds check: touch($downX, $downY) NOT in sticker bounds")
+        } else {
+            Log.d("DrawView_IsFocus", "  → ✓ Touch IS inside sticker bounds!")
+        }
+        return contains
     }
 
     private fun calcMidPoint(event: MotionEvent?): PointF {
