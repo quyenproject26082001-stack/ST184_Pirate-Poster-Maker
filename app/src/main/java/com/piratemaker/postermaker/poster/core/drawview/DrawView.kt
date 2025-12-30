@@ -10,6 +10,8 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.RectF
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
@@ -32,6 +34,7 @@ import com.piratemaker.postermaker.listener.listenerdraw.ZoomEvent
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.utils.key.DrawKey
 import java.util.Collections
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -40,6 +43,11 @@ import kotlin.math.sqrt
 @SuppressLint("CustomViewStyleable")
 open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     FrameLayout(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val MIN_SCALE_PERCENT = 0.5f
+        private const val MAX_SCALE_MULTIPLIER = 10f
+    }
 
     @IntDef(
         DrawKey.NONE, DrawKey.DRAG, DrawKey.ZOOM_WITH_TWO_FINGER, DrawKey.ICON, DrawKey.CLICK
@@ -53,6 +61,10 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     val drawList = ArrayList<DrawableDraw>()
     private val iconList = ArrayList<BitmapDrawIcon>()
+
+    private val initialScaleMap = HashMap<DrawableDraw, Float>()
+    private var lastCheckedScale = -1f
+    private var lastScaleValid = true
 
     public val undoList = ArrayList<List<DrawableDraw>>()
     public val undoTempList = ArrayList<DrawableDraw>()
@@ -96,6 +108,8 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     private var oldDistance: Float = 0f
     private var oldRotation: Float = 0f
+
+    private val handler = Handler(Looper.getMainLooper())
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -259,7 +273,19 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     fun remove(draw: Draw?): Boolean {
         if (drawList.contains(draw)) {
+            // Bảo vệ character - không cho xóa
+            if (draw is DrawableDraw && draw.isCharacter) {
+                Log.d("Draw View", "remove: cannot remove character sticker")
+                return false
+            }
+
             drawList.remove(draw)
+
+            // Clear khỏi initialScaleMap để tránh memory leak
+            if (draw is DrawableDraw) {
+                initialScaleMap.remove(draw)
+            }
+
             OnDrawListener?.onDeletedDraw(draw!!)
             if (handlingDraw == draw) {
                 handlingDraw = null
@@ -303,6 +329,12 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     fun fillData(draw: ArrayList<DrawableDraw>) {
         this.drawList.clear()
         this.drawList.addAll(draw)
+
+        // Initialize initialScaleMap cho tất cả stickers
+        for (d in draw) {
+            initialScaleMap[d] = d.currentScale
+        }
+
         saveDrawState()
         postInvalidate()
     }
@@ -460,6 +492,7 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     fun removeAllDraw() {
         drawList.clear()
+        initialScaleMap.clear()  // Clear để tránh memory leak
         handlingDraw?.release()
         handlingDraw = null
         invalidate()
@@ -567,10 +600,11 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         } else if (draw.isCharacter) {
             draw.getMatrix().postScale(scaleFactor / 1.2f, scaleFactor / 1.2f, width / 2f, height / 2f)
         } else {
-            draw.getMatrix().postScale(scaleFactor / 3f, scaleFactor / 3f, width / 2f, height / 2f)
+            draw.getMatrix().postScale(scaleFactor / 2f, scaleFactor / 2f, width / 2f, height / 2f)
         }
 
-
+        // Lưu initial scale để dùng cho validation sau này
+        initialScaleMap[draw] = draw.currentScale
 
         handlingDraw = draw
         drawList.add(draw)
@@ -769,7 +803,11 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
                         newDistance / oldDistance, newDistance / oldDistance, midPoint.x, midPoint.y
                     )
                     moveMatrix.postRotate(newRotation - oldRotation, midPoint.x, midPoint.y)
-                    handlingDraw!!.setMatrix(moveMatrix)
+
+                    // Chỉ apply matrix nếu scale hợp lệ
+                    if (isScaleValid(handlingDraw!!, moveMatrix)) {
+                        handlingDraw!!.setMatrix(moveMatrix)
+                    }
                 }
                 Log.d("Action: ZOOM_WITH_TWO_FINGER", "ZOOM_WITH_TWO_FINGER")
             }
@@ -789,35 +827,16 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             val newRotation = calcRotation(midPoint.x, midPoint.y, event.x, event.y)
             Log.e("HVV1312", "OK ???: $midPoint.x va ${event.x}")
 
-            // Calculate scale factor
-            var scaleFactor = newDistance / oldDistance
-
-            // Get current scale from matrix
-            val values = FloatArray(9)
-            downMatrix.getValues(values)
-            val currentScaleX = values[Matrix.MSCALE_X]
-            val currentScaleY = values[Matrix.MSCALE_Y]
-            val currentScale = Math.abs(currentScaleX)
-
-            // Calculate new scale
-            val newScale = currentScale * scaleFactor
-
-            // Limit scale between MIN_SCALE and MAX_SCALE
-            val minScale = 0.3f
-            val maxScale = 10.0f
-
-            if (newScale < minScale) {
-                scaleFactor = minScale / currentScale
-            } else if (newScale > maxScale) {
-                scaleFactor = maxScale / currentScale
-            }
-
             moveMatrix.set(downMatrix)
             moveMatrix.postScale(
-                scaleFactor, scaleFactor, midPoint.x, midPoint.y
+                newDistance / oldDistance, newDistance / oldDistance, midPoint.x, midPoint.y
             )
             moveMatrix.postRotate(newRotation - oldRotation, midPoint.x, midPoint.y)
-            draw.setMatrix(moveMatrix)
+
+            // Chỉ apply matrix nếu scale hợp lệ
+            if (draw is DrawableDraw && isScaleValid(draw, moveMatrix)) {
+                draw.setMatrix(moveMatrix)
+            }
         }
     }
 
@@ -1096,7 +1115,7 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         val heightScaleFactor = height.toFloat() / sticker.drawable.intrinsicHeight
         val scaleFactor = if (widthScaleFactor > heightScaleFactor) heightScaleFactor else widthScaleFactor
 
-        sticker.getMatrix().postScale(scaleFactor / 2f, scaleFactor / 2f, width / 2f, height / 2f)
+        sticker.getMatrix().postScale(scaleFactor / 4f, scaleFactor / 2f, width / 2f, height / 2f)
 
         handlingDraw = sticker
         drawList.add(position, sticker)
@@ -1106,6 +1125,34 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
         OnDrawListener?.onReplace(sticker)
         invalidate()
+    }
+
+    private fun isScaleValid(draw: Draw, matrix: Matrix): Boolean {
+        val initialScale = initialScaleMap[draw] ?: return true
+        val minAllowedScale = initialScale * MIN_SCALE_PERCENT
+        val maxAllowedScale = initialScale * MAX_SCALE_MULTIPLIER
+
+        // Tính scale hiện tại từ matrix
+        val values = FloatArray(9)
+        matrix.getValues(values)
+        val scaleX = values[Matrix.MSCALE_X]
+        val skewY = values[Matrix.MSKEW_Y]
+        val currentScale = sqrt(scaleX * scaleX + skewY * skewY)
+
+        // Cache kết quả nếu scale không thay đổi nhiều (tối ưu performance)
+        if (abs(currentScale - lastCheckedScale) < 0.001f) {
+            return lastScaleValid
+        }
+
+        lastCheckedScale = currentScale
+        lastScaleValid = currentScale in minAllowedScale..maxAllowedScale
+        return lastScaleValid
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        // Clear tất cả pending tasks
+        handler.removeCallbacksAndMessages(null)
     }
 }
 

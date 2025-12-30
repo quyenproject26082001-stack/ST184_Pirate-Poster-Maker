@@ -124,5 +124,6 @@
     <string name="old_west_outlwaw">Barat Lama Penjahat</string>
     <string name="camera_permission_is_required">Izin kamera diperlukan</string>
     <string name="my_wanted">Buronan Saya</string>
+    <string name="saved_to_my_design">Disimpan ke Desain Saya!</string>
 
 </resources>

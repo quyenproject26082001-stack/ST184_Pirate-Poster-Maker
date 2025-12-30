@@ -158,7 +158,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
                 putExtra("IMAGE_PATH",path)
                 putExtra("IS_EDITING_EXISTING",true  )
             }
-            startActivity(intent)
+           showInterAll { startActivity(intent)}
         }
     }
 

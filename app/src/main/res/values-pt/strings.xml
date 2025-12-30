@@ -124,5 +124,6 @@
     <string name="old_west_outlwaw">Velho Oeste Fora da Lei</string>
     <string name="camera_permission_is_required">É necessária permissão da câmera</string>
     <string name="my_wanted">Meu Procurado</string>
+    <string name="saved_to_my_design">Salvo em Meus Designs!</string>
 
 </resources>

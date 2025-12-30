@@ -124,5 +124,6 @@
     <string name="old_west_outlwaw">Viejo Oeste Forajidos</string>
     <string name="camera_permission_is_required">Se requiere permiso de la cámara</string>
     <string name="my_wanted">Mi Wanted</string>
+    <string name="saved_to_my_design">¡Guardado en Mis Diseños!</string>
 
 </resources>

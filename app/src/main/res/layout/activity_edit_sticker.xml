@@ -8,6 +8,7 @@
     android:background="@drawable/img_bg_language"
     tools:context=".activity_app.editsticker.EditStickerActivity">
 
+
     <!-- Action Bar -->
     <FrameLayout
         android:id="@+id/layoutActionBar"
@@ -23,15 +24,17 @@
     <!-- Canvas Container - This will be captured as bitmap -->
     <FrameLayout
         android:id="@+id/flCanvas"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/rvStickers"
         app:layout_constraintDimensionRatio="328:480"
-        app:layout_constraintHeight_percent="0.35">
+       >
 
         <!-- Background Image (poster from previous activity) -->
         <ImageView
@@ -49,16 +52,17 @@
 
     </FrameLayout>
 
+
+
     <!-- Sticker Grid RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvStickers"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="200dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
         android:clipToPadding="false"
         app:spanCount="5"
-        app:layout_constraintTop_toBottomOf="@id/flCanvas"
         app:layout_constraintBottom_toTopOf="@id/rvCategories"
         app:layout_constraintHeight_default="spread"
         tools:listitem="@layout/item_sticker" />
@@ -89,4 +93,7 @@
 
     </FrameLayout>
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

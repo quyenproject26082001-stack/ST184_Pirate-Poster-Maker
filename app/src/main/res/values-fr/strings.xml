@@ -124,5 +124,6 @@
     <string name="old_west_outlwaw">Far West Hors-la-loi</string>
     <string name="camera_permission_is_required">L’autorisation de la caméra est requise</string>
     <string name="my_wanted">Mon Wanted</string>
+    <string name="saved_to_my_design">Enregistré dans Mes créations !</string>
 
 </resources>

@@ -124,5 +124,6 @@
     <string name="old_west_outlwaw">पुराना पश्चिम डाकू</string>
     <string name="camera_permission_is_required">कैमरा अनुमति आवश्यक है</string>
     <string name="my_wanted">मेरा वांटेड</string>
+    <string name="saved_to_my_design">मेरे डिज़ाइन में सहेजा गया!</string>
 
 </resources>

@@ -387,7 +387,7 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(
                             this@SuccessfulBountyActivity,
-                            "Saved to My Design!",
+                            getString(R.string.saved_to_my_design),
                             Toast.LENGTH_SHORT
                         ).show()
 
