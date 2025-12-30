@@ -29,6 +29,21 @@
         />
 
     <ImageView
+        android:id="@+id/imgCamera1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintHeight_percent="0.34"
+        app:layout_constraintWidth_percent="0.78"
+        app:layout_constraintVertical_bias="0.354"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/imgPlay"
+        app:layout_constraintEnd_toEndOf="@id/imgPlay"
+        app:layout_constraintTop_toTopOf="@id/imgPlay"
+        app:layout_constraintBottom_toBottomOf="@id/imgPlay"
+        />
+
+    <ImageView
         android:id="@+id/imgPlay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -37,6 +52,7 @@
         android:layout_marginHorizontal="16dp"
         app:layout_constraintDimensionRatio="328:480"
         />
+
 
     <TextView
         android:id="@+id/tvBountyFilter"

@@ -73,6 +73,7 @@
         android:layout_marginTop="15dp"
         android:paddingBottom="0.5dp"
         android:weightSum="2"
+        app:layout_goneMarginBottom="200dp"
         app:layout_constraintBottom_toTopOf="@id/nativeDetail"
         tools:layout_editor_absoluteX="16dp">
 
@@ -119,6 +120,9 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
+
+
+
     <FrameLayout
         android:id="@+id/nativeDetail"
         android:layout_width="match_parent"
@@ -130,6 +134,17 @@
         >
 
         <include layout="@layout/ads_shimmer_big" />
+    </FrameLayout>
+
+    <!-- Native Ad Bottom -->
+    <FrameLayout
+        android:id="@+id/nativeCollapDetailDesgin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

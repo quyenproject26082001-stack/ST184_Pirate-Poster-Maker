@@ -45,7 +45,7 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     FrameLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val MIN_SCALE_PERCENT = 0.5f
+        private const val MIN_SCALE_PERCENT = 0.25f
         private const val MAX_SCALE_MULTIPLIER = 10f
     }
 
@@ -1115,7 +1115,7 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
         val heightScaleFactor = height.toFloat() / sticker.drawable.intrinsicHeight
         val scaleFactor = if (widthScaleFactor > heightScaleFactor) heightScaleFactor else widthScaleFactor
 
-        sticker.getMatrix().postScale(scaleFactor / 4f, scaleFactor / 2f, width / 2f, height / 2f)
+        sticker.getMatrix().postScale(scaleFactor / 2f, scaleFactor / 2f, width / 2f, height / 2f)
 
         handlingDraw = sticker
         drawList.add(position, sticker)

@@ -356,7 +356,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         )
 
         dialog.onYesClick = {
-            resetToInitialState()
+            showInterAll { resetToInitialState() }
             dialog.dismiss()
         }
 

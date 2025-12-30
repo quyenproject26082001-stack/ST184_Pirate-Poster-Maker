@@ -170,13 +170,11 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             }
 
             btnEdit.setOnSingleClick {
-                openEditSticker()
+               showInterAll {openEditSticker() }
             }
 
             btnDownload.setOnSingleClick {
-                showInterAll {
                 downloadImage()
-               }
             }
 
             btnShare.setOnSingleClick(2000) {
@@ -184,7 +182,7 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             }
 
             actionBar.btnActionBarRightText.setOnSingleClick {
-                saveToMyDesign()
+               showInterAll { saveToMyDesign() }
             }
         }
     }
@@ -394,7 +392,7 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
                         // Navigate to My Design
                         val intent = Intent(this@SuccessfulBountyActivity, com.piratemaker.postermaker.poster.activity_app.mycreation.MyCreationActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        startActivity(intent)
+                         startActivity(intent)
                         finish()
                     }
                 } catch (e: Exception) {

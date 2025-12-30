@@ -23,6 +23,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import com.bumptech.glide.Glide
 import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
@@ -370,10 +371,18 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                             putExtra("BOUNTY_VALUE", binding.tvBountyFilter.text.toString())
                         }
 
+                        binding.imgCamera1.visible()
+                        Glide.with(this@BountyFilterActivity)
+                            .load(fixedFile.absolutePath)
+                            .into(binding.imgCamera1)
+
                         showInterAll {
                             startActivity(intent)
                             finish()
                         }
+                                                    binding.imgCamera.gone()
+
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                         Toast.makeText(this@BountyFilterActivity, "Failed to process photo", Toast.LENGTH_SHORT).show()

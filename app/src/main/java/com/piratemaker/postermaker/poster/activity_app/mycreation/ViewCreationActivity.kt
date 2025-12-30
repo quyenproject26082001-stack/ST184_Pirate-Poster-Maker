@@ -66,6 +66,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
             }
         }
     }
+
     override fun setViewBinding(): ActivityViewBinding {
         return ActivityViewBinding.inflate(LayoutInflater.from(this))
     }
@@ -73,7 +74,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
     override fun initView() {
         imagePath = intent.getStringExtra("imagePath")
 
-        isMyDesign = intent.getBooleanExtra("isMyDesign",false)
+        isMyDesign = intent.getBooleanExtra("isMyDesign", false)
 
         imagePath?.let { path ->
             val file = File(path)
@@ -85,14 +86,14 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
             }
         }
 
-        if(isMyDesign){
+        if (isMyDesign) {
             binding.btnEdit.visible()
-        }else{
+        } else {
             binding.btnEdit.gone()
         }
     }
 
-    override fun onResume(){
+    override fun onResume() {
         super.onResume()
 
         imagePath?.let { path ->
@@ -128,7 +129,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
         binding.apply {
             // Back button
             actionBar.btnActionBarLeft.setOnSingleClick {
-               showInterAll { finishAfterTransition() }
+                showInterAll { finishAfterTransition() }
             }
 
             // Delete button
@@ -143,7 +144,12 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
 
             // Download button
             btnDownload.setOnSingleClick {
-               showInterAll {   downloadImage() }
+                if (!isMyDesign) {
+                    showInterAll { downloadImage() }
+                }
+                else{
+                    downloadImage()
+                }
             }
             btnEdit.setOnSingleClick {
                 openEditSticker()
@@ -155,10 +161,10 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
     private fun openEditSticker() {
         imagePath?.let { path ->
             val intent = Intent(this, EditStickerActivity::class.java).apply {
-                putExtra("IMAGE_PATH",path)
-                putExtra("IS_EDITING_EXISTING",true  )
+                putExtra("IMAGE_PATH", path)
+                putExtra("IS_EDITING_EXISTING", true)
             }
-           showInterAll { startActivity(intent)}
+            showInterAll { startActivity(intent) }
         }
     }
 
@@ -224,18 +230,37 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
         }
     }
 
-
+    override fun onRestart() {
+        super.onRestart()
+        if (isMyDesign) {
+            Admob.getInstance().loadNativeCollapNotBanner(
+                this,
+                getString(R.string.native_cl_Old_West_detail),
+                binding.nativeCollapDetailDesgin
+            )
+        }
+    }
 
     override fun initAds() {
 
-        Admob.getInstance().loadNativeAd(
-            this,
-            getString(R.string.native_detail),
-            binding.nativeDetail,
-            R.layout.ads_native_big_btn_top
-        )
-    }
+        if (isMyDesign) {
+           binding.nativeDetail.gone()
+            Admob.getInstance().loadNativeCollapNotBanner(
+                this,
+                getString(R.string.native_cl_Old_West_detail),
+                binding.nativeCollapDetailDesgin
+            )
+        } else {
+            binding.nativeDetail.visible()
 
+            Admob.getInstance().loadNativeAd(
+                this,
+                getString(R.string.native_detail),
+                binding.nativeDetail,
+                R.layout.ads_native_big_btn_top
+            )
+        }
+    }
 
 
     /**
@@ -254,6 +279,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+
                             HandleState.FAIL -> {
                                 Toast.makeText(
                                     this@ViewCreationActivity,
@@ -261,6 +287,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+
                             else -> {}
                         }
                     }
