@@ -153,8 +153,6 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                     binding.drawView.hideSelect()
 
                     // Small delay to ensure UI updates (non-blocking)
-                    kotlinx.coroutines.delay(100)
-
                     // Render entire canvas to bitmap (must be on Main thread)
                     BitmapHelper.createBimapFromView(binding.flCanvas)
                 }
@@ -162,11 +160,11 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                 val fileToSave = if(isEditingExisting &&currentImagePath.isNotEmpty())
                 {File(currentImagePath)}
                 else{
-                    File(cacheDir,"temp_edited_${System.currentTimeMillis()}.png")
+                    File(cacheDir,"temp_edited_${System.currentTimeMillis()}.jpg")
                 }
                 // Save to temp file (heavy I/O on background thread)
                 FileOutputStream(fileToSave).use { out ->
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
                 }
 
                 // Check if any stickers were added
@@ -192,7 +190,10 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     private fun addDrawable(path: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             val bitmapDefault =
-                Glide.with(this@EditStickerActivity).load(path).submit().get().toBitmap()
+                Glide.with(this@EditStickerActivity)
+                    .load(path)
+                    .override(400, 400)
+                    .submit().get().toBitmap()
             Log.d("STICKER_TYPE", "==================")
             withContext(Dispatchers.Main) {
                 binding.drawView.addDraw(loadDrawableEmoji(this@EditStickerActivity, bitmapDefault))
@@ -213,45 +214,45 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
     private fun initDrawView() {
         binding.drawView.setOnTouchListener { _, ev ->
-        if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
-            Log.d("DEBUG", "DrawView touched!")  // ← THÊM LOG
-            touchedAnyDraw = false
+            if (ev.actionMasked == MotionEvent.ACTION_DOWN) {
+                Log.d("DEBUG", "DrawView touched!")  // ← THÊM LOG
+                touchedAnyDraw = false
 
-            // delay cực nhỏ để OnDrawListener có cơ hội set touchedAnyDraw=true nếu hit draw
-            binding.drawView.post {
-                Log.d("DEBUG", "Post run, touchedAnyDraw=$touchedAnyDraw")
-                if (!touchedAnyDraw) {
-                    binding.drawView.hideSelect()
-                    Log.d("DEBUG", "Deselecting, childCount=${binding.drawView.childCount}")  // ← THÊM
-                    // ==> CLICK OUTSIDE (vùng trống trên canvas)
-                    currentDraw = null
+                // delay cực nhỏ để OnDrawListener có cơ hội set touchedAnyDraw=true nếu hit draw
+                binding.drawView.post {
+                    Log.d("DEBUG", "Post run, touchedAnyDraw=$touchedAnyDraw")
+                    if (!touchedAnyDraw) {
+                        binding.drawView.hideSelect()
+                        Log.d("DEBUG", "Deselecting, childCount=${binding.drawView.childCount}")  // ← THÊM
+                        // ==> CLICK OUTSIDE (vùng trống trên canvas)
+                        currentDraw = null
 
-                    // Ẩn handle/option (tuỳ lib của bạn: gọi hàm hide option nếu có)
-                    // binding.drawView.hideOptionIcon()  // nếu thư viện có
+                        // Ẩn handle/option (tuỳ lib của bạn: gọi hàm hide option nếu có)
+                        // binding.drawView.hideOptionIcon()  // nếu thư viện có
 
-                    // Nếu bạn có custom StickerView con trong drawView:
-                    for (i in 0 until binding.drawView.childCount) {
-                        val child = binding.drawView.getChildAt(i)
-                        Log.d("DEBUG", "Child $i: ${child::class.simpleName}")  // ← THÊM
-                        val stickerView = child as? StickerView
-                        if(stickerView !=null)
-                        {
-                            Log.d("DEBUG", "Setting selected =false for sticker $i")
-                            stickerView.setStickerSelected(false)
+                        // Nếu bạn có custom StickerView con trong drawView:
+                        for (i in 0 until binding.drawView.childCount) {
+                            val child = binding.drawView.getChildAt(i)
+                            Log.d("DEBUG", "Child $i: ${child::class.simpleName}")  // ← THÊM
+                            val stickerView = child as? StickerView
+                            if(stickerView !=null)
+                            {
+                                Log.d("DEBUG", "Setting selected =false for sticker $i")
+                                stickerView.setStickerSelected(false)
+                            }
+                            else{
+                                Log.d("DEBUG", "Child $i is not a StickerView")
+                            }
+
+                            (binding.drawView.getChildAt(i) as? StickerView)?.setStickerSelected(
+                                false
+                            )
                         }
-                        else{
-                            Log.d("DEBUG", "Child $i is not a StickerView")
-                        }
-
-                        (binding.drawView.getChildAt(i) as? StickerView)?.setStickerSelected(
-                            false
-                        )
                     }
                 }
             }
+            false // trả false để drawView v
         }
-        false // trả false để drawView v
-    }
 
         binding.drawView.apply {
             setConstrained(true)
@@ -279,7 +280,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
                 override fun onTouchedDownDraw(draw: Draw) {
                     Log.d("EditTextFlow", "DrawView: onTouchedDownDraw")
-                   touchedAnyDraw = true
+                    touchedAnyDraw = true
                     touchedAnyDraw =true
                     updateCurrentCurrentDraw(draw)
 

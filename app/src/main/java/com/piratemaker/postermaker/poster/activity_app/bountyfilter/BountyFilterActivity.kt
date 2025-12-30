@@ -142,11 +142,14 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
 
         // Step 1: Open camera
         startCamera()
+        binding.imgCamera.visible()
 
         // Step 2: Start countdown after camera is ready (delay 500ms)
+
         handler.postDelayed({
             startCountdown()
         }, 500)
+
     }
 
     private fun startCountdown() {
