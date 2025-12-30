@@ -324,13 +324,16 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+
+
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
-        if(isActivityResumed) {// Play camera sound
+        if (isActivityResumed) {
             SoundHelper.playSound(R.raw.camera_sound)
         }
-        // Show white flash effect
+
+        // Flash effect
         binding.flashOverlay.apply {
             visible()
             alpha = 0f
@@ -341,43 +344,36 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
                     animate()
                         .alpha(0f)
                         .setDuration(200)
-                        .withEndAction {
-                            gone()
-                        }
+                        .withEndAction { gone() }
                         .start()
                 }
                 .start()
         }
 
-        // Capture photo
+        val photoFile = File(cacheDir, "bounty_${System.currentTimeMillis()}.jpg")
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
         imageCapture.takePicture(
+            outputOptions,
             ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageCapturedCallback() {
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    // Convert image to bitmap, flip it horizontally, and save
-                    val bitmap = image.toBitmap()
-                    val flippedBitmap = flipBitmapHorizontally(bitmap)
-                    val photoFile = saveBitmapToFile(flippedBitmap)
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    try {
+                        // Fix xoay + flip cho camera trước
+                        val fixedFile = fixExifRotationAndFlipIfNeeded(photoFile, isFront = true)
 
-                    image.close()
-
-                    // Navigate to SuccessfulBountyActivity
-                    if (photoFile != null) {
                         val intent = Intent(this@BountyFilterActivity, SuccessfulBountyActivity::class.java).apply {
-                            putExtra("PHOTO_PATH", photoFile.absolutePath)
+                            putExtra("PHOTO_PATH", fixedFile.absolutePath)
                             putExtra("BOUNTY_VALUE", binding.tvBountyFilter.text.toString())
                         }
+
                         showInterAll {
                             startActivity(intent)
                             finish()
-
                         }
-                    } else {
-                        Toast.makeText(
-                            this@BountyFilterActivity,
-                            "Failed to save photo",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Toast.makeText(this@BountyFilterActivity, "Failed to process photo", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -391,6 +387,39 @@ class BountyFilterActivity : BaseActivity<ActivityBountyFilterBinding>() {
             }
         )
     }
+
+    private fun fixExifRotationAndFlipIfNeeded(inputFile: File, isFront: Boolean): File {
+        val exif = androidx.exifinterface.media.ExifInterface(inputFile)
+        val orientation = exif.getAttributeInt(
+            androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+        )
+
+        val bitmap = BitmapFactory.decodeFile(inputFile.absolutePath)
+
+        val matrix = android.graphics.Matrix()
+
+        when (orientation) {
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+        }
+
+        // Flip cho camera trước (giữ đúng behavior bạn đang làm)
+        if (isFront) {
+            matrix.postScale(-1f, 1f)
+        }
+
+        val fixedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+        val outFile = File(cacheDir, "bounty_fixed_${System.currentTimeMillis()}.jpg")
+        FileOutputStream(outFile).use { out ->
+            fixedBitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
+        }
+
+        return outFile
+    }
+
 
     private fun flipBitmapHorizontally(bitmap: Bitmap): Bitmap {
         val matrix = android.graphics.Matrix()
