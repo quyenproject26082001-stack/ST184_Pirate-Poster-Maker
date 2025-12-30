@@ -26,7 +26,7 @@ data class PosterWantedItem(
      * Get template item path for Glide
      */
     fun getTemplatePath(): String {
-        return "file:///android_asset/template/$templateId/item.webp"
+        return "file:///android_asset/template/$templateId/item.png"
     }
 
     /**

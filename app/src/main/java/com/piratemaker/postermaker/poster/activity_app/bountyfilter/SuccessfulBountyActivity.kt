@@ -227,19 +227,19 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             }
             compositeImagePath = cacheFile.absolutePath
 
-            // Also save to bounty_designs folder for My Creation tab
-            val bountyDesignsDir = File(filesDir, "bounty_designs")
-            if (!bountyDesignsDir.exists()) {
-                bountyDesignsDir.mkdirs()
-            }
-
-            val savedFile = File(bountyDesignsDir, fileName)
-            FileOutputStream(savedFile).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
-            }
+            // ✅ REMOVED: Auto-save to My Design
+            // User must click Save button to save to My Design
+            // val bountyDesignsDir = File(filesDir, "bounty_designs")
+            // if (!bountyDesignsDir.exists()) {
+            //     bountyDesignsDir.mkdirs()
+            // }
+            // val savedFile = File(bountyDesignsDir, fileName)
+            // FileOutputStream(savedFile).use { out ->
+            //     bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
+            // }
 
             android.util.Log.d("SuccessfulBounty", "Composite image created: $compositeImagePath")
-            android.util.Log.d("SuccessfulBounty", "Saved to My Design: ${savedFile.absolutePath}")
+            android.util.Log.d("SuccessfulBounty", "Saved to CACHE only (not My Design yet)")
         } catch (e: Exception) {
             e.printStackTrace()
             android.util.Log.e("SuccessfulBounty", "Failed to create composite image", e)
@@ -288,15 +288,22 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             binding.nativeCollapSSBounty)
     }
     private fun openEditSticker() {
+        // Show loading immediately for better UX
+        // (Optional: Add a progress indicator here)
+
         // Capture entire containerBounty as bitmap
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val containerBitmap = BitmapHelper.createBimapFromView(binding.containerBounty)
+                val containerBitmap = withContext(Dispatchers.Main) {
+                    // Capture on Main thread (required for view access)
+                    BitmapHelper.createBimapFromView(binding.containerBounty)
+                }
 
-                // Save to temp file
-                val tempFile = File(cacheDir, "temp_container_${System.currentTimeMillis()}.png")
+                // Save to temp file - Use JPEG for faster compression (3x faster than PNG)
+                val tempFile = File(cacheDir, "temp_container_${System.currentTimeMillis()}.jpg")
                 FileOutputStream(tempFile).use { out ->
-                    containerBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    // JPEG with 95% quality = 3x faster, similar visual quality
+                    containerBitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
                 }
 
                 withContext(Dispatchers.Main) {

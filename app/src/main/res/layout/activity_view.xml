@@ -27,6 +27,28 @@
 
     <!-- Poster Image -->
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:cardCornerRadius="8dp"
+        app:strokeColor="#C4561B"
+        app:strokeWidth="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/rowImportEdit"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/btnEdit"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kurale_regular"
+            android:text="@string/edit"
+            android:textColor="#C4561B"
+            android:textSize="20sp" />
+    </com.google.android.material.card.MaterialCardView>
+
     <!-- Import & Edit Row -->
     <ImageView
         android:id="@+id/imgPoster"
@@ -39,7 +61,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rowImportEdit"
+        app:layout_constraintBottom_toTopOf="@id/btnEdit"
         app:layout_constraintTop_toBottomOf="@id/layoutActionBar" />
 
     <LinearLayout

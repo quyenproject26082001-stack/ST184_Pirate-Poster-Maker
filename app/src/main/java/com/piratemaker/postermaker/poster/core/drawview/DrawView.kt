@@ -772,7 +772,7 @@ open class DrawView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
             // Limit scale between MIN_SCALE and MAX_SCALE
             val minScale = 0.3f
-            val maxScale = 3.0f
+            val maxScale = 10.0f
 
             if (newScale < minScale) {
                 scaleFactor = minScale / currentScale

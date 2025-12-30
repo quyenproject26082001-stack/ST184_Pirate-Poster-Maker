@@ -18,11 +18,14 @@ import com.ocmaker.pixcel.maker.data.model.draw.Draw
 import com.ocmaker.pixcel.maker.data.model.draw.DrawableDraw
 import com.piratemaker.postermaker.listener.listenerdraw.OnDrawListener
 import com.piratemaker.postermaker.poster.R
-
+import com.piratemaker.postermaker.poster.dialog.YesNoDialog
 import android.graphics.drawable.BitmapDrawable
+import androidx.appcompat.app.AlertDialog
+import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
+import com.piratemaker.postermaker.poster.core.extensions.showInterAll
 import com.piratemaker.postermaker.poster.core.extensions.visible
 import com.piratemaker.postermaker.poster.core.helper.AssetHelper
 import com.piratemaker.postermaker.poster.core.helper.BitmapHelper
@@ -40,6 +43,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
     private var touchedAnyDraw = false
 
+    private var isEditingExisting: Boolean = false
     var currentDraw: Draw? = null
 
     var drawViewList: ArrayList<Draw> = arrayListOf()
@@ -58,9 +62,13 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         // Get image path from intent
         currentImagePath = intent.getStringExtra("IMAGE_PATH") ?: ""
 
+        isEditingExisting = intent.getBooleanExtra("IS_EDITING_EXISTING", false)
         // Load background image
         if (currentImagePath.isNotEmpty()) {
-            Glide.with(this).load(File(currentImagePath)).into(binding.imgBackground)
+            Glide.with(this)
+                .load(File(currentImagePath))
+                .signature(com.bumptech.glide.signature.ObjectKey(File(currentImagePath).lastModified()))  // ✅ THÊM DÒNG NÀY
+                .into(binding.imgBackground)
         }
 
         // Setup canvas touch to deselect stickers
@@ -82,7 +90,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
             btnActionBarRight.setImageResource(R.drawable.ic_done)
             btnActionBarRight.visible()
-
+            btnActionBarReset.visible()
             btnActionBarRightText.gone()
             tvRightText.gone()
         }
@@ -95,8 +103,10 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             }
 
             btnActionBarRight.setOnSingleClick {
-                saveAndReturn()
+                showInterAll {  saveAndReturn() }
             }
+            btnActionBarReset.setOnSingleClick {
+                showResetConfirmation()            }
         }
     }
 
@@ -138,20 +148,24 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     private fun saveAndReturn() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // Deselect all stickers before capturing to avoid showing handle boxes
-                withContext(Dispatchers.Main) {
+                val bitmap = withContext(Dispatchers.Main) {
+                    // Deselect all stickers before capturing to avoid showing handle boxes
                     binding.drawView.hideSelect()
+
+                    // Small delay to ensure UI updates (non-blocking)
+                    kotlinx.coroutines.delay(100)
+
+                    // Render entire canvas to bitmap (must be on Main thread)
+                    BitmapHelper.createBimapFromView(binding.flCanvas)
                 }
 
-                // Small delay to ensure UI updates
-                kotlinx.coroutines.delay(100)
-
-                // Render entire canvas to bitmap
-                val bitmap = BitmapHelper.createBimapFromView(binding.flCanvas)
-
-                // Save to temp file
-                val tempFile = File(cacheDir, "temp_edited_${System.currentTimeMillis()}.png")
-                FileOutputStream(tempFile).use { out ->
+                val fileToSave = if(isEditingExisting &&currentImagePath.isNotEmpty())
+                {File(currentImagePath)}
+                else{
+                    File(cacheDir,"temp_edited_${System.currentTimeMillis()}.png")
+                }
+                // Save to temp file (heavy I/O on background thread)
+                FileOutputStream(fileToSave).use { out ->
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                 }
 
@@ -160,7 +174,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
                 withContext(Dispatchers.Main) {
                     val resultIntent = Intent().apply {
-                        putExtra("EDITED_IMAGE_PATH", tempFile.absolutePath)
+                        putExtra("EDITED_IMAGE_PATH", fileToSave.absolutePath)
                         putExtra("HAS_STICKERS", hasStickers)
                     }
                     setResult(RESULT_OK, resultIntent)
@@ -332,8 +346,44 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
     }
 
+    private fun showResetConfirmation()
+    {
+        val dialog = YesNoDialog(
+            context = this,
+            title = R.string.reset,
+            description = R.string.change_your_whole_design_are_you_sure
+        )
 
+        dialog.onYesClick = {
+            resetToInitialState()
+            dialog.dismiss()
+        }
+
+        dialog.onNoClick = {
+            dialog.dismiss()
+        }
+        dialog.show()
+
+    }
+
+    private fun resetToInitialState(){
+        binding.drawView.removeAllDraw()
+        drawViewList.clear()
+        currentDraw =null
+        if(currentImagePath.isNotEmpty()){
+            Glide.with(this)
+                .load(File(currentImagePath))
+                .into(binding.imgBackground)
+        }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        initAds()
+    }
     override fun initAds() {
-        // Load native ad if needed
+        // Load native regular ad above back button and list
+        // Load native collapsible ad at bottom
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_collap_editFilter), binding.nativeCollapEditSticker)
     }
 }

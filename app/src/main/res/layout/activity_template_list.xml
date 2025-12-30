@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/bg_parchment">
+    tools:context=".activity_app.posterwanted.PosterWantedTemplateActivity"
+    android:background="@drawable/img_bg_language"
+    >
 
     <!-- Action Bar -->
     <FrameLayout

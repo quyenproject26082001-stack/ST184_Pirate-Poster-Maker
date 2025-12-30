@@ -256,7 +256,7 @@ class StickerView(
 
         // Limit scale between 0.3 and 3.0 (ST193 uses 0.4 to 3.0)
         val minScale = 0.3f
-        val maxScale = 3.0f
+        val maxScale = 10.0f
 
         if (newScale < minScale) {
             scaleFactor = minScale / currentScale

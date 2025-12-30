@@ -19,6 +19,8 @@ class MyCreationAdapter(
         fun bind(file: File, isMyWanted: Boolean) {
             Glide.with(binding.root.context)
                 .load(file)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
                 .into(binding.imgDesign)
 
             // Set margins based on tab type

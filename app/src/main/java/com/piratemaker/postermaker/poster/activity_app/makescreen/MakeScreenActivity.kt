@@ -326,7 +326,7 @@ class MakeScreenActivity : BaseActivity<ActivityMakeScreenBinding>() {
     //quyen
     override fun onRestart() {
         super.onRestart()
-        Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_poster), binding.nativeClPoster)
+        Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_collap_poster), binding.nativeClPoster)
     }
     //quyen
 

@@ -154,6 +154,7 @@ class SuccessActivity : BaseActivity<ActivitySuccessBinding>() {
 
         // Load native collapsible ad
         Admob.getInstance().loadNativeCollap(this, getString(R.string.native_collap_creation), binding.nativeClCreation)
+
     }
     //quyen
 

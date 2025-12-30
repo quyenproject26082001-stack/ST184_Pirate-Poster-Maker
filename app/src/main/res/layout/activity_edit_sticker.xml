@@ -72,7 +72,7 @@
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
         android:clipToPadding="true"
-        app:layout_constraintBottom_toTopOf="@id/nativeCollapEditSticker"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/bg_category"

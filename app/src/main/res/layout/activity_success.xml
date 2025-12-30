@@ -32,12 +32,11 @@
     <!-- Import & Edit Row -->
     <ImageView
         android:id="@+id/imgPoster"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="294:388"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="0dp"
-        android:elevation="8dp"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,8 +106,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="3dp"
+        >
         <include layout="@layout/ads_shimmer_collap_native" />
     </FrameLayout>
     <!--quyen-->

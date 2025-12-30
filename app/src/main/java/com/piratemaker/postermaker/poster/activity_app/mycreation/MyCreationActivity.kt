@@ -155,6 +155,8 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
     private fun onDesignClicked(file: File) {
         val intent = Intent(this, ViewCreationActivity::class.java).apply {
             putExtra("imagePath", file.absolutePath)
+
+            putExtra("isMyDesign", currentTab == TabType.MY_DESIGN)
         }
         startActivity(intent)
     }

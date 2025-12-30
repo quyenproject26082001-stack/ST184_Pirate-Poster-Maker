@@ -1,5 +1,6 @@
 package com.piratemaker.postermaker.poster.activity_app.mycreation
 
+import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -8,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.R
+import com.piratemaker.postermaker.poster.activity_app.editsticker.EditStickerActivity
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
 import com.piratemaker.postermaker.poster.core.helper.MediaHelper
@@ -23,6 +25,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
 
     private var imagePath: String? = null
 
+    private var isMyDesign: Boolean = false
     private var downloadPermissionDeniedCount = 0
 
     // Permission launcher for Android 8-9
@@ -70,11 +73,34 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
     override fun initView() {
         imagePath = intent.getStringExtra("imagePath")
 
+        isMyDesign = intent.getBooleanExtra("isMyDesign",false)
+
         imagePath?.let { path ->
             val file = File(path)
             if (file.exists()) {
                 Glide.with(this)
                     .load(file)
+                    .signature(com.bumptech.glide.signature.ObjectKey(file.lastModified()))  // ✅ Dùng timestamp
+                    .into(binding.imgPoster)
+            }
+        }
+
+        if(isMyDesign){
+            binding.btnEdit.visible()
+        }else{
+            binding.btnEdit.gone()
+        }
+    }
+
+    override fun onResume(){
+        super.onResume()
+
+        imagePath?.let { path ->
+            val file = File(path)
+            if (file.exists()) {
+                Glide.with(this)
+                    .load(file)
+                    .signature(com.bumptech.glide.signature.ObjectKey(file.lastModified()))  // ✅ Dùng timestamp
                     .into(binding.imgPoster)
             }
         }
@@ -119,6 +145,20 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
             btnDownload.setOnSingleClick {
                showInterAll {   downloadImage() }
             }
+            btnEdit.setOnSingleClick {
+                openEditSticker()
+            }
+        }
+
+    }
+
+    private fun openEditSticker() {
+        imagePath?.let { path ->
+            val intent = Intent(this, EditStickerActivity::class.java).apply {
+                putExtra("IMAGE_PATH",path)
+                putExtra("IS_EDITING_EXISTING",true  )
+            }
+            startActivity(intent)
         }
     }
 
