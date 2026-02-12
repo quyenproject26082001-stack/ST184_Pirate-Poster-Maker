@@ -308,6 +308,8 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
                     val intent = Intent(this@SuccessfulBountyActivity,
                         com.piratemaker.postermaker.poster.activity_app.editsticker.EditStickerActivity::class.java)
                     intent.putExtra("IMAGE_PATH", tempFile.absolutePath)
+                    intent.putExtra("ORIGINAL_PHOTO_PATH", photoPath)
+                    intent.putExtra("BOUNTY_VALUE", bountyValue)
                     startActivityForResult(intent, REQUEST_CODE_EDIT_STICKER)
                 }
             } catch (e: Exception) {

@@ -5,10 +5,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.Paint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
@@ -35,8 +40,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
+import kotlin.random.Random
 
 class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
@@ -52,6 +60,8 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     private lateinit var stickerAdapter: StickerItemAdapter
     private var currentImagePath: String = ""
     private var currentCategoryId: Int = 1
+    private var originalPhotoPath: String = ""
+    private var bountyValue: String = ""
 
     override fun setViewBinding(): ActivityEditStickerBinding {
         return ActivityEditStickerBinding.inflate(LayoutInflater.from(this))
@@ -61,8 +71,15 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     override fun initView() {
         // Get image path from intent
         currentImagePath = intent.getStringExtra("IMAGE_PATH") ?: ""
+        originalPhotoPath = intent.getStringExtra("ORIGINAL_PHOTO_PATH") ?: ""
+        bountyValue = intent.getStringExtra("BOUNTY_VALUE") ?: ""
 
         isEditingExisting = intent.getBooleanExtra("IS_EDITING_EXISTING", false)
+
+        // Only show btnImprove when bounty data is available (from SuccessfulBountyActivity)
+        if (originalPhotoPath.isEmpty()) {
+            binding.btnImprove.gone()
+        }
         // Load background image
         if (currentImagePath.isNotEmpty()) {
             Glide.with(this)
@@ -107,6 +124,10 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
             }
             btnActionBarReset.setOnSingleClick {
                 showResetConfirmation()            }
+        }
+
+        binding.btnImprove.setOnSingleClick {
+            reRandomBounty()
         }
     }
 
@@ -340,6 +361,97 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         val drawableEmoji =
             DrawableDraw(drawable, "${SimpleDateFormat("dd_MM_yyyy_hh_mm_ss").format(Date())}.png")
         return drawableEmoji
+    }
+
+    private fun reRandomBounty() {
+        val random = Random.nextInt(100)
+        bountyValue = when {
+            random < 10 -> "Infinity \u221E"
+            random < 15 -> "0"
+            random < 30 -> NumberFormat.getNumberInstance(Locale.US).format(999999999)
+            random < 40 -> NumberFormat.getNumberInstance(Locale.US).format(666666)
+            else -> {
+                val randomValue = Random.nextInt(100000, 10000001)
+                NumberFormat.getNumberInstance(Locale.US).format(randomValue)
+            }
+        }
+        reRenderPoster()
+    }
+
+    private fun reRenderPoster() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val photoBitmap = BitmapFactory.decodeFile(originalPhotoPath) ?: return@launch
+
+                val posterWidth = withContext(Dispatchers.Main) { binding.flCanvas.width }
+                val posterHeight = withContext(Dispatchers.Main) { binding.flCanvas.height }
+                if (posterWidth == 0 || posterHeight == 0) return@launch
+
+                val poster = Bitmap.createBitmap(posterWidth, posterHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(poster)
+
+                // 1. Draw photo (centerCrop at 87% width, 46% height, vertical_bias=0.354)
+                val photoW = (posterWidth * 0.87f).toInt()
+                val photoH = (posterHeight * 0.46f).toInt()
+                val photoX = (posterWidth - photoW) / 2f
+                val photoY = (posterHeight - photoH) * 0.354f
+
+                val croppedPhoto = centerCropBitmap(photoBitmap, photoW, photoH)
+                canvas.drawBitmap(croppedPhoto, photoX, photoY, null)
+
+                // 2. Draw overlay (fitXY, full size)
+                val overlay = BitmapFactory.decodeResource(resources, R.drawable.img_bounty_playing)
+                val scaledOverlay = Bitmap.createScaledBitmap(overlay, posterWidth, posterHeight, true)
+                canvas.drawBitmap(scaledOverlay, 0f, 0f, null)
+
+                // 3. Draw bounty text (centered horizontally, vertical_bias=0.82, 40sp)
+                val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = Color.parseColor("#3B2104")
+                    textSize = 40f * resources.displayMetrics.scaledDensity
+                    typeface = ResourcesCompat.getFont(this@EditStickerActivity, R.font.caslon_antique_regular)
+                    textAlign = Paint.Align.CENTER
+                }
+
+                val textX = posterWidth / 2f
+                val textHeight = textPaint.descent() - textPaint.ascent()
+                val textY = (posterHeight - textHeight) * 0.82f - textPaint.ascent()
+
+                canvas.drawText(bountyValue, textX, textY, textPaint)
+
+                // Save to temp file
+                val tempFile = File(cacheDir, "temp_rerender_${System.currentTimeMillis()}.jpg")
+                FileOutputStream(tempFile).use { out ->
+                    poster.compress(Bitmap.CompressFormat.JPEG, 95, out)
+                }
+
+                // Clean up
+                croppedPhoto.recycle()
+                scaledOverlay.recycle()
+                overlay.recycle()
+                poster.recycle()
+                photoBitmap.recycle()
+
+                withContext(Dispatchers.Main) {
+                    currentImagePath = tempFile.absolutePath
+                    Glide.with(this@EditStickerActivity)
+                        .load(tempFile)
+                        .signature(com.bumptech.glide.signature.ObjectKey(tempFile.lastModified()))
+                        .into(binding.imgBackground)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun centerCropBitmap(source: Bitmap, targetW: Int, targetH: Int): Bitmap {
+        val scale = maxOf(targetW / source.width.toFloat(), targetH / source.height.toFloat())
+        val scaledW = (source.width * scale).toInt()
+        val scaledH = (source.height * scale).toInt()
+        val scaledBitmap = Bitmap.createScaledBitmap(source, scaledW, scaledH, true)
+        val x = (scaledW - targetW) / 2
+        val y = (scaledH - targetH) / 2
+        return Bitmap.createBitmap(scaledBitmap, x, y, targetW, targetH)
     }
 
     fun resetDraw() {
