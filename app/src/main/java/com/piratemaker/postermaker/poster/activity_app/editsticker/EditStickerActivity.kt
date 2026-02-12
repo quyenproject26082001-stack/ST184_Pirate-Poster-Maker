@@ -10,9 +10,15 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
@@ -59,9 +65,12 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
     private lateinit var stickerAdapter: StickerItemAdapter
     private var currentImagePath: String = ""
-    private var currentCategoryId: Int = 1
+    private var currentCategoryId: Int = 2
     private var originalPhotoPath: String = ""
     private var bountyValue: String = ""
+    private var tvBountyOverlay: TextView? = null
+    private val animHandler = Handler(Looper.getMainLooper())
+    private var animRunnable: Runnable? = null
 
     override fun setViewBinding(): ActivityEditStickerBinding {
         return ActivityEditStickerBinding.inflate(LayoutInflater.from(this))
@@ -94,7 +103,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
         setupCategoryNavigation()
         setupStickerGrid()
-        loadStickersForCategory(1)
+        loadStickersForCategory(2)
     }
 
     override fun initActionBar() {
@@ -134,7 +143,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     private fun setupCategoryNavigation() {
         val categories = AssetHelper.getAllStickerCategories().map { StickerCategory(it) }
 
-        categoryAdapter = StickerCategoryAdapter(categories, 1) { categoryId ->
+        categoryAdapter = StickerCategoryAdapter(categories, 2) { categoryId ->
             currentCategoryId = categoryId
             loadStickersForCategory(categoryId)
         }
@@ -170,6 +179,8 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val bitmap = withContext(Dispatchers.Main) {
+                    // Hide bounty overlay if visible (safety check)
+                    tvBountyOverlay?.visibility = View.GONE
                     // Deselect all stickers before capturing to avoid showing handle boxes
                     binding.drawView.hideSelect()
 
@@ -363,9 +374,9 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         return drawableEmoji
     }
 
-    private fun reRandomBounty() {
+    private fun generateRandomBountyText(): String {
         val random = Random.nextInt(100)
-        bountyValue = when {
+        return when {
             random < 10 -> "Infinity \u221E"
             random < 15 -> "0"
             random < 30 -> NumberFormat.getNumberInstance(Locale.US).format(999999999)
@@ -375,36 +386,112 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                 NumberFormat.getNumberInstance(Locale.US).format(randomValue)
             }
         }
-        reRenderPoster()
     }
 
-    private fun reRenderPoster() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val photoBitmap = BitmapFactory.decodeFile(originalPhotoPath) ?: return@launch
+    private fun getOrCreateBountyOverlay(): TextView {
+        if (tvBountyOverlay == null) {
+            tvBountyOverlay = TextView(this).apply {
+                setTextColor(Color.parseColor("#3B2104"))
+                textSize = 40f
+                typeface = ResourcesCompat.getFont(this@EditStickerActivity, R.font.caslon_antique_regular)
+                gravity = Gravity.CENTER
+                visibility = View.GONE
+            }
+            val params = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+            binding.flCanvas.addView(tvBountyOverlay, params)
+        }
+        return tvBountyOverlay!!
+    }
 
-                val posterWidth = withContext(Dispatchers.Main) { binding.flCanvas.width }
-                val posterHeight = withContext(Dispatchers.Main) { binding.flCanvas.height }
-                if (posterWidth == 0 || posterHeight == 0) return@launch
+    private fun reRandomBounty() {
+        // Prevent multiple simultaneous animations
+        if (animRunnable != null) return
 
-                val poster = Bitmap.createBitmap(posterWidth, posterHeight, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(poster)
+        lifecycleScope.launch {
+            // 1. Render poster WITHOUT text first to clear old bounty value
+            val blankPoster = renderPosterBitmap(withText = false) ?: return@launch
+            binding.imgBackground.setImageBitmap(blankPoster)
 
-                // 1. Draw photo (centerCrop at 87% width, 46% height, vertical_bias=0.354)
-                val photoW = (posterWidth * 0.87f).toInt()
-                val photoH = (posterHeight * 0.46f).toInt()
-                val photoX = (posterWidth - photoW) / 2f
-                val photoY = (posterHeight - photoH) * 0.354f
+            // 2. Show overlay and start cycling animation
+            val overlay = getOrCreateBountyOverlay()
+            overlay.text = bountyValue
+            overlay.visibility = View.VISIBLE
+            overlay.alpha = 1f
 
-                val croppedPhoto = centerCropBitmap(photoBitmap, photoW, photoH)
-                canvas.drawBitmap(croppedPhoto, photoX, photoY, null)
+            // Position overlay at 82% vertical bias (matching poster layout)
+            overlay.post {
+                val parentH = binding.flCanvas.height
+                val textH = overlay.height
+                overlay.translationY = (parentH - textH) * 0.82f
 
-                // 2. Draw overlay (fitXY, full size)
-                val overlay = BitmapFactory.decodeResource(resources, R.drawable.img_bounty_playing)
-                val scaledOverlay = Bitmap.createScaledBitmap(overlay, posterWidth, posterHeight, true)
-                canvas.drawBitmap(scaledOverlay, 0f, 0f, null)
+                // Start cycling animation (2 seconds)
+                val startTime = System.currentTimeMillis()
+                val duration = 2000L
 
-                // 3. Draw bounty text (centered horizontally, vertical_bias=0.82, 40sp)
+                animRunnable = object : Runnable {
+                    override fun run() {
+                        val elapsed = System.currentTimeMillis() - startTime
+
+                        if (elapsed < duration) {
+                            overlay.text = generateRandomBountyText()
+
+                            // Pulse effect
+                            overlay.animate()
+                                .scaleX(1.05f).scaleY(1.05f)
+                                .setDuration(50)
+                                .withEndAction {
+                                    overlay.animate()
+                                        .scaleX(1f).scaleY(1f)
+                                        .setDuration(50)
+                                        .start()
+                                }
+                                .start()
+
+                            animHandler.postDelayed(this, 50)
+                        } else {
+                            // Animation finished - set final value and render
+                            bountyValue = overlay.text.toString()
+                            overlay.visibility = View.GONE
+                            animRunnable = null
+                            reRenderPoster()
+                        }
+                    }
+                }
+                animHandler.post(animRunnable!!)
+            }
+        }
+    }
+
+    private suspend fun renderPosterBitmap(withText: Boolean): Bitmap? = withContext(Dispatchers.IO) {
+        try {
+            val photoBitmap = BitmapFactory.decodeFile(originalPhotoPath) ?: return@withContext null
+
+            val posterWidth = withContext(Dispatchers.Main) { binding.flCanvas.width }
+            val posterHeight = withContext(Dispatchers.Main) { binding.flCanvas.height }
+            if (posterWidth == 0 || posterHeight == 0) return@withContext null
+
+            val poster = Bitmap.createBitmap(posterWidth, posterHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(poster)
+
+            // 1. Draw photo (centerCrop at 87% width, 46% height, vertical_bias=0.354)
+            val photoW = (posterWidth * 0.87f).toInt()
+            val photoH = (posterHeight * 0.46f).toInt()
+            val photoX = (posterWidth - photoW) / 2f
+            val photoY = (posterHeight - photoH) * 0.354f
+
+            val croppedPhoto = centerCropBitmap(photoBitmap, photoW, photoH)
+            canvas.drawBitmap(croppedPhoto, photoX, photoY, null)
+
+            // 2. Draw overlay (fitXY, full size)
+            val overlayBmp = BitmapFactory.decodeResource(resources, R.drawable.img_bounty_playing)
+            val scaledOverlay = Bitmap.createScaledBitmap(overlayBmp, posterWidth, posterHeight, true)
+            canvas.drawBitmap(scaledOverlay, 0f, 0f, null)
+
+            // 3. Draw bounty text only if requested
+            if (withText) {
                 val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                     color = Color.parseColor("#3B2104")
                     textSize = 40f * resources.displayMetrics.scaledDensity
@@ -417,30 +504,39 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                 val textY = (posterHeight - textHeight) * 0.82f - textPaint.ascent()
 
                 canvas.drawText(bountyValue, textX, textY, textPaint)
-
-                // Save to temp file
-                val tempFile = File(cacheDir, "temp_rerender_${System.currentTimeMillis()}.jpg")
-                FileOutputStream(tempFile).use { out ->
-                    poster.compress(Bitmap.CompressFormat.JPEG, 95, out)
-                }
-
-                // Clean up
-                croppedPhoto.recycle()
-                scaledOverlay.recycle()
-                overlay.recycle()
-                poster.recycle()
-                photoBitmap.recycle()
-
-                withContext(Dispatchers.Main) {
-                    currentImagePath = tempFile.absolutePath
-                    Glide.with(this@EditStickerActivity)
-                        .load(tempFile)
-                        .signature(com.bumptech.glide.signature.ObjectKey(tempFile.lastModified()))
-                        .into(binding.imgBackground)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+
+            // Clean up intermediates
+            croppedPhoto.recycle()
+            scaledOverlay.recycle()
+            overlayBmp.recycle()
+            photoBitmap.recycle()
+
+            poster
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun reRenderPoster() {
+        lifecycleScope.launch {
+            val poster = renderPosterBitmap(withText = true) ?: return@launch
+
+            val tempFile = withContext(Dispatchers.IO) {
+                File(cacheDir, "temp_rerender_${System.currentTimeMillis()}.jpg").also { file ->
+                    FileOutputStream(file).use { out ->
+                        poster.compress(Bitmap.CompressFormat.JPEG, 95, out)
+                    }
+                    poster.recycle()
+                }
+            }
+
+            currentImagePath = tempFile.absolutePath
+            Glide.with(this@EditStickerActivity)
+                .load(tempFile)
+                .signature(com.bumptech.glide.signature.ObjectKey(tempFile.lastModified()))
+                .into(binding.imgBackground)
         }
     }
 
@@ -498,5 +594,11 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         // Load native regular ad above back button and list
         // Load native collapsible ad at bottom
         Admob.getInstance().loadNativeCollapNotBanner(this, getString(R.string.native_collap_editFilter), binding.nativeCollapEditSticker)
+    }
+
+    override fun onDestroy() {
+        animRunnable?.let { animHandler.removeCallbacks(it) }
+        animRunnable = null
+        super.onDestroy()
     }
 }
