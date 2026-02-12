@@ -124,4 +124,6 @@
     <string name="camera_permission_is_required">Camera permission is required</string>
     <string name="my_wanted">My Wanted</string>
     <string name="saved_to_my_design">Saved to My Design!</string>
+    <string name="improve">Improve Bounty</string>
+    <string name="reconsider">Reconsider Bounty</string>
 </resources>

@@ -125,5 +125,7 @@
     <string name="camera_permission_is_required">Kameraberechtigung ist erforderlich</string>
     <string name="my_wanted">Mein Wanted</string>
     <string name="saved_to_my_design">In Meine Designs gespeichert!</string>
+    <string name="improve">Improve Bounty</string>
+    <string name="reconsider">Reconsider Bounty</string>
 
 </resources>
