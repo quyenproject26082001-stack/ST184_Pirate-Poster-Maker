@@ -65,6 +65,8 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
     private lateinit var stickerAdapter: StickerItemAdapter
     private var currentImagePath: String = ""
+    private var initialImagePath: String = ""
+    private var initialBountyValue: String = ""
     private var currentCategoryId: Int = 2
     private var originalPhotoPath: String = ""
     private var bountyValue: String = ""
@@ -80,8 +82,10 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     override fun initView() {
         // Get image path from intent
         currentImagePath = intent.getStringExtra("IMAGE_PATH") ?: ""
+        initialImagePath = currentImagePath
         originalPhotoPath = intent.getStringExtra("ORIGINAL_PHOTO_PATH") ?: ""
         bountyValue = intent.getStringExtra("BOUNTY_VALUE") ?: ""
+        initialBountyValue = bountyValue
 
         isEditingExisting = intent.getBooleanExtra("IS_EDITING_EXISTING", false)
 
@@ -411,8 +415,8 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         if (animRunnable != null) return
 
         lifecycleScope.launch {
-            // 1. Render poster WITHOUT text first to clear old bounty value
-            val blankPoster = renderPosterBitmap(withText = false) ?: return@launch
+            // 1. Patch text area WITHOUT text to erase old bounty (preserves baked stickers)
+            val blankPoster = patchTextArea(withText = false) ?: return@launch
             binding.imgBackground.setImageBitmap(blankPoster)
 
             // 2. Show overlay and start cycling animation
@@ -465,54 +469,76 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         }
     }
 
-    private suspend fun renderPosterBitmap(withText: Boolean): Bitmap? = withContext(Dispatchers.IO) {
+    /**
+     * Patch ONLY the bounty text area on the current background.
+     * This preserves baked stickers outside the text region.
+     * The text area is repainted with original photo + overlay, then optionally new text.
+     */
+    private suspend fun patchTextArea(withText: Boolean): Bitmap? = withContext(Dispatchers.IO) {
         try {
-            val photoBitmap = BitmapFactory.decodeFile(originalPhotoPath) ?: return@withContext null
+            // Capture current imgBackground as bitmap (preserves baked stickers)
+            val currentBg = withContext(Dispatchers.Main) {
+                val w = binding.imgBackground.width
+                val h = binding.imgBackground.height
+                if (w == 0 || h == 0) return@withContext null
+                val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+                val tempCanvas = Canvas(bitmap)
+                binding.imgBackground.draw(tempCanvas)
+                bitmap
+            } ?: return@withContext null
 
-            val posterWidth = withContext(Dispatchers.Main) { binding.flCanvas.width }
-            val posterHeight = withContext(Dispatchers.Main) { binding.flCanvas.height }
-            if (posterWidth == 0 || posterHeight == 0) return@withContext null
+            val posterWidth = currentBg.width
+            val posterHeight = currentBg.height
+            val canvas = Canvas(currentBg)
 
-            val poster = Bitmap.createBitmap(posterWidth, posterHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(poster)
+            // Calculate text dimensions for clipping
+            val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color.parseColor("#3B2104")
+                textSize = 40f * resources.displayMetrics.scaledDensity
+                typeface = ResourcesCompat.getFont(this@EditStickerActivity, R.font.caslon_antique_regular)
+                textAlign = Paint.Align.CENTER
+            }
+            val textHeight = textPaint.descent() - textPaint.ascent()
+            val textTopY = (posterHeight - textHeight) * 0.82f
 
-            // 1. Draw photo (centerCrop at 87% width, 46% height, vertical_bias=0.354)
-            val photoW = (posterWidth * 0.87f).toInt()
-            val photoH = (posterHeight * 0.46f).toInt()
-            val photoX = (posterWidth - photoW) / 2f
-            val photoY = (posterHeight - photoH) * 0.354f
+            // Text area rect with padding
+            val padding = textHeight * 0.5f
+            val clipTop = (textTopY - padding).toInt().coerceAtLeast(0)
+            val clipBottom = (textTopY + textHeight + padding).toInt().coerceAtMost(posterHeight)
 
-            val croppedPhoto = centerCropBitmap(photoBitmap, photoW, photoH)
-            canvas.drawBitmap(croppedPhoto, photoX, photoY, null)
+            // Re-render original photo + overlay ONLY in the text area to erase old text
+            val photoBitmap = BitmapFactory.decodeFile(originalPhotoPath)
+            if (photoBitmap != null) {
+                val photoW = (posterWidth * 0.87f).toInt()
+                val photoH = (posterHeight * 0.46f).toInt()
+                val photoX = (posterWidth - photoW) / 2f
+                val photoY = (posterHeight - photoH) * 0.354f
+                val croppedPhoto = centerCropBitmap(photoBitmap, photoW, photoH)
 
-            // 2. Draw overlay (fitXY, full size)
-            val overlayBmp = BitmapFactory.decodeResource(resources, R.drawable.img_bounty_playing)
-            val scaledOverlay = Bitmap.createScaledBitmap(overlayBmp, posterWidth, posterHeight, true)
-            canvas.drawBitmap(scaledOverlay, 0f, 0f, null)
+                val overlayBmp = BitmapFactory.decodeResource(resources, R.drawable.img_bounty_playing)
+                val scaledOverlay = Bitmap.createScaledBitmap(overlayBmp, posterWidth, posterHeight, true)
 
-            // 3. Draw bounty text only if requested
+                // Clip to text area only — everything outside is untouched
+                canvas.save()
+                canvas.clipRect(0, clipTop, posterWidth, clipBottom)
+                canvas.drawBitmap(croppedPhoto, photoX, photoY, null)
+                canvas.drawBitmap(scaledOverlay, 0f, 0f, null)
+                canvas.restore()
+
+                croppedPhoto.recycle()
+                scaledOverlay.recycle()
+                overlayBmp.recycle()
+                photoBitmap.recycle()
+            }
+
+            // Draw new bounty text if requested
             if (withText) {
-                val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                    color = Color.parseColor("#3B2104")
-                    textSize = 40f * resources.displayMetrics.scaledDensity
-                    typeface = ResourcesCompat.getFont(this@EditStickerActivity, R.font.caslon_antique_regular)
-                    textAlign = Paint.Align.CENTER
-                }
-
                 val textX = posterWidth / 2f
-                val textHeight = textPaint.descent() - textPaint.ascent()
-                val textY = (posterHeight - textHeight) * 0.82f - textPaint.ascent()
-
+                val textY = textTopY - textPaint.ascent()
                 canvas.drawText(bountyValue, textX, textY, textPaint)
             }
 
-            // Clean up intermediates
-            croppedPhoto.recycle()
-            scaledOverlay.recycle()
-            overlayBmp.recycle()
-            photoBitmap.recycle()
-
-            poster
+            currentBg
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -521,7 +547,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
     private fun reRenderPoster() {
         lifecycleScope.launch {
-            val poster = renderPosterBitmap(withText = true) ?: return@launch
+            val poster = patchTextArea(withText = true) ?: return@launch
 
             val tempFile = withContext(Dispatchers.IO) {
                 File(cacheDir, "temp_rerender_${System.currentTimeMillis()}.jpg").also { file ->
@@ -578,10 +604,14 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     private fun resetToInitialState(){
         binding.drawView.removeAllDraw()
         drawViewList.clear()
-        currentDraw =null
-        if(currentImagePath.isNotEmpty()){
+        currentDraw = null
+        // Reset bounty value and image path back to initial
+        bountyValue = initialBountyValue
+        currentImagePath = initialImagePath
+        if (initialImagePath.isNotEmpty()) {
             Glide.with(this)
-                .load(File(currentImagePath))
+                .load(File(initialImagePath))
+                .signature(com.bumptech.glide.signature.ObjectKey(File(initialImagePath).lastModified()))
                 .into(binding.imgBackground)
         }
     }
