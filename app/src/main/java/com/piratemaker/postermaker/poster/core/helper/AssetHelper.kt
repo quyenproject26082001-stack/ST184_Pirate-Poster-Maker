@@ -242,7 +242,9 @@ object AssetHelper {
      * @return: ArrayList of category IDs
      */
     fun getAllStickerCategories(): ArrayList<Int> {
-        return (1..16).toCollection(ArrayList())
+        val list = (2..16).toCollection(ArrayList())
+        list.add(1)
+        return list
     }
 
     /**

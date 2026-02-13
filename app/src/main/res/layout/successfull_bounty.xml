@@ -93,6 +93,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
                 app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="#C41B1B"
                 app:layout_constraintTop_toBottomOf="@id/containerBounty"
                 app:strokeColor="#C4561B"
                 app:strokeWidth="2dp">
@@ -102,8 +103,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/kurale_regular"
-                    android:text="@string/edit"
-                    android:textColor="#C4561B"
+                    android:text="@string/improve"
+                    android:textColor="#FFFFFF"
                     android:textSize="20sp" />
             </com.google.android.material.card.MaterialCardView>
 
