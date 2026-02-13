@@ -41,38 +41,40 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
                 val updatedBountyValue = data.getStringExtra("BOUNTY_VALUE")
 
                 if (editedPath != null && imagePath != null) {
-                    // Copy edited file to original location (in bounty_designs folder)
                     val editedFile = File(editedPath)
                     val originalFile = File(imagePath!!)
 
-                    if (editedFile.exists() && originalFile.exists()) {
-                        try {
-                            editedFile.copyTo(originalFile, overwrite = true)
-
-                            // Update bountyValue if it was changed
-                            updatedBountyValue?.let { newValue ->
-                                bountyValue = newValue
-                            }
-
-                            // Update metadata file with new bountyValue
-                            updateMetadata()
-
-                            // Reload image with cache bypass
-                            Glide.with(this)
-                                .load(originalFile)
-                                .skipMemoryCache(true)
-                                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
-                                .signature(com.bumptech.glide.signature.ObjectKey(originalFile.lastModified()))
-                                .into(binding.imgPoster)
-
-                            // Delete temp file
-                            editedFile.delete()
-
-                            // Notify MyCreationActivity to refresh
-                            setResult(RESULT_OK)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                    try {
+                        // Update bountyValue if it was changed
+                        updatedBountyValue?.let { newValue ->
+                            bountyValue = newValue
                         }
+
+                        // Update metadata file with new bountyValue
+                        updateMetadata()
+
+                        // Check if edited file is different from original
+                        if (editedFile.absolutePath != originalFile.absolutePath) {
+                            // Different files - copy edited file to original location
+                            if (editedFile.exists() && originalFile.exists()) {
+                                editedFile.copyTo(originalFile, overwrite = true)
+                                editedFile.delete()
+                            }
+                        }
+                        // If same file, EditStickerActivity already saved to it, just reload
+
+                        // Reload image with cache bypass
+                        Glide.with(this)
+                            .load(originalFile)
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .signature(com.bumptech.glide.signature.ObjectKey(originalFile.lastModified()))
+                            .into(binding.imgPoster)
+
+                        // Notify MyCreationActivity to refresh
+                        setResult(RESULT_OK)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             }

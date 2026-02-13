@@ -125,7 +125,7 @@
     <string name="camera_permission_is_required">Izin kamera diperlukan</string>
     <string name="my_wanted">Buronan Saya</string>
     <string name="saved_to_my_design">Disimpan ke Desain Saya!</string>
-    <string name="improve">Improve Bounty</string>
-    <string name="reconsider">Reconsider Bounty</string>
+    <string name="improve">Tingkatkan Hadiah</string>
+    <string name="reconsider">Pertimbangkan Ulang Hadiah</string>
 
 </resources>
