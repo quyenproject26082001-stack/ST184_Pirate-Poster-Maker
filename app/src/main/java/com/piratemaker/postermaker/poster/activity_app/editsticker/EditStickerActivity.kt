@@ -209,6 +209,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                     val resultIntent = Intent().apply {
                         putExtra("EDITED_IMAGE_PATH", fileToSave.absolutePath)
                         putExtra("HAS_STICKERS", hasStickers)
+                        putExtra("BOUNTY_VALUE", bountyValue)
                     }
                     setResult(RESULT_OK, resultIntent)
                     finish()
@@ -415,6 +416,12 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
         // Prevent multiple simultaneous animations
         if (animRunnable != null) return
 
+        // Check if bounty data is available
+        if (originalPhotoPath.isEmpty()) {
+            // Cannot re-random bounty without original photo
+            return
+        }
+
         lifecycleScope.launch {
             // 1. Patch text area WITHOUT text to erase old bounty (preserves baked stickers)
             val blankPoster = patchTextArea(withText = false) ?: return@launch
@@ -619,18 +626,12 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
     }
 
     private fun updateImproveButtonVisibility() {
-        // Only show btnImprove when:
-        // 1. Bounty data is available (originalPhotoPath is not empty - from SuccessfulBountyActivity)
-        // 2. At least 1 sticker exists on canvas
-        if (originalPhotoPath.isEmpty()) {
-            binding.btnImprove.gone()
+        // Only show btnImprove when at least 1 sticker exists on canvas
+        val hasStickerOnCanvas = binding.drawView.getStickerCount() > 0
+        if (hasStickerOnCanvas) {
+            binding.btnImprove.visible()
         } else {
-            val hasStickerOnCanvas = binding.drawView.getStickerCount() > 0
-            if (hasStickerOnCanvas) {
-                binding.btnImprove.visible()
-            } else {
-                binding.btnImprove.gone()
-            }
+            binding.btnImprove.gone()
         }
     }
 

@@ -21,6 +21,7 @@ class MyCreationAdapter(
                 .load(file)
                 .skipMemoryCache(true)
                 .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
+                .signature(com.bumptech.glide.signature.ObjectKey(file.lastModified()))
                 .into(binding.imgDesign)
 
             // Set margins based on tab type

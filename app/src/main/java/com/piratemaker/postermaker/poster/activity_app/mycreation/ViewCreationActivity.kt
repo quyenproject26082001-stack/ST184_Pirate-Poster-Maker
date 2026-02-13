@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lvt.ads.util.Admob
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.activity_app.editsticker.EditStickerActivity
@@ -24,9 +25,59 @@ import java.io.File
 class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
 
     private var imagePath: String? = null
+    private var originalPhotoPath: String? = null
+    private var bountyValue: String? = null
 
     private var isMyDesign: Boolean = false
     private var downloadPermissionDeniedCount = 0
+
+    // ActivityResult launcher for EditStickerActivity
+    private val editStickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.let { data ->
+                val editedPath = data.getStringExtra("EDITED_IMAGE_PATH")
+                val updatedBountyValue = data.getStringExtra("BOUNTY_VALUE")
+
+                if (editedPath != null && imagePath != null) {
+                    // Copy edited file to original location (in bounty_designs folder)
+                    val editedFile = File(editedPath)
+                    val originalFile = File(imagePath!!)
+
+                    if (editedFile.exists() && originalFile.exists()) {
+                        try {
+                            editedFile.copyTo(originalFile, overwrite = true)
+
+                            // Update bountyValue if it was changed
+                            updatedBountyValue?.let { newValue ->
+                                bountyValue = newValue
+                            }
+
+                            // Update metadata file with new bountyValue
+                            updateMetadata()
+
+                            // Reload image with cache bypass
+                            Glide.with(this)
+                                .load(originalFile)
+                                .skipMemoryCache(true)
+                                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
+                                .signature(com.bumptech.glide.signature.ObjectKey(originalFile.lastModified()))
+                                .into(binding.imgPoster)
+
+                            // Delete temp file
+                            editedFile.delete()
+
+                            // Notify MyCreationActivity to refresh
+                            setResult(RESULT_OK)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // Permission launcher for Android 8-9
     // ✅ BỎ COUNTER - Luôn hỏi quyền cho đến khi "Don't ask again"
@@ -76,7 +127,10 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
 
         isMyDesign = intent.getBooleanExtra("isMyDesign", false)
 
+        // Load metadata if available
         imagePath?.let { path ->
+            loadMetadata(path)
+
             val file = File(path)
             if (file.exists()) {
                 Glide.with(this)
@@ -158,13 +212,61 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
 
     }
 
+    private fun loadMetadata(imagePath: String) {
+        try {
+            // Get metadata file path (same name as image, but .json extension)
+            val imageFile = File(imagePath)
+            val metadataFileName = imageFile.nameWithoutExtension + ".json"
+            val metadataFile = File(imageFile.parent, metadataFileName)
+
+            if (metadataFile.exists()) {
+                val metadataJson = metadataFile.readText()
+                // Simple JSON parsing (format: {"originalPhotoPath": "...", "bountyValue": "..."})
+                originalPhotoPath = metadataJson.substringAfter("\"originalPhotoPath\": \"").substringBefore("\"")
+                bountyValue = metadataJson.substringAfter("\"bountyValue\": \"").substringBefore("\"")
+
+                // Handle empty values
+                if (originalPhotoPath?.isEmpty() == true) originalPhotoPath = null
+                if (bountyValue?.isEmpty() == true) bountyValue = null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // If metadata loading fails, continue without it
+            originalPhotoPath = null
+            bountyValue = null
+        }
+    }
+
+    private fun updateMetadata() {
+        imagePath?.let { path ->
+            try {
+                val imageFile = File(path)
+                val metadataFileName = imageFile.nameWithoutExtension + ".json"
+                val metadataFile = File(imageFile.parent, metadataFileName)
+
+                // Save updated metadata
+                val metadataJson = buildString {
+                    append("{\n")
+                    append("  \"originalPhotoPath\": \"${originalPhotoPath?.replace("\\", "\\\\") ?: ""}\",\n")
+                    append("  \"bountyValue\": \"${bountyValue ?: ""}\"\n")
+                    append("}")
+                }
+                metadataFile.writeText(metadataJson)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     private fun openEditSticker() {
         imagePath?.let { path ->
             val intent = Intent(this, EditStickerActivity::class.java).apply {
                 putExtra("IMAGE_PATH", path)
                 putExtra("IS_EDITING_EXISTING", true)
+                putExtra("ORIGINAL_PHOTO_PATH", originalPhotoPath)
+                putExtra("BOUNTY_VALUE", bountyValue)
             }
-            showInterAll { startActivity(intent) }
+            showInterAll { editStickerLauncher.launch(intent) }
         }
     }
 

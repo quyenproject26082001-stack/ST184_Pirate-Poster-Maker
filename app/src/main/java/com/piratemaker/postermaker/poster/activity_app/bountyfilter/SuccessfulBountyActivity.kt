@@ -331,10 +331,16 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
             data?.let {
                 val editedPath = it.getStringExtra("EDITED_IMAGE_PATH")
                 val hasStickersAdded = it.getBooleanExtra("HAS_STICKERS", false)
+                val updatedBountyValue = it.getStringExtra("BOUNTY_VALUE")
 
                 if (editedPath != null) {
                     compositeImagePath = editedPath
                     hasStickers = hasStickersAdded
+
+                    // Update bountyValue if it was changed in EditStickerActivity
+                    updatedBountyValue?.let { newValue ->
+                        bountyValue = newValue
+                    }
 
                     // Hide original views
                     binding.imgCamera.visibility = android.view.View.GONE
@@ -380,9 +386,21 @@ class SuccessfulBountyActivity : BaseActivity<SuccessfullBountyBinding>() {
                         myDesignDir.mkdirs()
                     }
 
-                    val fileName = "poster_${System.currentTimeMillis()}.png"
+                    val timestamp = System.currentTimeMillis()
+                    val fileName = "poster_${timestamp}.png"
                     val destFile = File(myDesignDir, fileName)
                     sourceFile.copyTo(destFile, overwrite = true)
+
+                    // Save metadata (originalPhotoPath and bountyValue) to JSON file
+                    val metadataFileName = "poster_${timestamp}.json"
+                    val metadataFile = File(myDesignDir, metadataFileName)
+                    val metadataJson = buildString {
+                        append("{\n")
+                        append("  \"originalPhotoPath\": \"${photoPath?.replace("\\", "\\\\") ?: ""}\",\n")
+                        append("  \"bountyValue\": \"${bountyValue ?: ""}\"\n")
+                        append("}")
+                    }
+                    metadataFile.writeText(metadataJson)
 
                     withContext(Dispatchers.Main) {
                         Toast.makeText(

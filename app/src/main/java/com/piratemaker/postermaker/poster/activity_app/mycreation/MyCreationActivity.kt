@@ -2,6 +2,7 @@ package com.piratemaker.postermaker.poster.activity_app.mycreation
 
 import android.content.Intent
 import android.view.LayoutInflater
+import androidx.activity.result.contract.ActivityResultContracts
 import com.piratemaker.postermaker.poster.R
 import com.piratemaker.postermaker.poster.core.base.BaseActivity
 import com.piratemaker.postermaker.poster.core.extensions.*
@@ -15,6 +16,14 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
 
     private lateinit var adapter: MyCreationAdapter
     private var currentTab = TabType.MY_DESIGN // Default to My Design
+
+    // ActivityResult launcher for ViewCreationActivity
+    private val viewCreationLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // Reload designs when returning (in case image was edited)
+        loadDesigns()
+    }
 
     enum class TabType {
         MY_DESIGN,  // Bounty photos
@@ -158,6 +167,6 @@ class MyCreationActivity : BaseActivity<ActivityMyCreationBinding>() {
 
             putExtra("isMyDesign", currentTab == TabType.MY_DESIGN)
         }
-        startActivity(intent)
+        viewCreationLauncher.launch(intent)
     }
 }
