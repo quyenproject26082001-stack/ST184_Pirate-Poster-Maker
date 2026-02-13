@@ -89,10 +89,9 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
 
         isEditingExisting = intent.getBooleanExtra("IS_EDITING_EXISTING", false)
 
-        // Only show btnImprove when bounty data is available (from SuccessfulBountyActivity)
-        if (originalPhotoPath.isEmpty()) {
-            binding.btnImprove.gone()
-        }
+        // Initialize btnImprove visibility
+        updateImproveButtonVisibility()
+
         // Load background image
         if (currentImagePath.isNotEmpty()) {
             Glide.with(this)
@@ -298,6 +297,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                     Log.d("EditTextFlow", "DrawView: onAddedDraw")
                     updateCurrentCurrentDraw(draw)
                     addDrawView(draw)
+                    updateImproveButtonVisibility()
                 }
 
                 override fun onClickedDraw(draw: Draw) {
@@ -308,6 +308,7 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                 override fun onDeletedDraw(draw: Draw) {
                     Log.d("EditTextFlow", "DrawView: onDeletedDraw")
                     deleteDrawView(draw)
+                    updateImproveButtonVisibility()
                 }
 
                 override fun onDragFinishedDraw(draw: Draw) {
@@ -613,6 +614,23 @@ class EditStickerActivity : BaseActivity<ActivityEditStickerBinding>() {
                 .load(File(initialImagePath))
                 .signature(com.bumptech.glide.signature.ObjectKey(File(initialImagePath).lastModified()))
                 .into(binding.imgBackground)
+        }
+        updateImproveButtonVisibility()
+    }
+
+    private fun updateImproveButtonVisibility() {
+        // Only show btnImprove when:
+        // 1. Bounty data is available (originalPhotoPath is not empty - from SuccessfulBountyActivity)
+        // 2. At least 1 sticker exists on canvas
+        if (originalPhotoPath.isEmpty()) {
+            binding.btnImprove.gone()
+        } else {
+            val hasStickerOnCanvas = binding.drawView.getStickerCount() > 0
+            if (hasStickerOnCanvas) {
+                binding.btnImprove.visible()
+            } else {
+                binding.btnImprove.gone()
+            }
         }
     }
 
