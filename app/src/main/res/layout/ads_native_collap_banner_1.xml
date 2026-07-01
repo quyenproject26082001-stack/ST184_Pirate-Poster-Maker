@@ -24,7 +24,7 @@
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="124dp"
+                android:layout_height="80dp"
                 android:orientation="horizontal">
                 <RelativeLayout
                     android:id="@+id/rlmedia"

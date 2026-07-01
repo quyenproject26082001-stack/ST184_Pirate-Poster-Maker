@@ -5,7 +5,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.view.View
+import android.view.ViewGroup
+import android.view.MotionEvent
 import android.view.WindowManager
+import android.os.Handler
+import android.os.Looper
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +25,7 @@ import com.piratemaker.postermaker.poster.core.helper.SharePreferenceHelper
 import com.piratemaker.postermaker.poster.core.helper.SoundHelper
 import com.piratemaker.postermaker.poster.core.utils.DataLocal
 import com.piratemaker.postermaker.poster.core.utils.state.RateState
+import kotlin.math.roundToInt
 
 // ----------------------------
 // Visibility extensions
@@ -83,6 +89,58 @@ fun View.setOnSingleClick(interval: Long = 200, action: (View) -> Unit) {
         }
     }
 }
+
+fun View.tap(interval: Long = 200, action: (View) -> Unit) {
+    setOnSingleClick(interval, action)
+}
+
+fun View.tapAndHold(action: () -> Unit) {
+    val handler = Handler(Looper.getMainLooper())
+    val delay = 10L
+    val runnable = object : Runnable {
+        override fun run() {
+            if (!isEnabled) {
+                handler.removeCallbacks(this)
+                return
+            }
+            action()
+            handler.postDelayed(this, delay)
+        }
+    }
+
+    setOnTouchListener { _, event ->
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (!isEnabled) return@setOnTouchListener true
+                action()
+                handler.postDelayed(runnable, 400L)
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                handler.removeCallbacks(runnable)
+            }
+        }
+        true
+    }
+}
+
+fun Int.dp(context: Context): Int =
+    (this * context.resources.displayMetrics.density).roundToInt()
+
+fun View.setMargins(
+    left: Int? = null,
+    top: Int? = null,
+    right: Int? = null,
+    bottom: Int? = null
+) {
+    val params = layoutParams as ViewGroup.MarginLayoutParams
+    params.setMargins(
+        left ?: params.leftMargin,
+        top ?: params.topMargin,
+        right ?: params.rightMargin,
+        bottom ?: params.bottomMargin
+    )
+    layoutParams = params
+}
 fun View.setOnSingleClickWithSound(interval: Long = 500, action: (View) -> Unit) {
     setOnClickListener {
         if (System.currentTimeMillis() - DataLocal.lastClickTime >= interval) {
@@ -121,6 +179,20 @@ fun TextView.setTextContent(context: Context, resId: Int) {
 
 fun Context.strings(resId: Int) : String {
     return getString(resId)
+}
+
+fun Context.strings(resId: Int, value: String): String {
+    return getString(resId, value)
+}
+
+fun setImageActionBar(imageView: ImageView, res: Int) {
+    imageView.setImageResource(res)
+    imageView.visible()
+}
+
+fun setTextActionBar(textView: TextView, text: String) {
+    textView.text = text
+    textView.visible()
 }
 
 // ----------------------------

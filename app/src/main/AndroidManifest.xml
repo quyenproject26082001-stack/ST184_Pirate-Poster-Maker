@@ -60,6 +60,41 @@
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="adjustNothing" />
         <activity
+            android:name=".activity_app.choose_character.ChooseCharacterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.customize.CustomizeCharacterActivity"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.sticker_customize.StickerCustomizeActivity"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.add_character.AddCharacterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity_app.maker_view.ViewActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.maker_success.SuccessActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.randomfruit.RandomFruitActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity_app.randomfruit.FruitInformationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity_app.SettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

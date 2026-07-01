@@ -27,6 +27,8 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
     private var imagePath: String? = null
     private var originalPhotoPath: String? = null
     private var bountyValue: String? = null
+    private var designSource: String? = null
+    private var hasMetadata: Boolean = false
 
     private var isMyDesign: Boolean = false
     private var downloadPermissionDeniedCount = 0
@@ -142,7 +144,7 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
             }
         }
 
-        if (isMyDesign) {
+        if (canEditMyDesign()) {
             binding.btnEdit.visible()
         } else {
             binding.btnEdit.gone()
@@ -220,23 +222,40 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
             val imageFile = File(imagePath)
             val metadataFileName = imageFile.nameWithoutExtension + ".json"
             val metadataFile = File(imageFile.parent, metadataFileName)
+            hasMetadata = metadataFile.exists()
 
             if (metadataFile.exists()) {
                 val metadataJson = metadataFile.readText()
                 // Simple JSON parsing (format: {"originalPhotoPath": "...", "bountyValue": "..."})
-                originalPhotoPath = metadataJson.substringAfter("\"originalPhotoPath\": \"").substringBefore("\"")
-                bountyValue = metadataJson.substringAfter("\"bountyValue\": \"").substringBefore("\"")
+                originalPhotoPath = metadataJson.readJsonValue("originalPhotoPath")
+                bountyValue = metadataJson.readJsonValue("bountyValue")
+                designSource = metadataJson.readJsonValue("source")
 
                 // Handle empty values
                 if (originalPhotoPath?.isEmpty() == true) originalPhotoPath = null
                 if (bountyValue?.isEmpty() == true) bountyValue = null
+                if (designSource?.isEmpty() == true) designSource = null
             }
         } catch (e: Exception) {
             e.printStackTrace()
             // If metadata loading fails, continue without it
             originalPhotoPath = null
             bountyValue = null
+            designSource = null
+            hasMetadata = false
         }
+    }
+
+    private fun String.readJsonValue(key: String): String? {
+        val marker = "\"$key\": \""
+        if (!contains(marker)) return null
+        return substringAfter(marker).substringBefore("\"")
+    }
+
+    private fun canEditMyDesign(): Boolean {
+        if (!isMyDesign) return false
+        if (!hasMetadata) return false
+        return designSource !in setOf("add_character", "sticker_customize")
     }
 
     private fun updateMetadata() {
@@ -250,7 +269,11 @@ class ViewCreationActivity : BaseActivity<ActivityViewBinding>() {
                 val metadataJson = buildString {
                     append("{\n")
                     append("  \"originalPhotoPath\": \"${originalPhotoPath?.replace("\\", "\\\\") ?: ""}\",\n")
-                    append("  \"bountyValue\": \"${bountyValue ?: ""}\"\n")
+                    append("  \"bountyValue\": \"${bountyValue ?: ""}\"")
+                    designSource?.let {
+                        append(",\n")
+                        append("  \"source\": \"$it\"\n")
+                    } ?: append("\n")
                     append("}")
                 }
                 metadataFile.writeText(metadataJson)

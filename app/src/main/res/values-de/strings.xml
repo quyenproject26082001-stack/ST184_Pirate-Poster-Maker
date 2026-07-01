@@ -120,12 +120,28 @@
     <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Bitte geben Sie einen Namen ein, bevor Sie speichern</string>
     <string name="bountyFilter">Kopfgeld \nFilter</string>
     <string name="play">Spielen</string>
+    <string name="random_fruit">Zufällige Frucht</string>
+    <string name="information">Information</string>
+    <string name="eat">Essen</string>
+    <string name="fruit_number">Frucht %1$s</string>
+    <string name="fruit_information_fallback">Informationen für diese Frucht sind nicht verfügbar.</string>
+    <string name="fruit_type_format">Typ: %1$s</string>
+    <string name="fruit_about_format">🍌 Über: %1$s</string>
+    <string name="fruit_strengths_format">🔥 Stärken:\n• %1$s ist eine %2$s Frucht mit einem flexiblen Kampfstil.\n• %3$s\n• %4$s</string>
+    <string name="fruit_weaknesses_format">⚠️ Schwächen:\n• %1$s\n• %2$s</string>
+    <string name="stats">✨ Statistiken:</string>
+    <string name="strengths">🔥 Stärken:</string>
+    <string name="weaknesses">⚠️ Schwächen:</string>
+    <string name="attack">Angriff</string>
+    <string name="defense">Verteidigung</string>
+    <string name="utility">Nutzen</string>
+    <string name="stat_value_format">%1$d/100</string>
     <string name="old_west">Wilder Westen \nGesetzlose</string>
     <string name="old_west_outlwaw">Wilder Westen Gesetzlose</string>
     <string name="camera_permission_is_required">Kameraberechtigung ist erforderlich</string>
     <string name="my_wanted">Mein Wanted</string>
-    <string name="saved_to_my_design">In Meine Designs gespeichert!</string>
-    <string name="improve">Kopfgeld erhöhen</string>
+    <string name="saved_to_my_design">In Mein Design gespeichert!</string>
+    <string name="improve">Kopfgeld verbessern</string>
     <string name="reconsider">Kopfgeld überdenken</string>
-
+    <string name="rb_one_piece">RB One Piece</string>
 </resources>

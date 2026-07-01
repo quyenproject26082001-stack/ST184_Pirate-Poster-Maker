@@ -77,6 +77,11 @@ object BitmapHelper {
         }
     }
 
+    @Throws(OutOfMemoryError::class)
+    fun getBitmapFromEditText(view: View): Bitmap {
+        return createBimapFromView(view)
+    }
+
     /**
      * Blur bitmap using RenderScript
      * @param context Android context

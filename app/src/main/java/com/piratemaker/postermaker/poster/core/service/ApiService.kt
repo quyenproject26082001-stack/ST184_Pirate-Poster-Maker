@@ -3,6 +3,6 @@ import com.piratemaker.postermaker.poster.data.model.PartAPI
 import retrofit2.Response
 import retrofit2.http.GET
 interface ApiService {
-    @GET("/api/ST181_HalloweenMaker")
+    @GET("/api/app/ST184_PiratePosterMaker")
     suspend fun getAllData(): Response<Map<String, List<PartAPI>>>
 }

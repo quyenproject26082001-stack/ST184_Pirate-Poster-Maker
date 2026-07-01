@@ -97,16 +97,123 @@
                 </LinearLayout>
             </FrameLayout>
 
+
+
+            <!--btnCreate-->
+            <FrameLayout
+                android:id="@+id/btnFruit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintDimensionRatio="160:128"
+                app:layout_constraintEnd_toEndOf="@id/glCenter"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnBountyFilter">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/img_fruit" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                        android:id="@+id/tvFruit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/kurale_regular"
+                        android:gravity="center"
+                        android:layout_gravity="bottom"
+                        android:text="@string/posterwantedmaker"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"
+                        app:outerStrokeColor="#000000"
+                        app:outerStrokeWidth="1.5dp" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <!--BtnPosterWantedTemplate-->
+            <FrameLayout
+                android:id="@+id/btnMaker"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="4dp"
+                app:layout_constraintDimensionRatio="160:128"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btnFruit"
+                app:layout_constraintTop_toTopOf="@id/btnFruit">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/img_maker" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                        android:id="@+id/tvMaker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:fontFamily="@font/kurale_regular"
+                        android:gravity="center"
+                        android:text="@string/posterwantedtemplates"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_gravity="bottom"
+                        app:outerStrokeColor="#000000"
+                        app:outerStrokeWidth="1.5dp" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </FrameLayout>
+
+
+
+
             <!--btnCreate-->
             <FrameLayout
                 android:id="@+id/btnCreate"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintDimensionRatio="328:128"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintDimensionRatio="160:128"
+                app:layout_constraintEnd_toEndOf="@id/glCenter"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnBountyFilter">
+                app:layout_constraintTop_toBottomOf="@id/btnFruit">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -128,12 +235,14 @@
                     <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tv1"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
+                        android:layout_gravity="bottom"
                         android:text="@string/posterwantedmaker"
                         android:textColor="@color/white"
-                        android:textSize="28sp"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1.5dp" />
 
@@ -149,11 +258,12 @@
                 android:id="@+id/BtnPosterWantedTemplate"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintDimensionRatio="328:128"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="4dp"
+                app:layout_constraintDimensionRatio="160:128"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnCreate">
+                app:layout_constraintStart_toEndOf="@id/btnCreate"
+                app:layout_constraintTop_toTopOf="@id/btnCreate">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -175,13 +285,15 @@
                     <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tv2"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
                         android:text="@string/posterwantedtemplates"
                         android:textColor="@color/white"
-                        android:textSize="28sp"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_gravity="bottom"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1.5dp" />
 
@@ -224,13 +336,15 @@
                     <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tv3"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
                         android:text="@string/my_creation"
                         android:textColor="@color/white"
-                        android:textSize="24sp"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_gravity="bottom"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1dp" />
 
@@ -249,7 +363,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintDimensionRatio="160:128"
                 app:layout_constraintEnd_toEndOf="@id/glCenter"
-                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/BtnPosterWantedTemplate">
 
@@ -273,14 +387,16 @@
                     <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
                         android:id="@+id/tvOldWest"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:fontFamily="@font/kurale_regular"
                         android:gravity="center"
                         android:text="@string/old_west"
                         android:textColor="@color/white"
-                        android:textSize="24sp"
+                        android:textSize="16sp"
                         android:maxLines="2"
+                        android:layout_marginBottom="8dp"
+                        android:layout_gravity="bottom"
                         app:outerStrokeColor="#000000"
                         app:outerStrokeWidth="1dp" />
 

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#303030"
+    tools:context=".activity_app.randomfruit.FruitInformationActivity">
+
+    <ScrollView
+        android:id="@+id/scrollInfo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="false"
+        app:layout_constraintBottom_toTopOf="@id/btnEat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="18dp"
+            android:paddingTop="72dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="24dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnHome"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="0dp"
+                android:src="@drawable/ic_home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgFruit"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="88dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnBack"
+                app:layout_constraintWidth_percent="0.48" />
+
+            <TextView
+                android:id="@+id/tvFruitTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="52dp"
+                android:fontFamily="@font/kurale_regular"
+                android:textColor="#F4F4F4"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgFruit"
+                tools:text="Name of Fruit" />
+
+            <TextView
+                android:id="@+id/tvFruitType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/kurale_regular"
+                android:textColor="#F4F4F4"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvFruitTitle"
+                tools:text="Type: Paramecia" />
+
+            <TextView
+                android:id="@+id/tvAbout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:fontFamily="@font/kurale_regular"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#F4F4F4"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvFruitType"
+                tools:text="About: Fruit information" />
+
+            <TextView
+                android:id="@+id/tvStrengths"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="34dp"
+                android:fontFamily="@font/kurale_regular"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#F4F4F4"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAbout"
+                tools:text="Strengths: ..." />
+
+            <TextView
+                android:id="@+id/tvWeaknesses"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="34dp"
+                android:fontFamily="@font/kurale_regular"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#F4F4F4"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvStrengths"
+                tools:text="Weaknesses: ..." />
+
+            <TextView
+                android:id="@+id/tvStatsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="34dp"
+                android:fontFamily="@font/kurale_regular"
+                android:text="@string/stats"
+                android:textColor="#F4F4F4"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvWeaknesses" />
+
+            <LinearLayout
+                android:id="@+id/layoutStars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/tvStatsLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvStatsLabel">
+
+                <ImageView
+                    android:id="@+id/imgStar1"
+                    android:layout_width="21dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_star_unselected" />
+
+                <ImageView
+                    android:id="@+id/imgStar2"
+                    android:layout_width="21dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_star_unselected" />
+
+                <ImageView
+                    android:id="@+id/imgStar3"
+                    android:layout_width="21dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_star_unselected" />
+
+                <ImageView
+                    android:id="@+id/imgStar4"
+                    android:layout_width="21dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_star_unselected" />
+
+                <ImageView
+                    android:id="@+id/imgStar5"
+                    android:layout_width="21dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_star_unselected" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvAttackLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/kurale_regular"
+                android:text="@string/attack"
+                android:textColor="#F4F4F4"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvStatsLabel" />
+
+            <TextView
+                android:id="@+id/tvAttackValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kurale_regular"
+                android:textColor="#F4F4F4"
+                android:textSize="15sp"
+                app:layout_constraintBaseline_toBaselineOf="@id/tvAttackLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="60/100" />
+
+            <ProgressBar
+                android:id="@+id/progressAttack"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:progressDrawable="@drawable/progress_fruit_stats"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAttackLabel" />
+
+            <TextView
+                android:id="@+id/tvDefenseLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:fontFamily="@font/kurale_regular"
+                android:text="@string/defense"
+                android:textColor="#F4F4F4"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progressAttack" />
+
+            <TextView
+                android:id="@+id/tvDefenseValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kurale_regular"
+                android:textColor="#F4F4F4"
+                android:textSize="15sp"
+                app:layout_constraintBaseline_toBaselineOf="@id/tvDefenseLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="98/100" />
+
+            <ProgressBar
+                android:id="@+id/progressDefense"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:progressDrawable="@drawable/progress_fruit_stats"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDefenseLabel" />
+
+            <TextView
+                android:id="@+id/tvUtilityLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:fontFamily="@font/kurale_regular"
+                android:text="@string/utility"
+                android:textColor="#F4F4F4"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progressDefense" />
+
+            <TextView
+                android:id="@+id/tvUtilityValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kurale_regular"
+                android:textColor="#F4F4F4"
+                android:textSize="15sp"
+                app:layout_constraintBaseline_toBaselineOf="@id/tvUtilityLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="65/100" />
+
+            <ProgressBar
+                android:id="@+id/progressUtility"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:progressDrawable="@drawable/progress_fruit_stats"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvUtilityLabel" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/btnEat"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_eat_button"
+        android:fontFamily="@font/kurale_regular"
+        android:gravity="center"
+        android:text="@string/eat"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/layoutVideo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:visibility="gone">
+
+        <VideoView
+            android:id="@+id/videoFruit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <!-- Native Collapsible Ad - Bottom -->
+    <FrameLayout
+        android:id="@+id/nativeCollapFruitInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

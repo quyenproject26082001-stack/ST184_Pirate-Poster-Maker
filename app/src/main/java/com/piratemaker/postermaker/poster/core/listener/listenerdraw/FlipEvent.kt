@@ -1,7 +1,7 @@
-package com.piratemaker.postermaker.listener.listenerdraw
+package com.piratemaker.postermaker.poster.core.listener.listenerdraw
 
 import android.view.MotionEvent
-import com.piratemaker.postermaker.core.custom.drawview.DrawView
+import com.piratemaker.postermaker.poster.core.custom.drawview.DrawView
 
 import com.piratemaker.postermaker.poster.core.utils.key.DrawKey
 

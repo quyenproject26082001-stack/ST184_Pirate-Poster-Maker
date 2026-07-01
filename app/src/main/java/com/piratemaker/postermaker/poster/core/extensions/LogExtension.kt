@@ -1,6 +1,7 @@
 package com.piratemaker.postermaker.poster.core.extensions
 
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 
 fun Context.dLog(content: String) {
@@ -17,4 +18,8 @@ fun Context.iLog(content: String) {
 
 fun Context.wLog(content: String) {
     Log.w("nbhieu", content)
+}
+
+fun Context.logEvent(name: String, params: Bundle? = null) {
+    Log.d("event", "$name ${params ?: ""}")
 }

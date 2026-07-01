@@ -30,6 +30,13 @@
 
     <!-- poster maker/template -->
     <string name="native_template" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_collap_fruitFilter" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_collap_fruitInfo" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_collap_OCMaker" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_collap_maker" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_collap_bg" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_collap_stickerMaker" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_success" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
 
     <!-- edit -->
     <string name="native_collap_edit" translatable="false">ca-app-pub-3940256099942544/2247696110</string>

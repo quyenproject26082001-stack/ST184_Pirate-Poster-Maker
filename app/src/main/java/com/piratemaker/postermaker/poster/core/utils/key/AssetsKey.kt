@@ -6,6 +6,8 @@ object AssetsKey {
     const val AVATAR_ASSET = "avatar"
     const val DATA = "data"
     const val BACKGROUND_ASSET = "background"
+    const val SPEECH_ASSET = "speech"
+    const val STICKER_ASSET = "sticker"
     const val RANDOM_LAYER = "RANDOM_LAYER"
     const val NONE_LAYER = "NONE_LAYER"
     const val SPLIT_LAYER = "-"

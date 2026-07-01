@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_bg_language"
+    android:clipChildren="false"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".ui.add_character.AddCharacterActivity">
+
+    <!--    flGetText-->
+    <FrameLayout
+        android:id="@+id/flGetText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp"
+        android:paddingHorizontal="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--        tvGetText-->
+        <TextView
+            android:id="@+id/tvGetText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/transparent"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center"
+            android:maxLength="30"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+    </FrameLayout>
+
+
+    <!--    flActionBar-->
+    <FrameLayout
+        android:id="@+id/flActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/actionBar"
+            layout="@layout/layout_actionbar" />
+    </FrameLayout>
+
+
+    <!--    flSave-->
+    <FrameLayout
+        android:id="@+id/flSaveBG"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flActionBar"/>
+
+    <!--    flSave-->
+    <FrameLayout
+        android:id="@+id/flSave"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flActionBar">
+
+        <!--        imvBackground-->
+        <ImageView
+            android:id="@+id/imvBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+        <!--        drawView-->
+        <com.piratemaker.postermaker.poster.core.custom.drawview.DrawView
+            android:id="@+id/drawView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+
+    <!--    flFunction-->
+    <FrameLayout
+        android:id="@+id/flFunction"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipChildren="false"
+        app:layout_constraintBottom_toTopOf="@id/bottomTabs"
+        app:layout_constraintTop_toBottomOf="@id/flSave">
+
+        <include
+            android:id="@+id/functionPanels"
+            layout="@layout/layout_add_character_function_panels"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomTabs"
+        app:layout_constraintEnd_toEndOf="@+id/bottomTabs"
+        app:layout_constraintStart_toStartOf="@+id/bottomTabs"
+        app:layout_constraintTop_toTopOf="@+id/bottomTabs" />
+
+    <include
+        android:id="@+id/bottomTabs"
+        layout="@layout/layout_add_character_bottom_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/blue_app"
+        app:layout_constraintBottom_toTopOf="@id/bottomTabs"
+        app:layout_constraintTop_toBottomOf="@id/flFunction" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <!--    &lt;!&ndash;    flNativeCollab&ndash;&gt;-->
+        <FrameLayout
+            android:id="@+id/flNativeCollab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        </FrameLayout>
+
+    <!--    &lt;!&ndash; Custom Input View (1/4 screen height) &ndash;&gt;-->
+    <!--    <include-->
+    <!--        android:id="@+id/customInputLayout"-->
+    <!--        layout="@layout/layout_custom_input"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintHeight_percent="0.25" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,16 @@
 package com.piratemaker.postermaker.poster.data.model.custom
 
 data class SuggestionModel (
-    val avatarPath: String = "",
-    val positionColorItemList : ArrayList<Int> = arrayListOf(),
-    val itemNavList : ArrayList<ArrayList<ItemNavCustomModel>> = arrayListOf(),
+    var avatarPath: String = "",
+    var positionColorItemList : ArrayList<Int> = arrayListOf(),
+    var itemNavList : ArrayList<ArrayList<ItemNavCustomModel>> = arrayListOf(),
     var colorItemNavList : ArrayList<ArrayList<ItemColorModel>> = arrayListOf(),
-    val isSelectedItemList : ArrayList<Boolean> = arrayListOf(),
-    val keySelectedItemList : ArrayList<String> = arrayListOf(),
-    val isShowColorList : ArrayList<Boolean> = arrayListOf(),
-    val pathSelectedList : ArrayList<String> = arrayListOf(),
+    var isSelectedItemList : ArrayList<Boolean> = arrayListOf(),
+    var keySelectedItemList : ArrayList<String> = arrayListOf(),
+    var isShowColorList : ArrayList<Boolean> = arrayListOf(),
+    var pathSelectedList : ArrayList<String> = arrayListOf(),
+    var pathInternalRandom: String = "",
+    var pathInternalEdit: String = "",
+    var isFlip: Boolean = false,
+    var layerTransformList: ArrayList<LayerTransformModel> = arrayListOf()
 )

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.piratemaker.postermaker.poster.core.helper.AssetHelper
 import com.piratemaker.postermaker.poster.core.helper.InternetHelper
 import com.piratemaker.postermaker.poster.core.helper.MediaHelper
+import com.piratemaker.postermaker.poster.core.helper.RemoteAssetHelper
 import com.piratemaker.postermaker.poster.core.service.RetrofitClient
 import com.piratemaker.postermaker.poster.core.service.RetrofitPreventive
 import com.piratemaker.postermaker.poster.core.utils.DataLocal.isFailBaseURL
@@ -23,6 +24,8 @@ import com.piratemaker.postermaker.poster.data.model.custom.CustomizeModel
 import com.piratemaker.postermaker.poster.data.model.custom.LayerListModel
 import com.piratemaker.postermaker.poster.data.model.custom.LayerModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -154,7 +157,33 @@ class DataViewModel() : ViewModel() {
             Log.d("nbhieu", "avatar: ${it.avatar}")
         }
     }
-
+    fun preloadAddCharacterAssets(context: Context) {
+        if (!InternetHelper.checkInternet(context)) return
+        viewModelScope.launch(Dispatchers.IO) {
+            coroutineScope {
+                val bg = async {
+                    RemoteAssetHelper.getSequentialRemoteAssets(
+                        DomainKey.getAddCharacterAssetUrl(AssetsKey.BACKGROUND_ASSET),
+                        listOf("png")
+                    )
+                }
+                val sticker = async {
+                    RemoteAssetHelper.getSequentialRemoteAssets(
+                        DomainKey.getAddCharacterAssetUrl(AssetsKey.STICKER_ASSET),
+                        listOf("png", "webp")
+                    )
+                }
+                val speech = async {
+                    RemoteAssetHelper.getSequentialRemoteAssets(
+                        DomainKey.getAddCharacterAssetUrl(AssetsKey.SPEECH_ASSET),
+                        listOf("png", "webp", "jpg")
+                    )
+                }
+                bg.await(); sticker.await(); speech.await()
+            }
+            Log.d("DataViewModel", "AddCharacter assets preloaded into cache")
+        }
+    }
     private fun getDataLayer(baseDomain: String, partData: PartAPI, layer: String): ArrayList<LayerModel> {
         return if (partData.colorArray != "" || partData.colorArray.isNotEmpty()) {
             getDataAPIColor(baseDomain, partData, layer)

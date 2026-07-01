@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity_app.randomfruit.RandomFruitActivity">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_bg_language" />
+
+
+    <FrameLayout
+        android:id="@+id/frameCamera"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:background="@drawable/previous"
+        app:layout_constraintBottom_toTopOf="@id/btnPlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/imgCamera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:implementationMode="compatible" />
+
+        <ImageView
+            android:id="@+id/imgCapturedFruit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imgPlayFruit"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:scaleType="fitCenter"
+            tools:background="@color/black"
+            android:visibility="visible" />
+
+    </FrameLayout>
+
+
+    <!--    &lt;!&ndash; Dark overlay for initial dimming effect - placed before btnPlay so btnPlay is on top &ndash;&gt;-->
+    <!--    <View-->
+    <!--        android:id="@+id/darkOverlay"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="#99000000"-->
+    <!--        android:visibility="visible"-->
+    <!--        android:clickable="false"-->
+    <!--        android:focusable="false"/>-->
+
+    <TextView
+        android:id="@+id/btnPlay"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="82dp"
+        android:background="@drawable/ic_play_fruit"
+        android:fontFamily="@font/kurale_regular"
+        android:gravity="center"
+        android:text="@string/play"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/frameCamera"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- White flash overlay for camera capture effect -->
+    <View
+        android:id="@+id/flashOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="#FFFFFF"
+        android:visibility="gone" />
+
+    <!--    layoutActionBar-->
+    <FrameLayout
+        android:id="@+id/layoutActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/actionBar"
+            layout="@layout/layout_actionbar" />
+    </FrameLayout>
+
+    <!-- nativeClHome -->
+    <FrameLayout
+        android:id="@+id/nativeClBounty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include layout="@layout/ads_shimmer_collap_native" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

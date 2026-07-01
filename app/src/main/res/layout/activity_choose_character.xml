@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.choose_character.ChooseCharacterActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/img_bg_language"
+        android:scaleType="centerCrop" />
+
+    <!--    layoutActionBar-->
+    <FrameLayout
+        android:id="@+id/layoutActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/actionBar"
+            layout="@layout/layout_actionbar" />
+    </FrameLayout>
+
+
+    <!-- rcvMyAlbum -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvCharacter"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingHorizontal="6dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar"
+        app:spanCount="2"
+        tools:listitem="@layout/item_choose_avatar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="328:128"
+        android:layout_marginHorizontal="16dp"
+
+        android:background="@drawable/maker_bg"
+        android:id="@+id/btnMaker"
+        app:layout_constraintTop_toBottomOf="@id/layoutActionBar">
+
+        <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_one_piece"
+            android:textColor="@color/white"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="16dp"
+            app:outerStrokeColor="@color/black"
+            android:fontFamily="@font/jua_regular"
+            app:outerStrokeWidth="1.5dp"
+            android:textSize="24sp"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="328:128"
+        android:background="@drawable/bg_sticker"
+        android:id="@+id/btnSticker"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/btnMaker">
+
+        <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_one_piece"
+            android:textColor="@color/white"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="16dp"
+            app:outerStrokeColor="@color/black"
+            android:fontFamily="@font/jua_regular"
+            app:outerStrokeWidth="1.5dp"
+            android:textSize="24sp"/>
+    </FrameLayout>
+
+
+    <!--    &lt;!&ndash;    flNativeCollab&ndash;&gt;-->
+    <FrameLayout
+        android:id="@+id/flNativeCollab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/nativeOC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <include layout="@layout/ads_shimmer_big" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

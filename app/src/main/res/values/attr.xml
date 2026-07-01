@@ -8,6 +8,7 @@
         <enum name="round" value="2" />
     </attr>
     <attr name="strokeMiter" format="dimension" />
+    <attr name="sliderStrokeSize" format="dimension" />
 
     <!-- Single Stroke -->
     <declare-styleable name="StrokeTextView">

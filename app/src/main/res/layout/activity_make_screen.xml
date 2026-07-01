@@ -108,6 +108,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     app:strokeColor="#C4561B"
+                    app:cardBackgroundColor="@color/white"
                     app:strokeWidth="2dp"
                     android:layout_marginEnd="4dp"
                     app:cardCornerRadius="8dp"
@@ -130,6 +131,8 @@
                     android:layout_height="40dp"
                     app:strokeColor="#C4561B"
                     app:strokeWidth="2dp"
+                    app:cardBackgroundColor="@color/white"
+
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     app:cardCornerRadius="8dp"

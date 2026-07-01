@@ -9,9 +9,20 @@ import com.piratemaker.postermaker.poster.core.base.BaseDialog
 import com.piratemaker.postermaker.poster.core.extensions.strings
 import com.piratemaker.postermaker.poster.databinding.DialogConfirmBinding
 
+enum class DialogType {
+    DELETE_EXIT,
+    RESET,
+    LOADING,
+    INTERNET,
+    PERMISSION
+}
 
 class YesNoDialog(
-    val context: Activity, val title: Int, val description: Int, val isError: Boolean = false
+    val context: Activity,
+    val title: Int,
+    val description: Int,
+    val isError: Boolean = false,
+    val dialogType: DialogType = DialogType.DELETE_EXIT
 ) : BaseDialog<DialogConfirmBinding>(context, maxWidth = true, maxHeight = true) {
     override val layoutId: Int = R.layout.dialog_confirm
     override val isCancelOnTouchOutside: Boolean = false

@@ -47,7 +47,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
         initNetworkMonitor()
         Admob.getInstance().setOpenShowAllAds(true)
-        Admob.getInstance().setTimeLimitShowAds(20000)
+        Admob.getInstance().setTimeLimitShowAds(2000)
         Admob.getInstance().setTimeCountdownNativeCollab(15000)
 
         // Simple delay then navigate

@@ -1,7 +1,7 @@
-package com.piratemaker.postermaker.listener.listenerdraw
+package com.piratemaker.postermaker.poster.core.listener.listenerdraw
 
-import com.ocmaker.pixcel.maker.data.model.draw.Draw
-import com.ocmaker.pixcel.maker.data.model.draw.DrawableDraw
+import com.piratemaker.postermaker.poster.core.draw.Draw
+import com.piratemaker.postermaker.poster.core.draw.DrawableDraw
 
 
 interface OnDrawListener {

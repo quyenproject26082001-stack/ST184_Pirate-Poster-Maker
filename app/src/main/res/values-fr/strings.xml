@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wanted Poster Creator: Filter</string>
+    <string name="app_name">Créateur d\'Affiche de Mise à Prix : Filtre</string>
     <string name="go_to_setting_message">L\'application a besoin de cette autorisation</string>
     <string name="settings">Paramètres</string>
     <string name="this_action_can_contain_ads">Cette action peut contenir des publicités</string>
@@ -9,7 +9,7 @@
 
     <string name="title_1">Devenez un vrai pirate</string>
     <string name="title_2">Style pirate surréaliste</string>
-    <string name="title_3">Créez une affiche recherché avec prime</string>
+    <string name="title_3">Créez une affiche de mise à prix avec une prime énorme</string>
 
     <string name="permission">Autorisation</string>
     <string name="storage">Stockage</string>
@@ -20,23 +20,23 @@
     <string name="allow">Autoriser</string>
     <string name="to_access">pour accéder aux photos sur votre appareil</string>
     <string name="to_access_13">pour accéder aux notifications sur votre appareil</string>
-    <string name="no_designs_yet">Vous n\'avez aucune affiche</string>
+    <string name="no_designs_yet">Vous n\'avez pas encore d\'affiche</string>
 
-    <string name="rate_us">Évaluez-nous</string>
-    <string name="share_app">Partager l\'App</string>
-    <string name="privacy_policy"><![CDATA[Confidentialité & Politique]]></string>
+    <string name="rate_us">Notez-nous</string>
+    <string name="share_app">Partager l\'application</string>
+    <string name="privacy_policy"><![CDATA[Politique de confidentialité]]></string>
 
-    <string name="zero_star_title">Aimez-vous l\'application?</string>
+    <string name="zero_star_title">Aimez-vous l\'application ?</string>
     <string name="zero_star">J\'ai besoin de votre amour</string>
 
-    <string name="one_star_title">Petit ami m\'a fait pleurer</string>
+    <string name="one_star_title">Le petit ami m\'a fait pleurer</string>
     <string name="one_star">Je vais pleurer toute la journée</string>
 
     <string name="two_star_title">Je suis un peu triste</string>
     <string name="two_star">Je ne mangerai pas de riz aujourd\'hui</string>
 
-    <string name="three_star_title">Bon travail petit ami</string>
-    <string name="three_star">Je savais que tu ne me laisserais pas triste</string>
+    <string name="three_star_title">Beau travail petit ami</string>
+    <string name="three_star">Je sais que tu ne me laisseras pas être triste</string>
 
     <string name="four_star_title">Tu es si beau</string>
     <string name="four_star">Le prince est si beau</string>
@@ -44,69 +44,69 @@
     <string name="five_star_title">Je t\'aime tellement</string>
     <string name="five_star">marions-nous</string>
 
-    <string name="rate_us_0">Vous n\'avez pas encore évalué!</string>
-    <string name="rate">Évaluer</string>
+    <string name="rate_us_0">Vous ne l\'avez pas encore noté !</string>
+    <string name="rate">Noter</string>
     <string name="exit">Quitter</string>
-    <string name="have_rated">Merci d\'avoir évalué notre app</string>
+    <string name="have_rated">Merci d\'avoir noté notre application</string>
     <string name="share">Partager</string>
     <string name="delete">Supprimer</string>
     <string name="download">Télécharger</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
-    <string name="wait_a_minute">Patientez quelques secondes...</string>
+    <string name="wait_a_minute">Attendez quelques secondes...</string>
     <string name="reset">Réinitialiser</string>
-    <string name="download_success">Téléchargement réussi dans l\'album Wanted Poster Creator: Filter</string>
+    <string name="download_success">Téléchargement réussi dans l\'album Créateur d\'Affiche de Mise à Prix : Filtre</string>
     <string name="please_check_your_internet">Veuillez vérifier votre connexion internet</string>
     <string name="please_select_an_image">Veuillez sélectionner une image</string>
     <string name="error">Erreur</string>
 
-    <string name="an_error_occurred">Une erreur s\'est produite, veuillez réessayer plus tard.</string>
-    <string name="image_has_been_saved_successfully">Image enregistrée avec succès!</string>
+    <string name="an_error_occurred">Une erreur est survenue, veuillez réessayer plus tard.</string>
+    <string name="image_has_been_saved_successfully">L\'image a été enregistrée avec succès !</string>
     <string name="save">Enregistrer</string>
-    <string name="are_you_sure_want_to_delete_this_item">Êtes-vous sûr de vouloir supprimer cet élément?</string>
+    <string name="are_you_sure_want_to_delete_this_item">Êtes-vous sûr de vouloir supprimer cet élément ?</string>
     <string name="downloading">Téléchargement...</string>
-    <string name="successfully">Succès</string>
-    <string name="download_failed_please_try_again_later">Échec du téléchargement, veuillez réessayer plus tard!</string>
-    <string name="save_failed_please_try_again">Échec de l\'enregistrement, veuillez réessayer!</string>
-    <string name="delete_failed_please_try_again">Échec de la suppression, veuillez réessayer!</string>
-    <string name="my_creation">Ma Création</string>
+    <string name="successfully">Avec succès</string>
+    <string name="download_failed_please_try_again_later">Le téléchargement a échoué, veuillez réessayer plus tard !</string>
+    <string name="save_failed_please_try_again">L\'enregistrement a échoué, veuillez réessayer !</string>
+    <string name="delete_failed_please_try_again">La suppression a échoué, veuillez réessayer !</string>
+    <string name="my_creation">Ma création</string>
     <string name="delete_your_customize">Supprimer votre personnalisation</string>
-    <string name="are_you_sure_you_want_to_delete_the_image">Êtes-vous sûr de vouloir supprimer l\'image?</string>
-    <string name="haven_t_saved_it_yet_do_you_want_to_exit">Pas encore enregistré, voulez-vous quitter?</string>
-    <string name="change_your_whole_design_are_you_sure">Voulez-vous tout réinitialiser?</string>
-    <string name="character_maker">Créateur d\'Affiche\nde Recherché</string>
-    <string name="no_item_here">Aucun Élément Ici</string>
+    <string name="are_you_sure_you_want_to_delete_the_image">Êtes-vous sûr de vouloir supprimer l\'image ?</string>
+    <string name="haven_t_saved_it_yet_do_you_want_to_exit">Pas encore enregistré, voulez-vous quitter ?</string>
+    <string name="change_your_whole_design_are_you_sure">Voulez-vous tout réinitialiser ?</string>
+    <string name="character_maker">Créateur d\'Affiche \nRecherché</string>
+    <string name="no_item_here">Aucun élément ici</string>
     <string name="import_">Importer</string>
     <string name="templates">Modèles</string>
-    <string name="posterwantedtemplates">Modèles d\'Affiche\nde Recherché</string>
-    <string name="posterwantedmaker">Créateur d\'Affiche\nde Recherché</string>
+    <string name="posterwantedtemplates">Modèles d\'Affiche \nRecherché</string>
+    <string name="posterwantedmaker">Créateur d\'Affiche \nRecherché</string>
     <string name="bounty">Prime</string>
-    <string name="photo_filter">Filtre Photo</string>
-    <string name="poster_shadow">Ombre de l\'Affiche</string>
+    <string name="photo_filter">Filtre photo</string>
+    <string name="poster_shadow">Ombre de l\'affiche</string>
     <string name="sepia">Sépia</string>
-    <string name="saturate">Saturation</string>
-    <string name="hue_rotate">Rotation de Teinte</string>
-    <string name="grayscale">Niveaux de Gris</string>
+    <string name="saturate">Saturer</string>
+    <string name="hue_rotate">Rotation de teinte</string>
+    <string name="grayscale">Niveaux de gris</string>
     <string name="contrast">Contraste</string>
     <string name="brightness">Luminosité</string>
     <string name="blur">Flou</string>
     <string name="shadow">Ombre</string>
 
     <string name="wanted_poster_maker">Créateur d\'Affiche</string>
-    <string name="my_design">Mon Design</string>
-    <string name="delete_design_confirmation">Êtes-vous sûr de vouloir supprimer ce design?</string>
+    <string name="my_design">Mon design</string>
+    <string name="delete_design_confirmation">Êtes-vous sûr de vouloir supprimer ce design ?</string>
     <string name="design_deleted">Design supprimé</string>
-    <string name="delete_failed">Échec de la suppression</string>
+    <string name="delete_failed">La suppression a échoué</string>
     <string name="cancel">Annuler</string>
-    <string name="poster_templates">Modèles d\'Affiche</string>
+    <string name="poster_templates">Modèles d\'affiche</string>
     <string name="default_name">Pirate</string>
     <string name="default_bounty">1 000 000</string>
-    <string name="reset_to_default_values">Réinitialiser aux valeurs par défaut?</string>
+    <string name="reset_to_default_values">Réinitialiser aux valeurs par défaut ?</string>
     <string name="please_import_a_photo_first">Veuillez d\'abord importer une photo</string>
     <string name="failed_to_load_image">Échec du chargement de l\'image</string>
     <string name="background_removed_success">Arrière-plan supprimé avec succès</string>
     <string name="failed_to_remove_background">Échec de la suppression de l\'arrière-plan</string>
-    <string name="error_message">Une erreur s\'est produite</string>
+    <string name="error_message">Une erreur est survenue</string>
     <string name="position_y">Position Y</string>
     <string name="spacing">Espacement</string>
     <string name="input">Entrée</string>
@@ -114,18 +114,34 @@
     <string name="weight">Poids</string>
     <string name="position_x">Position X</string>
     <string name="name">Nom</string>
-    <string name="enter_name">Entrez le nom</string>
-    <string name="enter_bounty">Entrez la prime</string>
+    <string name="enter_name">Entrer le nom</string>
+    <string name="enter_bounty">Entrer la prime</string>
     <string name="edit">Modifier</string>
-    <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Veuillez entrer un nom avant d’enregistrer</string>
+    <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Veuillez entrer un nom avant d\'enregistrer</string>
     <string name="bountyFilter">Filtre de \nPrime</string>
     <string name="play">Jouer</string>
-    <string name="old_west">Far West \nHors-la-loi</string>
-    <string name="old_west_outlwaw">Far West Hors-la-loi</string>
-    <string name="camera_permission_is_required">L’autorisation de la caméra est requise</string>
-    <string name="my_wanted">Mon Wanted</string>
-    <string name="saved_to_my_design">Enregistré dans Mes créations !</string>
-    <string name="improve">Augmenter la Prime</string>
-    <string name="reconsider">Reconsidérer la Prime</string>
-
+    <string name="random_fruit">Fruit Aléatoire</string>
+    <string name="information">Information</string>
+    <string name="eat">Manger</string>
+    <string name="fruit_number">Fruit %1$s</string>
+    <string name="fruit_information_fallback">Les informations ne sont pas disponibles pour ce fruit.</string>
+    <string name="fruit_type_format">Type : %1$s</string>
+    <string name="fruit_about_format">🍌 À propos de : %1$s</string>
+    <string name="fruit_strengths_format">🔥 Forces :\n• %1$s est un fruit de type %2$s avec un style de combat flexible.\n• %3$s\n• %4$s</string>
+    <string name="fruit_weaknesses_format">⚠️ Faiblesses :\n• %1$s\n• %2$s</string>
+    <string name="stats">✨ Stats :</string>
+    <string name="strengths">🔥 Forces :</string>
+    <string name="weaknesses">⚠️ Faiblesses :</string>
+    <string name="attack">Attaque</string>
+    <string name="defense">Défense</string>
+    <string name="utility">Utilité</string>
+    <string name="stat_value_format">%1$d/100</string>
+    <string name="old_west">Hors-la-loi du \nFar West</string>
+    <string name="old_west_outlwaw">Hors-la-loi du Far West</string>
+    <string name="camera_permission_is_required">L\'autorisation de la caméra est requise</string>
+    <string name="my_wanted">Mon Recherché</string>
+    <string name="saved_to_my_design">Enregistré dans Mon design !</string>
+    <string name="improve">Améliorer la prime</string>
+    <string name="reconsider">Reconsidérer la prime</string>
+    <string name="rb_one_piece">RB One Piece</string>
 </resources>

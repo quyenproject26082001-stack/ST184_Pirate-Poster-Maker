@@ -16,15 +16,19 @@ import com.piratemaker.postermaker.poster.core.utils.state.RateState
 import com.piratemaker.postermaker.poster.databinding.ActivityHomeBinding
 import com.piratemaker.postermaker.poster.activity_app.SettingsActivity
 import com.piratemaker.postermaker.poster.activity_app.bountyfilter.BountyFilterActivity
+import com.piratemaker.postermaker.poster.activity_app.choose_character.ChooseCharacterActivity
 import com.piratemaker.postermaker.poster.activity_app.mycreation.MyCreationActivity
 import com.piratemaker.postermaker.poster.activity_app.posterwanted.PosterWantedTemplateActivity
+import com.piratemaker.postermaker.poster.activity_app.randomfruit.RandomFruitActivity
 import com.piratemaker.postermaker.poster.core.extensions.gone
 
 import com.piratemaker.postermaker.poster.core.extensions.setOnSingleClick
 import com.piratemaker.postermaker.poster.core.extensions.strings
 //quyen
 import com.lvt.ads.util.Admob
+import com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity
 import com.piratemaker.postermaker.poster.core.extensions.showInterAll
+import com.piratemaker.postermaker.poster.core.viewmodel.PosterEditorSharedViewModel
 //quyen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -35,6 +39,8 @@ import java.io.File
 class MainActivity : BaseActivity<ActivityHomeBinding>() {
 
     private var currentLanguage: String = ""
+    private val posterEditorViewModel = PosterEditorSharedViewModel.getInstance()
+
     //quyen
     //quyen
 
@@ -74,11 +80,23 @@ class MainActivity : BaseActivity<ActivityHomeBinding>() {
                     startIntentRightToLeft(BountyFilterActivity::class.java)
                 }
             }
-            btnCreate.setOnSingleClick {
+            btnMaker.setOnSingleClick {
                 showInterAll {
-                    startIntentRightToLeft(com.piratemaker.postermaker.poster.activity_app.makescreen.MakeScreenActivity::class.java)
+                    startIntentRightToLeft(ChooseCharacterActivity::class.java)
                 }
 
+            }
+            btnCreate.setOnSingleClick {
+                showInterAll {
+                    posterEditorViewModel.clearAll()
+                    startIntentRightToLeft(MakeScreenActivity::class.java)
+                }
+
+            }
+            btnFruit.setOnSingleClick {
+                showInterAll {
+                    startIntentRightToLeft(RandomFruitActivity::class.java)
+                }
             }
             //quyen
             BtnPosterWantedTemplate.setOnSingleClick {

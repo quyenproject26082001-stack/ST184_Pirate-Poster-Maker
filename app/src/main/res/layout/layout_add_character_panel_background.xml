@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/bg_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/bg_other"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/sectionTab"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="32dp"
+        android:background="@color/transparent"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <FrameLayout
+            android:id="@+id/btnBackgroundImage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imvBgImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/subTabImage"
+                android:layout_width="12dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:background="@drawable/un_selected_tab_sub"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imvFocusImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/selected_tab"
+                android:visibility="visible" />
+
+            <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                android:id="@+id/tvBackgroundImage"
+                style="@style/single_marquee"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/jua_regular"
+                android:gravity="center"
+                android:text="@string/image"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <Space
+            android:layout_width="27dp"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/btnBackgroundColor"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imvBgColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/subTabColor"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@drawable/un_selected_tab_sub"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imvFocusColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/un_selected_tab"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                android:id="@+id/tvBackgroundColor"
+                style="@style/single_marquee"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/jua_regular"
+                android:gravity="center"
+                android:text="@string/color"
+                android:textColor="#650016"
+                android:textSize="14sp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lnlBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="46dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvBackgroundImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4.5dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="20.5dp"
+            android:paddingBottom="25dp"
+            android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="5"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_background_image"
+            tools:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvBackgroundColor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4.5dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="20.5dp"
+            android:paddingBottom="25dp"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="5"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_background_color"
+            tools:visibility="visible" />
+    </LinearLayout>
+</FrameLayout>

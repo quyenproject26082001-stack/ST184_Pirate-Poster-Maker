@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="22dp"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/lnlShareButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!--            btnWhatsapp-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnWhatsapp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="17dp"
+            android:layout_weight="1"
+            android:padding="2dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:scaleType="fitXY"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/transparent"
+                app:strokeColor="@color/transparent"
+                app:layout_constraintBottom_toBottomOf="@+id/lnlInLeft"
+                app:layout_constraintEnd_toEndOf="@+id/lnlInLeft"
+                app:layout_constraintStart_toStartOf="@+id/lnlInLeft"
+                app:layout_constraintTop_toTopOf="@+id/lnlInLeft">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/frame_item" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--                        lnlInLeft-->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/lnlInLeft"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <!--                        tvMyWork-->
+                <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                    android:id="@+id/tvMyWork"
+                    style="@style/single_marquee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="6dp"
+                    android:fontFamily="@font/jua_regular"
+                    app:outerStrokeColor="@color/app"
+                    app:outerStrokeWidth="2dp"
+                    android:text="@string/my_work"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--            btnTelegram-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnTelegram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="17dp"
+            android:padding="2dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:scaleType="fitXY"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/transparent"
+                app:strokeColor="@color/transparent"
+                app:layout_constraintBottom_toBottomOf="@+id/lnlInRight"
+                app:layout_constraintEnd_toEndOf="@+id/lnlInRight"
+                app:layout_constraintStart_toStartOf="@+id/lnlInRight"
+                app:layout_constraintTop_toTopOf="@+id/lnlInRight">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/frame_item" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--                        lnlInRight-->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/lnlInRight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <!--                        tvDownload-->
+                <com.piratemaker.postermaker.poster.core.custom.text.DoubleStrokeTextView
+                    android:id="@+id/tvDownload"
+                    style="@style/single_marquee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="6dp"
+                    android:fontFamily="@font/jua_regular"
+                    android:text="@string/download"
+                    app:outerStrokeWidth="2dp"
+                    app:outerStrokeColor="@color/app"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

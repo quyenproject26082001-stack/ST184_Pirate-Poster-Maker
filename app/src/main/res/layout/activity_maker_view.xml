@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_bg_language"
+    tools:context=".ui.view.ViewActivity">
+
+
+    <!-- layoutActionBar -->
+    <FrameLayout
+        android:id="@+id/layoutActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/actionBar"
+            layout="@layout/layout_actionbar" />
+    </FrameLayout>
+
+    <!--    cvImage-->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/white"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:strokeColor="@color/transparent"
+        app:cardCornerRadius="12dp"
+        >
+
+        <!--        imvImage-->
+        <ImageView
+            android:id="@+id/imvImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center" />
+    </com.google.android.material.card.MaterialCardView>
+
+
+
+    <LinearLayout
+        android:id="@+id/rowImportEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="horizontal"
+        android:paddingBottom="85dp"
+        android:weightSum="2"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/cvImage"
+        tools:layout_editor_absoluteX="16dp">
+
+        <!-- Import Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnShare"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/white"
+
+            app:strokeColor="#C4561B"
+            app:strokeWidth="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/kurale_regular"
+                android:text="@string/share"
+                android:textColor="#C4561B"
+                android:textSize="20sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Edit Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnDownload"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="8dp"
+            app:strokeColor="#C4561B"
+            app:cardBackgroundColor="@color/white"
+
+            app:strokeWidth="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/kurale_regular"
+                android:text="@string/download"
+                android:textColor="#C4561B"
+                android:textSize="20sp" />
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+
+
+    <!--    &lt;!&ndash;    flNativeCollab&ndash;&gt;-->
+<!--    <FrameLayout-->
+<!--        android:id="@+id/flNativeCollab"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent">-->
+
+<!--        <include layout="@layout/ads_shimmer_collap_native" />-->
+<!--    </FrameLayout>-->
+
+
+<!--    &lt;!&ndash;    native_ads&ndash;&gt;-->
+<!--    <FrameLayout-->
+<!--        android:id="@+id/native_ads"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent">-->
+
+<!--        <include layout="@layout/ads_native_big_btn_top_shimmer" />-->
+<!--    </FrameLayout>-->
+
+    <!--    flNativeCollab-->
+    <FrameLayout
+        android:id="@+id/flNativeCollab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include layout="@layout/ads_shimmer_collap_native" />
+    </FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

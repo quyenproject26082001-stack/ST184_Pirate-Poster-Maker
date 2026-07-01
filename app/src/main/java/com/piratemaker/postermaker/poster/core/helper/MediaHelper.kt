@@ -173,6 +173,27 @@ object MediaHelper {
         }
     }
 
+    inline fun <reified T> writeModelToFile(context: Context, fileName: String, model: T) {
+        try {
+            val json = Gson().toJson(model)
+            context.openFileOutput(fileName, Context.MODE_PRIVATE).use { output ->
+                output.write(json.toByteArray())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    inline fun <reified T> readModelFromFile(context: Context, fileName: String): T? {
+        return try {
+            val json = context.openFileInput(fileName).bufferedReader().use { it.readText() }
+            Gson().fromJson(json, T::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     fun checkFileInternal(context: Context, fileName: String): Boolean {
         val file = File(context.filesDir, fileName)
         return file.exists() || file.length() > 0
@@ -338,6 +359,38 @@ object MediaHelper {
             null
         }
     }
+
+    fun saveBitmapToInternalStorageZip(
+        context: Context,
+        album: String,
+        bitmap: Bitmap
+    ): Flow<SaveState> = flow {
+        emit(SaveState.Loading)
+        try {
+            val name = StringHelper.generateRandomImageFileName()
+            val resizedBitmap = bitmap.scale(512, 512)
+            val directory = File(context.filesDir, album)
+
+            if (!directory.exists()) {
+                directory.mkdir()
+            }
+
+            val file = File(directory, "$name.png")
+            FileOutputStream(file).use { output ->
+                var quality = 100
+                do {
+                    output.flush()
+                    resizedBitmap.compress(Bitmap.CompressFormat.PNG, quality, output)
+                    quality -= 5
+                } while (file.length() > 512 * 1024 && quality > 5)
+            }
+
+            resizedBitmap.recycle()
+            emit(SaveState.Success(file.absolutePath))
+        } catch (e: Exception) {
+            emit(SaveState.Error(e))
+        }
+    }.flowOn(Dispatchers.IO)
 
     fun downloadPartsToExternal(activity: Activity, pathList: List<String>): Flow<HandleState> =
         flow {

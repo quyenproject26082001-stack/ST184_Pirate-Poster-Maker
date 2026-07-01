@@ -1,15 +1,15 @@
 <resources>
-    <string name="app_name">Wanted Poster Creator: Filter</string>
-    <string name="go_to_setting_message">Aplikasi membutuhkan izin ini</string>
+    <string name="app_name">Pembuat Poster Buronan: Filter</string>
+    <string name="go_to_setting_message">Aplikasi memerlukan izin ini</string>
     <string name="settings">Pengaturan</string>
-    <string name="this_action_can_contain_ads">Tindakan ini dapat berisi iklan</string>
+    <string name="this_action_can_contain_ads">Tindakan ini mungkin mengandung iklan</string>
     <string name="not_select_lang">Silakan pilih bahasa</string>
     <string name="next">Berikutnya</string>
     <string name="language">Bahasa</string>
 
-    <string name="title_1">Jadilah bajak laut sejati</string>
-    <string name="title_2">Gaya bajak laut surreal</string>
-    <string name="title_3">Buat poster buronan dengan hadiah besar</string>
+    <string name="title_1">Menjadi bajak laut sejati</string>
+    <string name="title_2">Gaya bajak laut surealis</string>
+    <string name="title_3">Buat poster buronan dengan buruan besar</string>
 
     <string name="permission">Izin</string>
     <string name="storage">Penyimpanan</string>
@@ -20,14 +20,14 @@
     <string name="allow">Izinkan</string>
     <string name="to_access">untuk mengakses foto di perangkat Anda</string>
     <string name="to_access_13">untuk mengakses notifikasi di perangkat Anda</string>
-    <string name="no_designs_yet">Anda belum memiliki poster</string>
+    <string name="no_designs_yet">Anda belum memiliki poster apa pun</string>
 
-    <string name="rate_us">Beri Nilai</string>
+    <string name="rate_us">Beri Kami Nilai</string>
     <string name="share_app">Bagikan Aplikasi</string>
-    <string name="privacy_policy"><![CDATA[Privasi & Kebijakan]]></string>
+    <string name="privacy_policy"><![CDATA[Kebijakan & Privasi]]></string>
 
-    <string name="zero_star_title">Apakah Anda suka aplikasinya?</string>
-    <string name="zero_star">Saya butuh cintamu</string>
+    <string name="zero_star_title">Apakah Anda menyukai aplikasinya?</string>
+    <string name="zero_star">Aku butuh cintamu</string>
 
     <string name="one_star_title">Teman kecil membuatku menangis</string>
     <string name="one_star">Aku akan menangis sepanjang hari</string>
@@ -36,15 +36,15 @@
     <string name="two_star">Aku tidak akan makan nasi hari ini</string>
 
     <string name="three_star_title">Kerja bagus teman kecil</string>
-    <string name="three_star">Aku tahu kamu tidak akan membuatku sedih</string>
+    <string name="three_star">Aku tahu kamu tidak akan membiarkanku sedih</string>
 
     <string name="four_star_title">Kamu sangat tampan</string>
-    <string name="four_star">Sang pangeran sangat tampan</string>
+    <string name="four_star">Pangeran sangat tampan</string>
 
     <string name="five_star_title">Aku sangat mencintaimu</string>
-    <string name="five_star">ayo kita menikah</string>
+    <string name="five_star">ayo menikah</string>
 
-    <string name="rate_us_0">Anda belum memberikan nilai!</string>
+    <string name="rate_us_0">Anda belum memberinya nilai!</string>
     <string name="rate">Nilai</string>
     <string name="exit">Keluar</string>
     <string name="have_rated">Terima kasih telah menilai aplikasi kami</string>
@@ -54,14 +54,14 @@
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
     <string name="wait_a_minute">Tunggu beberapa detik...</string>
-    <string name="reset">Reset</string>
-    <string name="download_success">Unduhan berhasil ke album Wanted Poster Creator: Filter</string>
-    <string name="please_check_your_internet">Silakan periksa koneksi internet Anda</string>
+    <string name="reset">Atur Ulang</string>
+    <string name="download_success">Unduhan berhasil ke album Pembuat Poster Buronan: Filter</string>
+    <string name="please_check_your_internet">Silakan periksa internet Anda</string>
     <string name="please_select_an_image">Silakan pilih gambar</string>
     <string name="error">Kesalahan</string>
 
     <string name="an_error_occurred">Terjadi kesalahan, silakan coba lagi nanti.</string>
-    <string name="image_has_been_saved_successfully">Gambar berhasil disimpan!</string>
+    <string name="image_has_been_saved_successfully">Gambar telah berhasil disimpan!</string>
     <string name="save">Simpan</string>
     <string name="are_you_sure_want_to_delete_this_item">Apakah Anda yakin ingin menghapus item ini?</string>
     <string name="downloading">Mengunduh...</string>
@@ -73,23 +73,23 @@
     <string name="delete_your_customize">Hapus kustomisasi Anda</string>
     <string name="are_you_sure_you_want_to_delete_the_image">Apakah Anda yakin ingin menghapus gambar?</string>
     <string name="haven_t_saved_it_yet_do_you_want_to_exit">Belum disimpan, apakah Anda ingin keluar?</string>
-    <string name="change_your_whole_design_are_you_sure">Apakah Anda ingin mereset semua?</string>
-    <string name="character_maker">Pembuat Poster\nBuronan</string>
+    <string name="change_your_whole_design_are_you_sure">Apakah Anda ingin mengatur ulang semuanya?</string>
+    <string name="character_maker">Pembuat Poster \nBuronan</string>
     <string name="no_item_here">Tidak Ada Item Di Sini</string>
     <string name="import_">Impor</string>
-    <string name="templates">Template</string>
-    <string name="posterwantedtemplates">Template Poster\nBuronan</string>
-    <string name="posterwantedmaker">Pembuat Poster\nBuronan</string>
-    <string name="bounty">Hadiah</string>
+    <string name="templates">Templat</string>
+    <string name="posterwantedtemplates">Templat Poster \nBuronan</string>
+    <string name="posterwantedmaker">Pembuat Poster \nBuronan</string>
+    <string name="bounty">Buruan</string>
     <string name="photo_filter">Filter Foto</string>
     <string name="poster_shadow">Bayangan Poster</string>
     <string name="sepia">Sepia</string>
     <string name="saturate">Saturasi</string>
-    <string name="hue_rotate">Rotasi Warna</string>
+    <string name="hue_rotate">Putar Rona</string>
     <string name="grayscale">Skala Abu-abu</string>
     <string name="contrast">Kontras</string>
     <string name="brightness">Kecerahan</string>
-    <string name="blur">Blur</string>
+    <string name="blur">Buram</string>
     <string name="shadow">Bayangan</string>
 
     <string name="wanted_poster_maker">Pembuat Poster</string>
@@ -98,10 +98,10 @@
     <string name="design_deleted">Desain dihapus</string>
     <string name="delete_failed">Gagal menghapus</string>
     <string name="cancel">Batal</string>
-    <string name="poster_templates">Template Poster</string>
+    <string name="poster_templates">Templat Poster</string>
     <string name="default_name">Bajak Laut</string>
-    <string name="default_bounty">1.000.000</string>
-    <string name="reset_to_default_values">Reset ke nilai default?</string>
+    <string name="default_bounty">1,000,000</string>
+    <string name="reset_to_default_values">Atur ulang ke nilai default?</string>
     <string name="please_import_a_photo_first">Silakan impor foto terlebih dahulu</string>
     <string name="failed_to_load_image">Gagal memuat gambar</string>
     <string name="background_removed_success">Latar belakang berhasil dihapus</string>
@@ -109,23 +109,39 @@
     <string name="error_message">Terjadi kesalahan</string>
     <string name="position_y">Posisi Y</string>
     <string name="spacing">Jarak</string>
-    <string name="input">Input</string>
+    <string name="input">Masukan</string>
     <string name="size">Ukuran</string>
-    <string name="weight">Ketebalan</string>
+    <string name="weight">Berat</string>
     <string name="position_x">Posisi X</string>
     <string name="name">Nama</string>
     <string name="enter_name">Masukkan nama</string>
-    <string name="enter_bounty">Masukkan hadiah</string>
+    <string name="enter_bounty">Masukkan buruan</string>
     <string name="edit">Edit</string>
-    <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Harap masukkan nama sebelum menyimpan</string>
-    <string name="bountyFilter">Filter \nHadiah</string>
-    <string name="play">Mainkan</string>
-    <string name="old_west">Barat Lama \nPenjahat</string>
-    <string name="old_west_outlwaw">Barat Lama Penjahat</string>
+    <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Silakan masukkan nama sebelum menyimpan</string>
+    <string name="bountyFilter">Filter \nBuruan</string>
+    <string name="play">Main</string>
+    <string name="random_fruit">Buah Acak</string>
+    <string name="information">Informasi</string>
+    <string name="eat">Makan</string>
+    <string name="fruit_number">Buah %1$s</string>
+    <string name="fruit_information_fallback">Informasi tidak tersedia untuk buah ini.</string>
+    <string name="fruit_type_format">Tipe: %1$s</string>
+    <string name="fruit_about_format">🍌 Tentang: %1$s</string>
+    <string name="fruit_strengths_format">🔥 Kekuatan:\n• %1$s adalah buah tipe %2$s dengan gaya bertarung yang fleksibel.\n• %3$s\n• %4$s</string>
+    <string name="fruit_weaknesses_format">⚠️ Kelemahan:\n• %1$s\n• %2$s</string>
+    <string name="stats">✨ Statistik:</string>
+    <string name="strengths">🔥 Kekuatan:</string>
+    <string name="weaknesses">⚠️ Kelemahan:</string>
+    <string name="attack">Serangan</string>
+    <string name="defense">Pertahanan</string>
+    <string name="utility">Utilitas</string>
+    <string name="stat_value_format">%1$d/100</string>
+    <string name="old_west">Penjahat \nOld West</string>
+    <string name="old_west_outlwaw">Penjahat Old West</string>
     <string name="camera_permission_is_required">Izin kamera diperlukan</string>
-    <string name="my_wanted">Buronan Saya</string>
+    <string name="my_wanted">Wanted Saya</string>
     <string name="saved_to_my_design">Disimpan ke Desain Saya!</string>
-    <string name="improve">Tingkatkan Hadiah</string>
-    <string name="reconsider">Pertimbangkan Ulang Hadiah</string>
-
+    <string name="improve">Tingkatkan Buruan</string>
+    <string name="reconsider">Pertimbangkan Kembali Buruan</string>
+    <string name="rb_one_piece">RB One Piece</string>
 </resources>

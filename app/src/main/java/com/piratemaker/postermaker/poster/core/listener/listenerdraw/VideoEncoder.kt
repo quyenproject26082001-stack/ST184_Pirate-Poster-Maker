@@ -1,4 +1,4 @@
-package com.piratemaker.postermaker.listener.listenerdraw
+package com.piratemaker.postermaker.poster.core.listener.listenerdraw
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,7 +9,7 @@ import android.media.MediaFormat
 import android.media.MediaMuxer
 import android.util.Log
 import android.view.Surface
-import com.piratemaker.postermaker.core.custom.drawview.DrawView
+import com.piratemaker.postermaker.poster.core.custom.drawview.DrawView
 import java.io.IOException
 
 class VideoEncoder(

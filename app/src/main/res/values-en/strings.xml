@@ -118,7 +118,24 @@
     <string name="enter_bounty">Enter bounty</string>
     <string name="edit">Edit</string>
     <string name="vui_l_ng_nh_p_t_n_tr_c_khi_l_u">Please enter a name before save</string>
-    <string name="bountyFilter">Bounty \nFilter</string>    <string name="play">Play</string>
+    <string name="bountyFilter">Bounty \nFilter</string>
+    <string name="play">Play</string>
+    <string name="random_fruit">Random Fruit</string>
+    <string name="information">Information</string>
+    <string name="eat">Eat</string>
+    <string name="fruit_number">Fruit %1$s</string>
+    <string name="fruit_information_fallback">Information is not available for this fruit.</string>
+    <string name="fruit_type_format">Type: %1$s</string>
+    <string name="fruit_about_format">🍌 About: %1$s</string>
+    <string name="fruit_strengths_format">🔥 Strengths:\n• %1$s is a %2$s fruit with a flexible combat style.\n• %3$s\n• %4$s</string>
+    <string name="fruit_weaknesses_format">⚠️ Weaknesses:\n• %1$s\n• %2$s</string>
+    <string name="stats">✨ Stats:</string>
+    <string name="strengths">🔥 Strengths:</string>
+    <string name="weaknesses">⚠️ Weaknesses:</string>
+    <string name="attack">Attack</string>
+    <string name="defense">Defense</string>
+    <string name="utility">Utility</string>
+    <string name="stat_value_format">%1$d/100</string>
     <string name="old_west">Old West \nOutlaws</string>
     <string name="old_west_outlwaw">Old West OutLwaw</string>
     <string name="camera_permission_is_required">Camera permission is required</string>
@@ -126,4 +143,5 @@
     <string name="saved_to_my_design">Saved to My Design!</string>
     <string name="improve">Improve Bounty</string>
     <string name="reconsider">Reconsider Bounty</string>
+    <string name="rb_one_piece">RB One Piece</string>
 </resources>
